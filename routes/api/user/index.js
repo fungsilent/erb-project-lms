@@ -8,8 +8,7 @@ export default (app, utils) => {
             return utils.sendError(res, 'Login failed')
         }
 
-        // const token = jwt.sign(date{ id: 'admin001' }, global.__jwtKey)
-        const token = jwt.sign({ id: 'admin001', timestap }, global.__jwtKey)
+        const token = jwt.sign({ id: 'admin001' }, process.env.jwtKey)
         console.log(token)
         res.cookie('token', token, { maxAge: 900000 })
         utils.sendSuccess(res)
