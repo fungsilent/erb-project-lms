@@ -4,22 +4,25 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon --import=specifier-resolution-node/register app.js",
-    "start": "node --import=specifier-resolution-node/register app.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "imports": {
-    "#root/*": "./*"
+    "#root/*": [
+      "./*/index.js",
+      "./*.js"
+    ]
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
-    "ejs": "~2.6.1",
-    "express": "~4.16.1",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.1",
-    "morgan": "^1.10.0",
-    "specifier-resolution-node": "^1.1.4"
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.3"
