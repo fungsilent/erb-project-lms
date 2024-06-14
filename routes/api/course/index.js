@@ -1,9 +1,4 @@
-//import { Router } from 'express'
-import Course from '../../../models/Course.js'
-//import Course from '#root/models/Course.js'
-
-
-//const router = Router()
+import Course from '#root/db/models/Course'
 
 export default (app, utils) => {
     // Add course route (POST)

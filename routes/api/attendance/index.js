@@ -1,9 +1,4 @@
-//import { Router } from 'express'
-import Attendance from '../../../models/Attendance.js'
-//import Attendance from '#root/models/Attendance.js'
-
-
-//const router = Router()
+import Attendance from '#root/db/models/Attendance'
 
 export default (app, utils) => {
     // Mark attendance route (POST)

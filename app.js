@@ -1,53 +1,38 @@
 import createError from 'http-errors'
 import express from 'express'
 import path from 'path'
-import cookieParser from 'cookie-parser'
-import logger from 'morgan'
+import config from '#root/config'
 import utils from '#root/routes/utils'
-import connectDB from './config/database.js'
+import connectDatabase from '#root/db/connect'
+import setMiddleware from '#root/routes/middleware'
 
 // router
-import viewRouter from '#root/routes/views'
-import apiRouter from '#root/routes/api'
-//import { connect } from 'http2' ??
+import viewRouter from '#root/routes/views/route'
+import apiRouter from '#root/routes/api/route'
 
 // config
-global.__root = import.meta.dirname; // same as __dirname
-global.__jwtKey = '1&amp;2vpKA$IE8$CNLrbe9dz'
-const port = 8888
+const dirname = import.meta.dirname // same as __dirname
+process.env.jwtKey = config.jwtKey
+process.env.passwordSalt = config.passwordSalt
 
 const app = express()
-
-// Connect to database
-connectDB()
 
 /*
  * config
  */
-const setConfig = app => {
+const setConfig = () => {
     // view engine setup
-    app.set('views', path.join(global.__root, 'views'))
+    app.set('views', path.join(dirname, 'views'))
     app.set('view engine', 'ejs')
-    app.listen(port, () => console.log(`Server listen on http://localhost:${port}`))
-}
-
-/*
- * middleware
- */
-const setMiddleware = app => {
-    app.use(logger('dev'))
-    app.use(express.json())
-    app.use(express.urlencoded({ extended: false }))
-    app.use(cookieParser())
-    app.use(express.static(path.join(global.__root, 'public')))
 }
 
 /*
  * router
  */
-const setRouter = app => {
+const setRouter = () => {
     viewRouter(app, utils)
     apiRouter(app, utils)
+    app.use(express.static(path.join(dirname, 'public')))
 
     // catch 404 and forward to error handler
     app.use((req, res, next) => {
@@ -55,7 +40,7 @@ const setRouter = app => {
     })
 
     // error handler
-    app.use(function (err, req, res, next) {
+    app.use((err, req, res, next) => {
         // set locals, only providing error in development
         res.locals.message = err.message
         res.locals.error = req.app.get('env') === 'development' ? err : {}
@@ -66,7 +51,15 @@ const setRouter = app => {
     })
 }
 
-setConfig(app)
-setMiddleware(app)
-setRouter(app)
-export default app
+/*
+ * start server
+ */
+
+const startServer = async () => {
+    await connectDatabase()
+    setConfig()
+    setMiddleware(app, utils)
+    setRouter()
+    app.listen(config.port, () => console.log(`Server listen on http://localhost:${config.port}`))
+}
+startServer()
