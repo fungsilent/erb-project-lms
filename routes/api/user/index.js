@@ -47,17 +47,5 @@ export default (app, utils) => {
             res.status(400).send(err.message)
         }
     })
-
-    app.get('/register', async (req, res) => {
-        const { name, email, password, role } = req.body
-        try {
-            const user = new User({ name, email, password, role })
-            await user.save()
-            res.status(201).send('User registered')
-            res.redirect('/')
-        } catch (err) {
-            res.status(400).send(err.message)
-        }
-    })
 }
         
