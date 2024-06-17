@@ -1,10 +1,10 @@
-## Start
+## Run
 
 Start
-`npm run start`
+<br>`npm run start`
 
 Start with auto-reload via nodemon
-`npm run dev`
+<br>`npm run dev`
 
 The website will listen on `3000` port [http://localhost:3000/](http://localhost:3000/)
 
@@ -14,7 +14,10 @@ The website will listen on `3000` port [http://localhost:3000/](http://localhost
 Use below command in PowerShell or CMD ("Run as Administrator")
 
 Start db service
-`net start MongoDB`
+<br>`net start MongoDB`
 
 Restart db service
-`net stop MongoDB && net start MongoDB`
+<br>`net stop MongoDB && net start MongoDB`
+
+## Format
+`npm run format`
