@@ -20,11 +20,11 @@ export default (app, utils) => {
                 {
                     id: user._id,
                     role: user.role,
-                    expired: moment().add(30, 'days').unix(),
+                    expired: utils.getTimestamp(moment().add(30, 'days')),
                 },
                 process.env.jwtKey
             )
-            res.cookie('token', token, { maxAge: 900000, httpOnly: true })
+            res.cookie('token', token, { maxAge: 2592000, httpOnly: true }) // 1 month
 
             // Redirect based on role
             if (user.role === 'teacher' || user.role === 'student') {

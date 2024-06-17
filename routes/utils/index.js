@@ -1,29 +1,19 @@
-// export const sendSuccess = (res, data) => {
-//     const json = {
-//         isSuccess: true,
-//         data,
-//     }
-//     res.json(json)
-// }
+import moment from 'moment'
 
-// export const sendError = (res, error) => {
-//     const json = {
-//         isSuccess: false,
-//         error,
-//     }
-//     res.json(json)
-// }
+const sendError = (res, message) => {
+    res.status(400).json({ success: false, message })
+}
 
-// export default {
-//     sendSuccess,
-//     sendError,
-// }
+const sendSuccess = (res, data = {}) => {
+    res.status(200).json({ success: true, data })
+}
+
+const getTimestamp = date => {
+    return moment(date).unix() * 1000 // in seconds
+}
 
 export default {
-    sendError: (res, message) => {
-        res.status(400).json({ success: false, message })
-    },
-    sendSuccess: (res, data = {}) => {
-        res.status(200).json({ success: true, data })
-    },
+    sendSuccess,
+    sendError,
+    getTimestamp,
 }
