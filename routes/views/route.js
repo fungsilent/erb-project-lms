@@ -1,7 +1,7 @@
 import { auth, requiredAuth } from '#root/routes/middleware/auth'
 import {
     publicView as userPublicView,
-    privateView as userPrivateView
+    privateView as userPrivateView,
 } from '#root/routes/views/user'
 import courseView from '#root/routes/views/course'
 

@@ -1,11 +1,12 @@
 {
-  "name": "project",
+  "name": "erb_lms",
   "type": "module",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "nodemon --import=specifier-resolution-node/register app.js",
-    "start": "node --import=specifier-resolution-node/register app.js"
+    "start": "node --import=specifier-resolution-node/register app.js",
+    "format": "npx prettier . --write"
   },
   "imports": {
     "#root/*": "./*"

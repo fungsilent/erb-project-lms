@@ -16,7 +16,9 @@ export default (app, utils) => {
     // Get attendance by course (GET)
     app.get('/api/attendance/:courseId', async (req, res) => {
         try {
-            const attendance = await Attendance.find({ course: req.params.courseId })
+            const attendance = await Attendance.find({
+                course: req.params.courseId,
+            })
             res.status(200).json(attendance)
         } catch (err) {
             res.status(500).send(err.message)

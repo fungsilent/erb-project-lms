@@ -32,7 +32,7 @@ const setConfig = () => {
 const setRouter = () => {
     app.use(express.static(path.join(dirname, 'public')))
     apiRouter(app, utils)
-    viewRouter(app, utils)  // must be the last
+    viewRouter(app, utils) // must be the last
 
     // catch 404 and forward to error handler
     app.use((req, res, next) => {
@@ -60,6 +60,8 @@ const startServer = async () => {
     setConfig()
     setMiddleware(app, utils)
     setRouter()
-    app.listen(config.port, () => console.log(`Server listen on http://localhost:${config.port}`))
+    app.listen(config.port, () =>
+        console.log(`Server listen on http://localhost:${config.port}`)
+    )
 }
 startServer()

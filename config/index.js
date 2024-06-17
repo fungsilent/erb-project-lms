@@ -4,5 +4,5 @@ export default {
     passwordSalt: '$2a$10$JW2eicISpWglmYENAPBm5e',
     db: {
         host: 'mongodb://localhost:27017/erblmslocal',
-    }
+    },
 }

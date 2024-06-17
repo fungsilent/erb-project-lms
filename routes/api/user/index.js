@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import moment  from 'moment'
+import moment from 'moment'
 import User from '#root/db/models/User'
 
 export default (app, utils) => {
@@ -16,15 +16,18 @@ export default (app, utils) => {
             if (!isMatch) {
                 return utils.sendError(res, 'Login failed')
             }
-            const token = jwt.sign({
-                id: user._id,
-                role: user.role,
-                expired: moment().add(30, 'days').unix(),
-            }, process.env.jwtKey)
+            const token = jwt.sign(
+                {
+                    id: user._id,
+                    role: user.role,
+                    expired: moment().add(30, 'days').unix(),
+                },
+                process.env.jwtKey
+            )
             res.cookie('token', token, { maxAge: 900000, httpOnly: true })
-            
+
             // Redirect based on role
-            if (user.role === 'teacher' || user.role === 'student' ) {
+            if (user.role === 'teacher' || user.role === 'student') {
                 res.redirect('/dashboard')
             } else {
                 res.redirect('/')
@@ -48,4 +51,3 @@ export default (app, utils) => {
         }
     })
 }
-        

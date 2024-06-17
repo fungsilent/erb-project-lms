@@ -16,7 +16,7 @@ export const auth = async (req, res, next) => {
             req.auth = true
             req.user = user
         } catch (err) {
-            // no need hanlde
+            // no need handle
         }
     }
     next()
