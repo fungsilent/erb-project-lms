@@ -30,9 +30,9 @@ const setConfig = () => {
  * router
  */
 const setRouter = () => {
-    viewRouter(app, utils)
-    apiRouter(app, utils)
     app.use(express.static(path.join(dirname, 'public')))
+    apiRouter(app, utils)
+    viewRouter(app, utils)  // must be the last
 
     // catch 404 and forward to error handler
     app.use((req, res, next) => {

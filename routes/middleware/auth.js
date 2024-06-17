@@ -1,8 +1,10 @@
 import jwt from 'jsonwebtoken'
 import User from '#root/db/models/User'
 
-const auth = async (req, res, next) => {
+export const auth = async (req, res, next) => {
     const token = req.cookies.token
+    req.auth = false
+    req.user = null
     if (token) {
         try {
             // try to find user by token
@@ -11,29 +13,23 @@ const auth = async (req, res, next) => {
             if (!user) {
                 throw new Error()
             }
+            req.auth = true
             req.user = user
         } catch (err) {
             // no need hanlde
         }
     }
     next()
-
-
-    // const token = req.cookies.token
-    // if (!token) {
-    //     return res.status(401).redirect('/auth')
-    // }
-    // try {
-    //     const decoded = jwt.verify(token, process.env.jwtKey)
-    //     const user = await User.findById(decoded.id)
-    //     if (!user) {
-    //         throw new Error()
-    //     }
-    //     req.user = user
-    //     next()
-    // } catch (err) {
-    //     res.status(401).redirect('/auth')
-    // }
 }
 
-export default auth
+export const requiredAuth = async (req, res, next) => {
+    if (!req.auth) {
+        return res.status(401).redirect('/')
+    }
+    next()
+}
+
+export default {
+    auth,
+    requiredAuth,
+}

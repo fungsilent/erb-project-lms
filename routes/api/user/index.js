@@ -5,7 +5,7 @@ import User from '#root/db/models/User'
 
 export default (app, utils) => {
     // Login route (POST)
-    app.post('/login', async (req, res) => {
+    app.post('/api/user/login', async (req, res) => {
         const { email, password } = req.body
         try {
             const user = await User.findOne({ email })
@@ -36,7 +36,7 @@ export default (app, utils) => {
     })
 
     // Register route (POST)
-    app.post('/register', async (req, res) => {
+    app.post('/api/user/add', async (req, res) => {
         const { name, email, password, role } = req.body
         try {
             const user = new User({ name, email, password, role })

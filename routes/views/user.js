@@ -1,16 +1,20 @@
-import auth from '#root/routes/middleware/auth'
 import User from '#root/db/models/User'
 import Course from '#root/db/models/Course'
 
 /*
  * User view
 */
-export default app => {
+export const publicView = app => {
     // lander
     app.get('/', (req, res) => {
+        if (req.auth) {
+            return res.redirect('/dashboard')
+        }
         res.render('login')
     })
+}
 
+export const privateView = app => {
     // logout
     app.get('/logout', (req, res) => {
         res.clearCookie('token')
@@ -18,7 +22,7 @@ export default app => {
     })
 
     // dashboard
-    app.get('/dashboard', auth, async (req, res) => {
+    app.get('/dashboard', async (req, res) => {
         if (req.user.role === 'teacher') {
             const courses = await Course.find({ teacher: req.user._id })
             const students = await User.find({ role: 'student' })

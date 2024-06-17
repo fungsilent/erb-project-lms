@@ -2,7 +2,7 @@ import Course from '#root/db/models/Course'
 
 export default (app, utils) => {
     // Add course route (POST)
-    app.post('/add', async (req, res) => {
+    app.post('/api/course/add', async (req, res) => {
         const { name, description, teacher } = req.body
         try {
             const course = new Course({ name, description, teacher })
@@ -14,7 +14,7 @@ export default (app, utils) => {
     })
 
     // Get all courses (GET)
-    app.get('/', async (req, res) => {
+    app.get('/api/course', async (req, res) => {
         try {
             const courses = await Course.find()
             res.status(200).json(courses)
