@@ -1,11 +1,11 @@
 import moment from 'moment'
 
 const sendError = (res, message) => {
-    res.status(400).json({ success: false, message })
+    res.json({ success: false, message })
 }
 
 const sendSuccess = (res, data = {}) => {
-    res.status(200).json({ success: true, data })
+    res.json({ success: true, data })
 }
 
 const getTimestamp = date => {

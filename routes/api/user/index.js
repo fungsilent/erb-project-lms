@@ -25,13 +25,7 @@ export default (app, utils) => {
                 process.env.jwtKey
             )
             res.cookie('token', token, { maxAge: 2592000, httpOnly: true }) // 1 month
-
-            // Redirect based on role
-            if (user.role === 'teacher' || user.role === 'student') {
-                res.redirect('/dashboard')
-            } else {
-                res.redirect('/')
-            }
+            utils.sendSuccess(res, { token })
         } catch (err) {
             console.log(err)
             utils.sendError(res, err.message)
@@ -42,12 +36,25 @@ export default (app, utils) => {
     app.post('/api/user/add', async (req, res) => {
         const { name, email, password, role } = req.body
         try {
-            const user = new User({ name, email, password, role })
-            await user.save()
-            res.status(201).send('User registered')
-            //res.redirect('/')
+            const user = await User.findOne({ email })
+            if (user) {
+                return utils.sendError(res, 'Email duplicated.')
+            }
+            const newUser = new User({ name, email, password, role })
+            await newUser.save()
+            utils.sendSuccess(res)
         } catch (err) {
-            res.status(400).send(err.message)
+            utils.sendError(res, 'Create user failed.')
+        }
+    })
+
+    app.get('/api/user', async (req, res) => {
+        try {
+            const users = await User.find({})
+            utils.sendSuccess(res, users)
+        } catch (err) {
+            console.log(err)
+            utils.sendError(res, err.message)
         }
     })
 }

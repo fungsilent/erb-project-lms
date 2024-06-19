@@ -5,14 +5,13 @@ const UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ['teacher', 'student'], required: true },
+    role: { type: String, enum: ['admin', 'teacher', 'student'], required: true },
 })
 
 UserSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
-        return next()
+    if (this.isModified('password')) {
+        this.password = await bcrypt.hash(this.password, process.env.passwordSalt)
     }
-    this.password = await bcrypt.hash(this.password, process.env.passwordSalt)
     next()
 })
 

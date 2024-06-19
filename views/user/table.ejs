@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+<script>
+    $(document).ready(() => {
+        $('#table').DataTable({
+            ajax: '/api/user',
+            columns: [
+                { title: 'Name', data: 'name' },
+                { title: 'Email', data: 'email' },
+                { title: 'Role', data: 'role' },
+                // { data: 'button', render: (data, type, row, meta) => {
+                //     console.log(data, type, row, meta)
+                //     return `<a href="/user/${row?._id}">View</a>`
+                // }}
+            ],
+        })
+    })
+</script>
+<a href="/user/add">Add</a>
+<table id="table">
+</table>
+<%- contentFor('title') %>User

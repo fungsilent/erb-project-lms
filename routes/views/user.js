@@ -10,7 +10,7 @@ export const publicView = app => {
         if (req.auth) {
             return res.redirect('/dashboard')
         }
-        res.render('login')
+        res.render('login', { layout: 'layouts/blank' })
     })
 }
 
@@ -23,19 +23,42 @@ export const privateView = app => {
 
     // dashboard
     app.get('/dashboard', async (req, res) => {
-        if (req.user.role === 'teacher') {
-            const courses = await Course.find({ teacher: req.user._id })
-            const students = await User.find({ role: 'student' })
-            res.render('dashboard/teacher', {
-                user: req.user,
-                courses,
-                students,
-            })
-        } else {
-            const enrolledCourses = await Course.find({
-                students: req.user._id,
-            })
-            res.render('dashboard/student', { user: req.user, enrolledCourses })
+        switch (req.user.role) {
+            case 'admin': {
+                return res.render('dashboard/admin', {
+                    user: req.user,
+                })
+            }
+            case 'teacher': {
+                const courses = await Course.find({ teacher: req.user._id })
+                const students = await User.find({ role: 'student' })
+                return res.render('dashboard/teacher', {
+                    user: req.user,
+                    courses,
+                    students,
+                })
+            }
+            case 'student': {
+                const enrolledCourses = await Course.find({
+                    students: req.user._id,
+                })
+                return res.render('dashboard/student', {
+                    user: req.user,
+                    enrolledCourses,
+                })
+            }
         }
+    })
+
+    app.get('/user', async (req, res) => {
+        res.render('user/table', {
+            user: req.user,
+        })
+    })
+
+    app.get('/user/add', async (req, res) => {
+        res.render('user/add', {
+            user: req.user,
+        })
     })
 }

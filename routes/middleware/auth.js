@@ -28,7 +28,7 @@ export const auth = async (req, res, next) => {
 
 export const requiredAuth = async (req, res, next) => {
     if (!req.auth) {
-        return res.status(401).redirect('/')
+        return res.redirect('/')
     }
     next()
 }

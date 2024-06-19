@@ -4,6 +4,7 @@ import path from 'path'
 import config from '#root/config'
 import utils from '#root/routes/utils'
 import connectDatabase from '#root/db/connect'
+import initDatabase from '#root/db/initialize'
 import setMiddleware from '#root/routes/middleware'
 
 // router
@@ -24,6 +25,11 @@ const setConfig = () => {
     // view engine setup
     app.set('views', path.join(dirname, 'views'))
     app.set('view engine', 'ejs')
+
+    // express-ejs-layouts
+    app.set('layout extractStyles', true)
+    app.set('layout extractScripts', true)
+    app.set('layout', 'layouts/nav')
 }
 
 /*
@@ -54,9 +60,9 @@ const setRouter = () => {
 /*
  * start server
  */
-
 const startServer = async () => {
     await connectDatabase()
+    await initDatabase()
     setConfig()
     setMiddleware(app, utils)
     setRouter()

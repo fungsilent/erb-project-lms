@@ -1,0 +1,20 @@
+<title><%- defineContent('title') ? defineContent('title') : 'LMS' %></title>
+<script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous">
+</script>
+<script>
+    $.getFormData = form => {
+        return $(form).toArray().reduce((result, elem) => ({
+            ...result,
+            [elem.name]: elem.value,
+        }), {})
+    }
+</script>
+<style>
+    body {
+        display: flex;
+        margin: 0;
+    }
+</style>
