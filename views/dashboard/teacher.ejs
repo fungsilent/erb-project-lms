@@ -1,34 +1,50 @@
-<h1>Welcome, <%= user.name %> (Teacher)</h1>
+<h1>
+    Welcome,
+    <%= user.name %>
+    (Teacher)
+</h1>
 <h2>Your Courses</h2>
 <% if (courses.length > 0) { %>
-    <ul>
-        <% courses.forEach(function(course) { %>
-            <li>
-                <%= course.name %>
-                <a href="/courses/edit/<%= course._id %>">Edit</a>
-                <form action="/courses/delete/<%= course._id %>" method="POST" style="display:inline;">
-                    <button type="submit">Delete</button>
-                </form>
-                <form action="/courses/assign/<%= course._id %>" method="POST" style="display:inline;">
-                    <input type="text" name="studentId" placeholder="Student ID">
-                    <button type="submit">Assign Student</button>
-                </form>
-            </li>
-        <% }) %>
-    </ul>
+<ul>
+    <% courses.forEach(function(course) { %>
+    <li>
+        <%= course.name %>
+        <a href="/courses/edit/<%= course._id %>">Edit</a>
+        <form
+            action="/courses/delete/<%= course._id %>"
+            method="POST"
+            style="display: inline"
+        >
+            <button type="submit">Delete</button>
+        </form>
+        <form
+            action="/courses/assign/<%= course._id %>"
+            method="POST"
+            style="display: inline"
+        >
+            <input type="text" name="studentId" placeholder="Student ID" />
+            <button type="submit">Assign Student</button>
+        </form>
+    </li>
+    <% }) %>
+</ul>
 <% } else { %>
-    <p>No courses here</p>
+<p>No courses here</p>
 <% } %>
 <a href="/courses/add">Add New Course</a>
 
 <h2>All Students</h2>
 <% if (students.length > 0) { %>
-    <ul>
-        <% students.forEach(function(student) { %>
-            <li><%= student.name %> (<%= student.email %>) | <%=student.id %></li>
-        <% }) %>
-    </ul>
+<ul>
+    <% students.forEach(function(student) { %>
+    <li>
+        <%= student.name %>
+        (<%= student.email %>) |
+        <%=student.id %>
+    </li>
+    <% }) %>
+</ul>
 <% } else { %>
-    <p>No students found</p>
+<p>No students found</p>
 <% } %>
 <%- contentFor('title') %>Dashboard
