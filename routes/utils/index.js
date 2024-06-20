@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import moment from 'moment'
 
 const sendError = (res, message) => {
@@ -16,4 +17,5 @@ export default {
     sendSuccess,
     sendError,
     getTimestamp,
+    ObjectId: mongoose.ObjectId,
 }

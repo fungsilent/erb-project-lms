@@ -1,12 +1,8 @@
+import config from '#root/config'
 import User from '#root/db/models/User'
 
 export default async () => {
-    const adminData = {
-        name: 'admin',
-        email: 'admin@admin.com',
-        password: 'admin',
-        role: 'admin',
-    }
+    const adminData = config.db.adminData
     const user = await User.findOne({ email: adminData.email })
     if (!user) {
         console.log('[DB] initializing...')

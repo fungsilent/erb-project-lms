@@ -5,17 +5,34 @@
 <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
 <script>
     $(document).ready(() => {
-        $('#table').DataTable({
+        const table = $('#table').DataTable({
+            ordering: false,
+            searching: false,
+            paging: false,
             ajax: '/api/user',
             columns: [
                 { title: 'Name', data: 'name' },
                 { title: 'Email', data: 'email' },
                 { title: 'Role', data: 'role' },
-                // { data: 'button', render: (data, type, row, meta) => {
-                //     console.log(data, type, row, meta)
-                //     return `<a href="/user/${row?._id}">View</a>`
-                // }}
+                {
+                    data: 'button',
+                    render: (data, type, row, meta) => {
+                        return `<button class="delete" data-id="${row?._id}">Delete</button>`
+                    },
+                },
             ],
+        })
+        $(document).on('click', '.delete', event => {
+            $.ajax({
+                url: `/api/user/${$(event.target).data('id')}`,
+                method: 'DELETE',
+                success: res => {
+                    console.log('res', res)
+                    if (res.success) {
+                        table.ajax.reload()
+                    }
+                },
+            })
         })
     })
 </script>
