@@ -1,6 +1,81 @@
+<style>
+    .board {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .card {
+        flex: 1 1 40%;
+        padding: 12px;
+        width: 50%;
+        background: #e3e3e3;
+        border-radius: 8px;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+</style>
+<script>
+    $(document).ready(() => {
+        $.ajax({
+            url: '/api/announcement',
+            method: 'GET',
+            success: res => {
+                console.log('res', res)
+                if (!res.success) {
+                    $('#addAnnouncementForm .error').html(res.message)
+                }
+                res.data.forEach(item => {
+                    $('#announcement .content').append(`
+                        <p>
+                            <span>${item.content}</span><br/>
+                            <span>${moment(item.date).format('MM-DD-YYYY h:mm')}</span>
+                        </p>
+                    `)
+                })
+            },
+        })
+
+        $('#addAnnouncementForm').on('submit', event => {
+            event.preventDefault()
+            const data = $.getFormData('#addAnnouncementForm')
+            console.log('data', data)
+            $.ajax({
+                url: '/api/announcement/add',
+                method: 'POST',
+                data,
+                success: res => {
+                    console.log('res', res)
+                    if (!res.success) {
+                        $('#addAnnouncementForm .error').html(res.message)
+                    }
+                },
+            })
+        })
+    })
+</script>
 <h1>
     Welcome,
     <%= user.name %>
     (Admin)
 </h1>
+<div class="board">
+    <div id="announcement" class="card">
+        <strong>Announcement</strong>
+        <div class="content"></div>
+    </div>
+    <form id="addAnnouncementForm" class="card">
+        <strong>Add Announcement</strong>
+        <textarea name="content" rows="5" cols="40"></textarea>
+        <label for="to">To:</label>
+        <select name="to" required>
+            <option value="all">All</option>
+            <option value="teacher">Teacher</option>
+            <option value="student">Student</option>
+        </select>
+        <button type="submit">Add</button>
+        <div class="error"></div>
+    </form>
+</div>
 <%- contentFor('title') %>Dashboard

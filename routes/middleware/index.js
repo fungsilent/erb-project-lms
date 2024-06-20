@@ -2,6 +2,7 @@ import express from 'express'
 import expressLayouts from 'express-ejs-layouts'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
+import { auth } from '#root/routes/middleware/auth'
 
 const setMiddleware = (app, utils) => {
     app.use(logger('dev'))
@@ -9,5 +10,7 @@ const setMiddleware = (app, utils) => {
     app.use(express.urlencoded({ extended: false }))
     app.use(cookieParser())
     app.use(expressLayouts)
+
+    app.use(auth)
 }
 export default setMiddleware

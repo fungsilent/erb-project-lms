@@ -2,15 +2,7 @@
     $(document).ready(() => {
         $('#addForm').on('submit', event => {
             event.preventDefault()
-            const data = $('#addForm [name]')
-                .toArray()
-                .reduce(
-                    (result, elem) => ({
-                        ...result,
-                        [elem.name]: elem.value,
-                    }),
-                    {}
-                )
+            const data = $.getFormData('#addForm')
             console.log('data', data)
             $.ajax({
                 url: '/api/user/add',

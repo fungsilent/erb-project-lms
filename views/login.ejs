@@ -17,7 +17,7 @@
     $(document).ready(() => {
         $('#loginForm').on('submit', event => {
             event.preventDefault()
-            const data = $.getFormData('#loginForm [name]')
+            const data = $.getFormData('#loginForm')
             console.log('data', data)
             $.ajax({
                 url: '/api/user/login',

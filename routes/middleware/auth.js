@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
+import utils from '#root/routes/utils'
 import User from '#root/db/models/User'
 
 export const auth = async (req, res, next) => {
@@ -26,14 +27,22 @@ export const auth = async (req, res, next) => {
     next()
 }
 
-export const requiredAuth = async (req, res, next) => {
+export const requiredViewAuth = async (req, res, next) => {
     if (!req.auth) {
         return res.redirect('/')
     }
     next()
 }
 
+export const requiredApiAuth = async (req, res, next) => {
+    if (!req.auth) {
+        return utils.sendError(res, 'authentication denied')
+    }
+    next()
+}
+
 export default {
     auth,
-    requiredAuth,
+    requiredViewAuth,
+    requiredApiAuth,
 }
