@@ -1,0 +1,41 @@
+<style>
+    .board {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .card {
+        flex: 0 1 45%;
+        padding: 12px;
+        background: #e3e3e3;
+        border-radius: 8px;
+    }
+</style>
+<script>
+    $(document).ready(() => {
+        $.ajax({
+            url: '/api/announcement',
+            method: 'GET',
+            success: res => {
+                console.log('res', res)
+                if (!res.success) {
+                    $('#addAnnouncementForm .error').html(
+                        'Announcement not found'
+                    )
+                }
+                res.data.forEach(item => {
+                    $('#announcement .content').append(`
+                        <p>
+                            <span>${item.content}</span><br/>
+                            <span>${moment(item.date).format('MM-DD-YYYY h:mm')}</span>
+                        </p>
+                    `)
+                })
+            },
+        })
+    })
+</script>
+<div id="announcement" class="card">
+    <strong>Announcement</strong>
+    <div class="content"></div>
+</div>

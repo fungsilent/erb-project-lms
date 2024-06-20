@@ -7,11 +7,6 @@ export default (app, utils) => {
         try {
             let option = {}
             switch (req.user.role) {
-                case 'superAdmin':
-                case 'admin': {
-                    // find all
-                    break
-                }
                 case 'teacher': {
                     option = { 'to.teacher': true }
                     break
@@ -22,7 +17,6 @@ export default (app, utils) => {
                 }
             }
             const announcements = await Announcement.find(option)
-            console.log(announcements)
             utils.sendSuccess(res, announcements)
         } catch (err) {
             console.log(err)
