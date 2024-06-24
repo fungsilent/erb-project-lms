@@ -11,31 +11,40 @@
         border-radius: 8px;
     }
 </style>
+<div id="announcement" class="card">
+    <strong>Announcement</strong>
+    <div class="content">
+        <template id="announcementItem">
+            <p>
+                <span>${content}</span><br />
+                <span>${date}</span>
+            </p>
+        </template>
+    </div>
+    <template id="announcementItemError">
+        <div>${message}</div>
+    </template>
+</div>
 <script>
     $(document).ready(() => {
         $.ajax({
             url: '/api/announcement',
             method: 'GET',
-            success: res => {
-                console.log('res', res)
-                if (!res.success) {
-                    $('#addAnnouncementForm .error').html(
-                        'Announcement not found'
-                    )
+            success: response => {
+                console.log('response', response)
+                if (response.success) {
+                    response.data.forEach(item => {
+                        $.cloneTemplate('#announcementItem', {
+                            content: item.content,
+                            date: moment(item.date).format('MM-DD-YYYY h:mm'),
+                        })
+                    })
+                } else {
+                    $.cloneTemplate('#announcementItemError', {
+                        message: 'Announcement not found',
+                    })
                 }
-                res.data.forEach(item => {
-                    $('#announcement .content').append(`
-                        <p>
-                            <span>${item.content}</span><br/>
-                            <span>${moment(item.date).format('MM-DD-YYYY h:mm')}</span>
-                        </p>
-                    `)
-                })
             },
         })
     })
 </script>
-<div id="announcement" class="card">
-    <strong>Announcement</strong>
-    <div class="content"></div>
-</div>

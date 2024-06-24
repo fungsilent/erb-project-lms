@@ -23,12 +23,12 @@
                 url: '/api/user/login',
                 method: 'POST',
                 data,
-                success: res => {
-                    console.log('res', res)
-                    if (res.success) {
+                success: response => {
+                    console.log('response', response)
+                    if (response.success) {
                         window.location.href = '/dashboard'
                     } else {
-                        $('.error').html(res.message)
+                        $('.error').html(response.message)
                     }
                 },
             })

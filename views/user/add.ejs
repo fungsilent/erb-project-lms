@@ -8,12 +8,12 @@
                 url: '/api/user/add',
                 method: 'POST',
                 data,
-                success: res => {
-                    console.log('res', res)
-                    if (res.success) {
+                success: response => {
+                    console.log('response', response)
+                    if (response.success) {
                         window.location.href = '/user'
                     } else {
-                        $('.error').html(res.message)
+                        $('.error').html(response.message)
                     }
                 },
             })

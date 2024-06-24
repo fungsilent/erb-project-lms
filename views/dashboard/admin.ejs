@@ -13,11 +13,10 @@
             $.ajax({
                 url: '/api/announcement/add',
                 method: 'POST',
-                data,
-                success: res => {
-                    console.log('res', res)
-                    if (!res.success) {
-                        $('#addAnnouncementForm .error').html(res.message)
+                success: response => {
+                    console.log('response', response)
+                    if (!response.success) {
+                        $('#addAnnouncementForm .error').html(response.message)
                     }
                 },
             })

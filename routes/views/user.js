@@ -15,14 +15,6 @@ export const publicView = app => {
 }
 
 export const privateView = app => {
-    const formatUser = user => {
-        const format = user.toObject()
-        if (user.role === 'superAdmin') {
-            format.role = 'admin'
-        }
-        return format
-    }
-
     // logout
     app.get('/logout', (req, res) => {
         res.clearCookie('token')
@@ -31,19 +23,15 @@ export const privateView = app => {
 
     // dashboard
     app.get('/dashboard', async (req, res) => {
-        const user = formatUser(req.user)
         switch (req.user.role) {
             case 'superAdmin':
             case 'admin': {
-                return res.render('dashboard/admin', {
-                    user,
-                })
+                return res.render('dashboard/admin')
             }
             case 'teacher': {
                 const courses = await Course.find({ teacher: req.user._id })
                 const students = await User.find({ role: 'student' })
                 return res.render('dashboard/teacher', {
-                    user,
                     courses,
                     students,
                 })
@@ -53,7 +41,6 @@ export const privateView = app => {
                     students: req.user._id,
                 })
                 return res.render('dashboard/student', {
-                    user,
                     enrolledCourses,
                 })
             }
@@ -61,14 +48,10 @@ export const privateView = app => {
     })
 
     app.get('/user', async (req, res) => {
-        res.render('user/table', {
-            user: formatUser(req.user),
-        })
+        res.render('user/table')
     })
 
     app.get('/user/add', async (req, res) => {
-        res.render('user/add', {
-            user: formatUser(req.user),
-        })
+        res.render('user/add')
     })
 }

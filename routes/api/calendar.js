@@ -1,26 +1,23 @@
-import Course from '#root/db/models/Course';
+import Course from '#root/db/models/Course'
 
 export default (app, utils) => {
     app.get('/api/calendar/events', async (req, res) => {
         try {
             const courses = await Course.find({
-                $or: [
-                    { teacher: req.user._id },
-                    { students: req.user._id }
-                ]
-            }).lean();
+                $or: [{ teacher: req.user._id }, { students: req.user._id }],
+            }).lean()
 
             const formattedCourses = courses.map(course => ({
                 name: course.name,
                 startDate: course.startDate,
                 endDate: course.endDate,
-                excludeDates: course.excludeDates || []
-            }));
+                excludeDates: course.excludeDates || [],
+            }))
 
-            res.json(formattedCourses);
+            utils.sendSuccess(res, formattedCourses)
         } catch (err) {
-            console.error('Error fetching courses:', err);
-            res.status(500).json({ message: 'Error fetching courses' });
+            console.error('Error fetching courses:', err)
+            utils.sendError(res, 'Error fetching courses')
         }
-    });
-};
+    })
+}

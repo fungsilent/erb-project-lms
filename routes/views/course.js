@@ -1,50 +1,64 @@
-import express from 'express';
-import Course from '#root/db/models/Course.js';
-import User from '#root/db/models/User.js';
+import Course from '#root/db/models/Course'
+import User from '#root/db/models/User'
 
-const formatUser = user => {
-    const format = user.toObject();
-    if (user.role === 'superAdmin') {
-        format.role = 'admin';
-    }
-    return format;
-};
-
-export default (app) => {
+export default (app, utils) => {
     // List courses and display add course form (GET)
     app.get('/course', async (req, res) => {
-        const user = formatUser(req.user);
-        let courses;
-
-        if (user.role === 'admin' || user.role === 'superAdmin') {
-            courses = await Course.find().populate('teacher');
-        } else if (user.role === 'teacher') {
-            courses = await Course.find({ teacher: user._id }).populate('teacher');
-        } else if (user.role === 'student') {
-            courses = await Course.find({ students: user._id }).populate('teacher');
-        } else {
-            courses = [];
+        let query = {}
+        switch (req.user.role) {
+            // case 'superAdmin':
+            // case 'admin': {
+            //     break
+            // }
+            case 'teacher': {
+                query = { teacher: req.user._id }
+                break
+            }
+            case 'student': {
+                query = { students: req.user._id }
+                break
+            }
         }
-
-        res.render('course/list', { user: req.user, courses });
-    });
+        const courses = await Course.find(query).populate('teacher')
+        res.render('course/list', { courses })
+    })
 
     // Display add course form (GET)
     app.get('/course/add', async (req, res) => {
-        const user = formatUser(req.user);
-        const teachers = await User.find({ role: { $in: ['teacher', 'admin', 'superAdmin'] } });
-        const students = await User.find({ role: 'student' });
-        res.render('course/add', { user: req.user, teachers, students });
-    });
+        const teachers = await User.find({
+            role: { $in: ['teacher', 'admin', 'superAdmin'] },
+        })
+        const students = await User.find({ role: 'student' })
+        res.render('course/add', { teachers, students })
+    })
 
     // Render edit course page
-    app.get('/course/edit/:id', async (req, res) => {
-        const course = await Course.findById(req.params.id).populate('teacher students');
-        const teachers = await User.find({ role: { $in: ['teacher', 'admin', 'superAdmin'] } });
-        const students = await User.find({ role: 'student' });
-        if (!course) {
-            return res.status(404).render('error', { message: 'Course not found' });
+    app.get('/course/edit/:id', async (req, res, next) => {
+        try {
+            const course = await Course.findById(req.params.id).populate(
+                'teacher students'
+            )
+            if (!course) {
+                throw new Error('Course not found')
+            }
+            const teachers = await User.find({
+                role: { $in: ['teacher', 'admin', 'superAdmin'] },
+            })
+            const students = await User.find({ role: 'student' })
+            res.render('course/edit', { course, teachers, students })
+        } catch (err) {
+            next(err)
         }
-        res.render('course/edit', { course, teachers, students, user: req.user });
-    });
-};
+        // const course = await Course.findById(req.params.id).populate('teacher students');
+        // if (!course) {
+        //     // utils
+        //     return res.status(404).render('error', { message: 'Course not found' });
+        // }
+        // const teachers = await User.find({ role: { $in: ['teacher', 'admin', 'superAdmin'] } });
+        // const students = await User.find({ role: 'student' });
+        // if (!course) {
+        //     return res.status(404).render('error', { message: 'Course not found' });
+        // }
+        // res.render('course/edit', { course, teachers, students });
+    })
+}

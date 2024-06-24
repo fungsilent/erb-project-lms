@@ -1,10 +1,10 @@
-import express from 'express';
-const router = express.Router();
+import express from 'express'
+const router = express.Router()
 
-export default (app) => {
+export default app => {
     router.get('/calendar', (req, res) => {
-        res.render('calendar', { user: req.user });
-    });
+        res.render('calendar', { user: req.user })
+    })
 
-    app.use(router);
-};
+    app.use(router)
+}

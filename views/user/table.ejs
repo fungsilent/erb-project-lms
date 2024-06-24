@@ -26,9 +26,9 @@
             $.ajax({
                 url: `/api/user/${$(event.target).data('id')}`,
                 method: 'DELETE',
-                success: res => {
-                    console.log('res', res)
-                    if (res.success) {
+                success: response => {
+                    console.log('response', response)
+                    if (response.success) {
                         table.ajax.reload()
                     }
                 },

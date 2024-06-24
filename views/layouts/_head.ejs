@@ -1,11 +1,34 @@
 <title><%- defineContent('title') ? defineContent('title') : 'LMS' %></title>
-<script
-    src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-    crossorigin="anonymous"
-></script>
+
+<link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css"
+/>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+
+<style>
+    body {
+        display: flex;
+        margin: 0;
+    }
+</style>
 <script>
+    /*
+     ** Funtion
+     */
     $.getFormData = form => {
         return $(`${form} [name]`)
             .toArray()
@@ -17,10 +40,16 @@
                 {}
             )
     }
-</script>
-<style>
-    body {
-        display: flex;
-        margin: 0;
+    $.cloneTemplate = (selector, data = {}, options = {}) => {
+        const { insert = true } = options
+        let elem = $(selector).clone().html()
+        for (const key in data) {
+            elem = elem.replace(`\${${key}}`, data[key])
+        }
+        if (insert) {
+            $(selector).before(elem)
+        } else {
+            return $(elem)
+        }
     }
-</style>
+</script>

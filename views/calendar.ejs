@@ -1,72 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Calendar</title>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
-    <script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
+<script>
+    $(document).ready(() => {
+        const calendar = new FullCalendar.Calendar($('#calendar').get(0), {
+            initialView: 'dayGridMonth',
+            initialDate: new Date(),
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay',
+            },
+            events: async (fetchInfo, successCallback, failureCallback) => {
+                await $.ajax({
+                    url: `/api/calendar/events`,
+                    method: 'GET',
+                    success: response => {
+                        console.log('response', response)
+                        if (response.success) {
+                            const courses = response.data
 
-        document.addEventListener('DOMContentLoaded', function() {
-          var calendarEl = document.getElementById('calendar');
-          var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth'
-          });
-          calendar.render();
-        });
-  
-      </script>
-</head>
-<body>
-    <h1>Timetable</h1>
-    <div id="calendar"></div>
-    
+                            const events = courses
+                                .map(course => {
+                                    const startDate = moment(course.startDate)
+                                    const endDate = moment(course.endDate)
+                                    const excludeDates = course.excludeDates
+                                        ? course.excludeDates.map(date =>
+                                              moment(date).format('YYYY-MM-DD')
+                                          )
+                                        : []
+                                    let dates = []
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
+                                    while (startDate.isSameOrBefore(endDate)) {
+                                        if (
+                                            !excludeDates.includes(
+                                                startDate.format('YYYY-MM-DD')
+                                            )
+                                        ) {
+                                            dates.push({
+                                                title: course.name,
+                                                start: startDate.format(
+                                                    'YYYY-MM-DD'
+                                                ),
+                                                allDay: true,
+                                            })
+                                        }
+                                        startDate.add(1, 'days')
+                                    }
+                                    return dates
+                                })
+                                .flat()
 
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                initialDate: new Date(),
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                events: async function(fetchInfo, successCallback, failureCallback) {
-                    try {
-                        const response = await fetch('/api/calendar/events');
-                        const courses = await response.json();
+                            successCallback(events)
+                        } else {
+                            failureCallback(response.message)
+                        }
+                    },
+                })
+            },
+        })
+        calendar.render()
+    })
+</script>
 
-                        const events = courses.map(course => {
-                            const startDate = moment(course.startDate);
-                            const endDate = moment(course.endDate);
-                            const excludeDates = course.excludeDates ? course.excludeDates.map(date => moment(date).format('YYYY-MM-DD')) : [];
-                            let dates = [];
-
-                            while (startDate.isSameOrBefore(endDate)) {
-                                if (!excludeDates.includes(startDate.format('YYYY-MM-DD'))) {
-                                    dates.push({
-                                        title: course.name,
-                                        start: startDate.format('YYYY-MM-DD'),
-                                        allDay: true
-                                    });
-                                }
-                                startDate.add(1, 'days');
-                            }
-                            return dates;
-                        }).flat();
-
-                        successCallback(events);
-                    } catch (error) {
-                        failureCallback(error);
-                    }
-                }
-            });
-
-            calendar.render();
-        });
-    </script>
-</body>
-</html>
+<h1>Timetable</h1>
+<div id="calendar"></div>
+<%- contentFor('title') %>Calendar
