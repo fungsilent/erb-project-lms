@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Add New Course</h1>
+        <form id="addCourseForm" action="/api/course/add" method="post">
+            <div class="form-group">
+                <label for="course_name">Course Name:</label>
+                <input type="text" class="form-control" id="course_name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="teacher">Teacher:</label>
+                <select class="form-control" id="teacher" name="teacher" required>
+                    <% teachers.forEach(teacher => { %>
+                        <option value="<%= teacher._id %>"><%= teacher.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Start Date:</label>
+                <input type="text" class="form-control" id="startDate" name="startDate" required>
+            </div>
+            <div class="form-group">
+                <label for="endDate">End Date:</label>
+                <input type="text" class="form-control" id="endDate" name="endDate" required>
+            </div>
+            <div class="form-group">
+                <label for="maxStudents">Max Students:</label>
+                <input type="number" class="form-control" id="maxStudents" name="maxStudents" required>
+            </div>
+            <div class="form-group">
+                <label for="excludeDates">Exclude Specific Dates:</label>
+                <input type="text" class="form-control" id="excludeDates" name="excludeDates" placeholder="Select dates">
+            </div>
+            <div class="form-group">
+                <label for="students">Assign Students:</label>
+                <select multiple class="form-control" id="students" name="students">
+                    <% students.forEach(student => { %>
+                        <option value="<%= student._id %>"><%= student.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Course</button>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#excludeDates').flatpickr({
+                mode: "multiple",
+                dateFormat: "Y-m-d",
+            });
+
+            $('#startDate').flatpickr({
+                dateFormat: "Y-m-d"
+            });
+
+            $('#endDate').flatpickr({
+                dateFormat: "Y-m-d"
+            });
+
+            $('#students').select2();
+        });
+    </script>
+</body>
+</html>

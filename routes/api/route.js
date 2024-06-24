@@ -1,20 +1,24 @@
-import { requiredApiAuth } from '#root/routes/middleware/auth'
-import userPublicRouter from '#root/routes/api/user/public'
-import userRouter from '#root/routes/api/user'
-import courseRouter from '#root/routes/api/course'
-import attendanceRouter from '#root/routes/api/attendance'
-import announcementRouter from '#root/routes/api/announcement'
+import { requiredApiAuth } from '#root/routes/middleware/auth';
+import userPublicRouter from '#root/routes/api/user/public';
+import userRouter from '#root/routes/api/user';
+import courseRouter from '#root/routes/api/course';
+import attendanceRouter from '#root/routes/api/attendance';
+import announcementRouter from '#root/routes/api/announcement';
+import calendarRouter from '#root/routes/api/calendar';
 
 export default (...all) => {
-    // register api
-    const [app] = all
+    const [app] = all;
 
-    userPublicRouter(...all)
+    // public APIs
+    userPublicRouter(...all);
 
-    app.use('/api/*', requiredApiAuth)
+    // protected APIs
+    app.use('/api/*', requiredApiAuth);
+    
+    userRouter(...all);
+    courseRouter(...all);
+    attendanceRouter(...all);
+    announcementRouter(...all);
+    calendarRouter(...all);
+};
 
-    userRouter(...all)
-    courseRouter(...all)
-    attendanceRouter(...all)
-    announcementRouter(...all)
-}

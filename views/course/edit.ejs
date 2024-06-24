@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Edit Course</h1>
+        <form id="editCourseForm">
+            <div class="form-group">
+                <label for="course_name">Course Name:</label>
+                <input type="text" class="form-control" id="course_name" name="name" value="<%= course.name %>" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea class="form-control" id="description" name="description" rows="3"><%= course.description %></textarea>
+            </div>
+            <div class="form-group">
+                <label for="teacher">Teacher:</label>
+                <select class="form-control" id="teacher" name="teacher" required>
+                    <% teachers.forEach(teacher => { %>
+                        <option value="<%= teacher._id %>" <%= course.teacher._id.equals(teacher._id) ? 'selected' : '' %>><%= teacher.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Start Date:</label>
+                <input type="text" class="form-control" id="startDate" name="startDate" value="<%= new Date(course.startDate).toISOString().split('T')[0] %>" required>
+            </div>
+            <div class="form-group">
+                <label for="endDate">End Date:</label>
+                <input type="text" class="form-control" id="endDate" name="endDate" value="<%= new Date(course.endDate).toISOString().split('T')[0] %>" required>
+            </div>
+            <div class="form-group">
+                <label for="maxStudents">Max Students:</label>
+                <input type="number" class="form-control" id="maxStudents" name="maxStudents" value="<%= course.maxStudents %>" required>
+            </div>
+            <div class="form-group">
+                <label for="excludeDates">Exclude Specific Dates:</label>
+                <input type="text" class="form-control" id="excludeDates" name="excludeDates" value="<%= course.excludeDates.map(date => new Date(date).toISOString().split('T')[0]).join(', ') %>">
+            </div>
+            <div class="form-group">
+                <label for="students">Assign Students:</label>
+                <select multiple class="form-control" id="students">
+                    <% students.forEach(student => { %>
+                        <option value="<%= student._id %>" <%= course.students.some(s => s._id.equals(student._id)) ? 'selected' : '' %>><%= student.name %></option>
+                    <% }) %>
+                </select>
+                <input type="hidden" id="studentsHidden" name="students" value="<%= course.students.map(s => s._id).join(',') %>">
+            </div>
+            <button type="submit" class="btn btn-primary">Update Course</button>
+            <button id="deleteCourseButton" type="button" class="btn btn-danger">Delete Course</button>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#excludeDates').flatpickr({
+                mode: "multiple",
+                dateFormat: "Y-m-d"
+            });
+
+            $('#startDate').flatpickr({
+                dateFormat: "Y-m-d"
+            });
+
+            $('#endDate').flatpickr({
+                dateFormat: "Y-m-d"
+            });
+
+            $('#students').select2();
+
+            $('#editCourseForm').on('submit', function(event) {
+                event.preventDefault();
+                const selectedStudents = $('#students').val();
+                $('#studentsHidden').val(selectedStudents.join(','));
+
+                const data = $(this).serialize();
+
+                $.ajax({
+                    url: '/api/course/<%= course._id %>',  // Ensure this matches the server route
+                    method: 'PUT',
+                    data,
+                    success: res => {
+                        if (res.success) {
+                            alert(res.message);
+                            window.location.href = '/course';
+                        } else {
+                            alert("An error occurred: " + res.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            });
+
+            $('#deleteCourseButton').on('click', function() {
+                if (confirm('Are you sure you want to delete this course?')) {
+                    $.ajax({
+                        url: '/api/course/<%= course._id %>', 
+                        method: 'DELETE',
+                        success: res => {
+                            if (res.success) {
+                                window.location.href = '/course';
+                            } else {
+                                alert("An error occurred: " + res.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                            alert('An error occurred. Please try again.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

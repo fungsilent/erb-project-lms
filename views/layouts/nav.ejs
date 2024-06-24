@@ -1,56 +1,63 @@
 <!doctype html>
 <html>
-    <head>
-        <%- include('_head.ejs') %>
-        <%- style %>
-        <%- script %>
-        <style>
-            nav {
-                width: 200px;
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                background: #e5e5e5;
-            }
-            nav a {
-                padding: 8px 12px;
-            }
-            .page {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-            }
-            header {
-                padding: 8px;
-                display: flex;
-                justify-content: end;
-                gap: 12px;
-                background: #f3f3f3;
-                border-bottom: 1px solid #c3c3c3;
-            }
-            main {
-                flex: 1;
-                padding: 0 16px;
-            }
-        </style>
-    </head>
-    <body>
-        <nav>
-            <% [ { text: 'Dashboard', path: '/dashboard', access: ['admin',
-            'teacher', 'student'] }, { text: 'User', path: '/user', access:
-            ['admin'] }, { text: 'Course', path: '/course', access: ['admin',
-            'teacher'] }, ].forEach(item => { if
-            (!item.access.includes(user.role)) return %>
-            <a href="<%- item.path %>"><%- item.text %></a>
+<head>
+    <%- include('_head.ejs') %>
+    <%- style %>
+    <%- script %>
+    <style>
+        nav {
+            width: 200px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #e5e5e5;
+        }
+        nav a {
+            padding: 8px 12px;
+        }
+        .page {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            padding: 8px;
+            display: flex;
+            justify-content: end;
+            gap: 12px;
+            background: #f3f3f3;
+            border-bottom: 1px solid #c3c3c3;
+        }
+        main {
+            flex: 1;
+            padding: 0 16px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <% if (typeof user !== 'undefined') { %>
+            <% [
+                { text: 'Dashboard', path: '/dashboard', access: ['superAdmin','admin', 'teacher', 'student'] },
+                { text: 'User', path: '/user', access: ['superAdmin', 'admin'] },
+                { text: 'Course', path: '/course', access: ['superAdmin','admin', 'teacher'] },
+                { text: 'Calendar', path: '/calendar', access: ['superAdmin','admin', 'teacher', 'student'] },
+            ].forEach(item => {
+                if (!item.access.includes(user.role)) return;
+            %>
+                <a href="<%- item.path %>"><%- item.text %></a>
             <% }) %>
-        </nav>
-        <div class="page">
-            <header>
-                <div class="username"><%- user.name %>(<%- user.role %>)</div>
+        <% } %>
+    </nav>
+    <div class="page">
+        <header>
+            <% if (typeof user !== 'undefined') { %>
+                <div class="username"><%- user.name %> (<%- user.role %>)</div>
                 <div class="email"><%- user.email %></div>
                 <a class="logout" href="/logout">Logout</a>
-            </header>
-            <main><%- body %></main>
-        </div>
-    </body>
+            <% } %>
+        </header>
+        <main><%- body %></main>
+    </div>
+</body>
 </html>
