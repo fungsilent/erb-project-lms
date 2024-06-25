@@ -1,5 +1,6 @@
 import User from '#root/db/models/User'
 import Course from '#root/db/models/Course'
+import Announcement from '#root/db/models/Announcement'
 
 /*
  * User view
@@ -71,4 +72,28 @@ export const privateView = app => {
             user: formatUser(req.user),
         })
     })
-}
+
+    app.get('/announcement', async (req, res) => {
+        res.render('announcement/table', {
+            user: formatUser(req.user),
+        })
+    })
+
+    app.get('/announcement/add', async (req, res) => {
+        res.render('announcement/add', {
+            user: formatUser(req.user),
+        })
+    })
+
+
+    // Render edit announcement page
+    app.get('/announcement/edit/:id', async (req, res) => {
+        const announcement = await Announcement.findById(req.params.id);
+        if (!announcement) {
+            return res.status(404).render('error', { message: 'Announcement not found' });
+        }
+        const { _id: id, content, to } = announcement
+        res.render('announcement/edit', { id, content, to, user: formatUser(req.user) });
+    });
+};
+

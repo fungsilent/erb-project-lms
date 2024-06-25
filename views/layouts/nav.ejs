@@ -42,6 +42,7 @@
                 { text: 'User', path: '/user', access: ['superAdmin', 'admin'] },
                 { text: 'Course', path: '/course', access: ['superAdmin','admin', 'teacher'] },
                 { text: 'Calendar', path: '/calendar', access: ['superAdmin','admin', 'teacher', 'student'] },
+                { text: 'Announcement', path: '/announcement', access: ['superAdmin','admin', 'teacher', 'student'] },
             ].forEach(item => {
                 if (!item.access.includes(user.role)) return;
             %>

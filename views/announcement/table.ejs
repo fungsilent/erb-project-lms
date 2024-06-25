@@ -1,0 +1,68 @@
+<style>
+    .board {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .card {
+        flex: 0 1 45%;
+        padding: 12px;
+        background: #e3e3e3;
+        border-radius: 8px;
+    }
+</style>
+
+<script>
+    $(document).ready(() => {
+        $(document).on('click', '.delete', event => {
+            const id = $(event.target).data('id')
+            $.ajax({
+                url: `/api/announcement/delete/${id}`,
+                method: 'DELETE',
+                success: res => {
+                    console.log('res', res)
+                    if (res.success) {
+                        window.location.href = '/announcement'
+                    } else {
+                        $('.error').html(res.message)
+                    }
+                },
+            })
+        })
+    })
+</script>
+
+<script>
+    $(document).ready(() => {
+        $.ajax({
+            url: '/api/announcement',
+            method: 'GET',
+            success: res => {
+                console.log('res', res)
+                if (!res.success) {
+                    $('#addAnnouncementForm .error').html(
+                        'Announcement not found'
+                    )
+                }
+                res.data.forEach(item => {
+                    $('#announcement .content').append(`
+                        <p>
+                            <span>${item.content}</span><br/>
+                            <span>${moment(item.date).format('MM-DD-YYYY h:mm')}</span>
+                            <a href="/announcement/edit/${item._id}" class="announcementEditButton">Edit</a>
+                            <button class="delete" data-id="${item._id}">Delete</button>               
+                            
+                        </p>
+                    `)
+                })
+            },
+        })
+    })
+</script>
+
+<div id="announcement" class="card">
+    <h2>Announcement</h2>
+    <div class="content">
+            <a href="announcement/add">Add announcement</a>
+    </div>
+</div>

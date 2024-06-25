@@ -26,17 +26,55 @@ export default (app, utils) => {
 
     // create announcement (POST)
     app.post('/api/announcement/add', async (req, res) => {
-        const { content, courseId, to } = req.body
+        const { content, to } = req.body
         try {
             const announcement = new Announcement({
                 date: moment().toDate(),
                 content,
-                courseId,
                 to: {
                     [to]: true,
                 },
             })
             await announcement.save()
+            utils.sendSuccess(res)
+        } catch (err) {
+            console.log(err)
+            utils.sendError(res, err.message)
+        }
+    })
+
+    // delete announcement (POST)
+    app.delete('/api/announcement/delete/:id', async (req, res) => {
+        const deleteId = req.params.id
+        try {
+            const announcement = await Announcement.deleteOne({_id:deleteId});
+            utils.sendSuccess(res)
+        } catch (err) {
+            console.log(err)
+            utils.sendError(res, err.message)
+        }
+    })
+
+    // edit announcement (POST)
+    app.post('/api/announcement/edit/:id', async (req, res) => {
+        const { content, to } = req.body
+        const announcementId = req.params.id
+        try {
+            let announcement = await Announcement.findOne({_id:announcementId});
+            console.log(announcement);
+            if (announcement) { //if return false, no action
+                announcement.content = content;
+                announcement.date = moment().toDate(),
+                announcement.to = {
+                    all: false,
+                    student: false,
+                    teacher: false,
+                    [to]: true,
+                },
+                // await announcement.updateOne ({_id:announcementId}, announcement);
+                await announcement.save()
+            }
+            console.log(announcement);
             utils.sendSuccess(res)
         } catch (err) {
             console.log(err)

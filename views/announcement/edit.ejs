@@ -1,0 +1,43 @@
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+</style>
+<script>
+    $(document).ready(() => {
+        $('#editAnnouncementForm').on('submit', event => {
+            event.preventDefault()
+            const data = $.getFormData('#editAnnouncementForm')
+            console.log('data', data)
+            $.ajax({
+                url: '/api/announcement/edit/<%= id %>',
+                method: 'POST',
+                data,
+                success: res => {
+                    console.log('res', res)
+                    window.location.href = '../';
+                    if (!res.success) {
+                        $('#editAnnouncementForm .error').html(res.message)
+                    }
+                },
+            })
+        })
+    })
+
+</script>
+
+<div class="board">
+    <form id="editAnnouncementForm" class="card">
+        <strong>Edit Announcement</strong>
+        <textarea name="content" rows="5" cols="40"><%= content %></textarea>
+        <label for="to">To:</label>
+        <select name="to" required>
+            <option value="all" <%= to.all ? 'selected' : '' %>>All</option>
+            <option value="teacher" <%= to.teacher ? 'selected' : '' %>>Teacher</option>
+            <option value="student" <%= to.student ? 'selected' : '' %>>Student</option>
+        </select>
+        <button type="submit">Edit</button>
+        <div class="error"></div>
+    </form>
+</div>
