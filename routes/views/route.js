@@ -10,6 +10,11 @@ export default (app, utils) => {
         { path: '/user', view: 'user/list' },
         { path: '/user/add', view: 'user/add' },
 
+        // announcement
+        { path: '/announcement', view: 'announcement/list' },
+        { path: '/announcement/add', view: 'announcement/add' },
+        { path: '/announcement/edit/:id', view: 'announcement/edit' },
+
         // course
         { path: '/course', view: 'course/list' },
         { path: '/course/add', view: 'course/add' },
@@ -25,4 +30,13 @@ export default (app, utils) => {
             res.render(route.view, route.locals)
         })
     })
+
+    app.get('/announcement/edit/:id', async (req, res) => {
+        const announcement = await Announcement.findById(req.params.id);
+        if (!announcement) {
+            return res.status(404).render('error', { message: 'Announcement not found' });
+        }
+        const { _id: id, content, to } = announcement
+        res.render('announcement/edit', { id, content, to, user: formatUser(req.user) });
+    });
 }

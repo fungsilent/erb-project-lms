@@ -14,10 +14,11 @@ export default (...all) => {
 
     // protected APIs
     app.use('/api/*', requiredApiAuth)
-
+    
     userRouter(...all)
     courseRouter(...all)
     attendanceRouter(...all)
     announcementRouter(...all)
     calendarRouter(...all)
-}
+};
+

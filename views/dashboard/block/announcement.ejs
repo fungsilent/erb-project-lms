@@ -1,30 +1,18 @@
-<style>
-    .board {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-    .card {
-        flex: 0 1 45%;
-        padding: 12px;
-        background: #e3e3e3;
-        border-radius: 8px;
-    }
-</style>
-<div id="announcement" class="card">
-    <strong>Announcement</strong>
-    <div class="content">
-        <template id="announcementItem">
-            <p>
-                <span>${content}</span><br />
-                <span>${date}</span>
-            </p>
-        </template>
+<div class="card">
+    <div class="card-body">
+        <strong class="card-title">Announcement</strong>
+        <div class="body">
+            <template id="announcementItem">
+                <p class="card-text">
+                    ${content}
+                    <br/>
+                    ${date}
+                </p>
+            </template>
+        </div>
     </div>
-    <template id="announcementItemError">
-        <div>${message}</div>
-    </template>
 </div>
+
 <script>
     $(document).ready(() => {
         $.ajax({

@@ -46,4 +46,14 @@ export default (app, utils) => {
     // app.get('/user/add', async (req, res) => {
     //     res.render('user/add')
     // })
+
+    // Render edit announcement page
+    app.get('/announcement/edit/:id', async (req, res) => {
+        const announcement = await Announcement.findById(req.params.id);
+        if (!announcement) {
+            return res.status(404).render('error', { message: 'Announcement not found' });
+        }
+        const { _id: id, content, to } = announcement
+        res.render('announcement/edit', { id, content, to, user: formatUser(req.user) });
+    });
 }

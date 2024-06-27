@@ -4,11 +4,17 @@
         flex-wrap: wrap;
         gap: 12px;
     }
-    .card {
-        flex: 0 1 45%;
-        padding: 12px;
-        background: #e3e3e3;
-        border-radius: 8px;
+    .board .card {
+        flex: 1 1 45%;
+        height: 50vh;
+    }
+    .board .card-body {
+        display: flex;
+        flex-direction: column;
+    }
+    .board .card .body {
+        overflow-y: scroll;
+        flex: 1;
     }
 </style>
 <template id="title">
@@ -16,39 +22,11 @@
 </template>
 <div class="board">
     <%- include('block/announcement.ejs') %>
-    <form id="addAnnouncementForm" class="card">
-        <strong>Add Announcement</strong>
-        <textarea name="content" rows="5" cols="40"></textarea>
-        <label for="to">To:</label>
-        <select name="to" required>
-            <option value="all">All</option>
-            <option value="teacher">Teacher</option>
-            <option value="student">Student</option>
-        </select>
-        <button type="submit">Add</button>
-        <div class="error"></div>
-    </form>
 </div>
 <script>
     $(document).ready(() => {
         $(document).on('userInfoEvent', (event, user) => {
             $.cloneTemplate('#title', { name: user.name })
-        })
-
-        $('#addAnnouncementForm').on('submit', event => {
-            event.preventDefault()
-            const data = $.getFormData('#addAnnouncementForm')
-            $.ajax({
-                url: '/api/announcement/add',
-                method: 'POST',
-                data,
-                success: response => {
-                    console.log('response', response)
-                    if (!response.success) {
-                        $('#addAnnouncementForm .error').html(response.message)
-                    }
-                },
-            })
         })
     })
 </script>
