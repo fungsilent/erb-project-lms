@@ -3,7 +3,6 @@
         $('#addForm').on('submit', event => {
             event.preventDefault()
             const data = $.getFormData('#addForm')
-            console.log('data', data)
             $.ajax({
                 url: '/api/user/add',
                 method: 'POST',

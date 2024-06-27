@@ -1,6 +1,14 @@
 import User from '#root/db/models/User'
 
 export default (app, utils) => {
+    // Get user info (GET)
+    app.get('/api/user/info', async (req, res) => {
+        const user = req.user.toObject()
+        delete user.password
+        if (user.role === 'superAdmin') user.role = 'admin'
+        utils.sendSuccess(res, user)
+    })
+
     // Register (POST)
     app.post('/api/user/add', async (req, res) => {
         const { name, email, password, role } = req.body

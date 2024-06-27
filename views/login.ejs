@@ -18,7 +18,6 @@
         $('#loginForm').on('submit', event => {
             event.preventDefault()
             const data = $.getFormData('#loginForm')
-            console.log('data', data)
             $.ajax({
                 url: '/api/user/login',
                 method: 'POST',
@@ -26,6 +25,7 @@
                 success: response => {
                     console.log('response', response)
                     if (response.success) {
+                        localStorage.setItem('token', response.data.token)
                         window.location.href = '/dashboard'
                     } else {
                         $('.error').html(response.message)

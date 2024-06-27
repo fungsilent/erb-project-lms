@@ -1,0 +1,21 @@
+<template id="student">
+    <h1>Welcome, ${username} (Student)</h1>
+
+    <div class="board">
+        <%- include('_announcement.ejs') %>
+        <div class="card">
+            <h2>Your Enrolled Courses</h2>
+            <% if (enrolledCourses.length > 0) { %>
+            <ul>
+                <% enrolledCourses.forEach(function(course) { %>
+                <li>
+                    <%= course.name %>
+                </li>
+                <% }) %>
+            </ul>
+            <% } else { %>
+            <p>No courses here</p>
+            <% } %>
+        </div>
+    </div>
+</template>

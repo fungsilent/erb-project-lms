@@ -24,7 +24,7 @@ export default (app, utils) => {
                 },
                 process.env.jwtKey
             )
-            res.cookie('token', token, { maxAge: 2592000, httpOnly: true }) // 1 month
+            // res.cookie('token', token, { maxAge: 2592000, httpOnly: true }) // 1 month
             console.log('token', token)
             utils.sendSuccess(res, { token })
         } catch (err) {

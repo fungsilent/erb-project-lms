@@ -1,8 +1,6 @@
 <div class="container mt-4">
     <h1>Courses</h1>
-    <% if (user.role === 'admin') { %>
-    <a href="/course/add" class="btn btn-primary mb-3">Add New Course</a>
-    <% } %>
+    <a href="/course/add" class="btn btn-primary mb-3 admin hide">Add New Course</a>
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
@@ -11,50 +9,69 @@
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Students</th>
-                <% if (user.role === 'admin') { %>
-                <th>Actions</th>
-                <% } %>
+                <th class="admin hide">Actions</th>
             </tr>
         </thead>
         <tbody>
-            <% courses.forEach(function(course) { %>
-            <tr>
-                <td><%= course.name %></td>
-                <td><%= course.teacher.name %></td>
-                <td><%= new Date(course.startDate).toLocaleDateString() %></td>
-                <td><%= new Date(course.endDate).toLocaleDateString() %></td>
-                <td>
-                    <%= course.students.length %>
-                    /
-                    <%= course.maxStudents %>
-                </td>
-                <% if (user.role === 'superAdmin' || user.role === 'admin') { %>
-                <td>
-                    <a
-                        href="/course/edit/<%= course._id %>"
-                        class="btn btn-secondary btn-sm"
-                        >Edit</a
-                    >
-                    <button
-                        class="btn btn-danger btn-sm delete-course"
-                        data-id="<%= course._id %>"
-                    >
-                        Delete
-                    </button>
-                </td>
-                <% } %>
-            </tr>
-            <% }) %>
+            <template id="courseItem">
+                <tr>
+                    <td>${name}</td>
+                    <td>${teacher}</td>
+                    <td>${startDate}</td>
+                    <td>${endDate}</td>
+                    <td>${students}</td>
+                    <td class="admin hide">
+                        <a
+                            href="/course/edit/${id}"
+                            class="btn btn-secondary btn-sm"
+                        >Edit</a>
+                        <button
+                            class="btn btn-danger btn-sm delete-course"
+                            data-id="${id}"
+                        >
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            </template>
         </tbody>
     </table>
 </div>
 
 <script>
     $(document).ready(() => {
-        $('.delete-course').on('click', event => {
-            if (confirm('Are you sure you want to delete this course?')) {
-                const courseId = $(this).data('id')
+        $(document).on('userInfoEvent', (event, user) => {
+            $.ajax({
+                url: '/api/course/',
+                method: 'GET',
+                success: response => {
+                    console.log('response', response)
+                    if (!response.success) return
 
+                    response.data.forEach(course => {
+                        const elem = $.cloneTemplate('#courseItem', {
+                            id: course._id,
+                            name: course.name,
+                            teacher: course.teacher.name,
+                            startDate: new Date(course.startDate).toLocaleDateString(),
+                            endDate: new Date(course.endDate).toLocaleDateString(),
+                            students: `${course.students.length}/${course.maxStudents}`,
+                        }, {
+                            insert: false
+                        })
+                        console.log(course)
+                        elem.find(`.${user.role}`).removeClass('hide')
+                        $('#courseItem').before(elem)
+                    })
+
+                },
+            })  
+        })
+
+        $(document).on('click', '.delete-course', event => {
+            if (confirm('Are you sure you want to delete this course?')) {
+                const courseId = $(event.target).data('id')
+                console.log(courseId)
                 $.ajax({
                     url: `/api/course/${courseId}`,
                     method: 'DELETE',

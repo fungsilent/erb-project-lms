@@ -7,6 +7,11 @@ export default (app, utils) => {
         try {
             let option = {}
             switch (req.user.role) {
+                // case 'superAdmin':
+                // case 'teacher': {
+                //     option = {}
+                //     break
+                // }
                 case 'teacher': {
                     option = { 'to.teacher': true }
                     break

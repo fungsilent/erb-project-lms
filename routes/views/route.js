@@ -1,20 +1,28 @@
-import { requiredViewAuth } from '#root/routes/middleware/auth'
-import {
-    publicView as userPublicView,
-    privateView as userPrivateView,
-} from '#root/routes/views/user'
-import courseView from '#root/routes/views/course'
-import calendarView from '#root/routes/views/calendar'
+// import userView from '#root/routes/views/user'
+// import courseView from '#root/routes/views/course'
+// import calendarView from '#root/routes/views/calendar'
 
-export default app => {
-    // Non-authenticated views
-    userPublicView(app)
+export default (app, utils) => {
+    const viewRoutes = [
+        // user
+        { path: '/', view: 'login', locals: { layout: 'layouts/blank' } },
+        { path: '/dashboard', view: 'dashboard/main' },
+        { path: '/user', view: 'user/list' },
+        { path: '/user/add', view: 'user/add' },
 
-    // Apply view auth middleware to all subsequent views
-    app.use(requiredViewAuth)
+        // course
+        { path: '/course', view: 'course/list' },
+        { path: '/course/add', view: 'course/add' },
+        { path: '/course/edit/:id', view: 'course/edit' },
 
-    // Authenticated views
-    userPrivateView(app)
-    courseView(app)
-    calendarView(app)
+        // calendar
+        { path: '/calendar', view: 'calendar' },
+    ]
+
+    // map route
+    viewRoutes.forEach(route => {
+        app.get(route.path, (req, res) => {
+            res.render(route.view, route.locals)
+        })
+    })
 }

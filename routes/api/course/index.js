@@ -1,7 +1,63 @@
-import Course from '#root/db/models/Course'
 import mongoose from 'mongoose'
+import User from '#root/db/models/User'
+import Course from '#root/db/models/Course'
 
 export default (app, utils) => {
+    // Get course list (GET)
+    app.get('/api/course', async (req, res) => {
+        let query = {}
+        try {
+            switch (req.user.role) {
+                // case 'superAdmin':
+                // case 'admin': {
+                //     break
+                // }
+                case 'teacher': {
+                    query = { teacher: req.user._id }
+                    break
+                }
+                case 'student': {
+                    query = { students: req.user._id }
+                    break
+                }
+            }
+            const courses = await Course.find(query).populate('teacher')
+            utils.sendSuccess(res, courses)
+        } catch (err) {
+            utils.sendError(res, 'Courses not found')
+        }
+    })
+
+    // get course option data (GET)
+    app.get('/api/course/option', async (req, res) => {
+        try {
+            const teachers = await User.find({
+                role: { $in: ['teacher', 'admin', 'superAdmin'] },
+            })
+            const students = await User.find({ role: 'student' })
+            utils.sendSuccess(res, { teachers, students })
+        } catch (err) {
+            console.log(err)
+            utils.sendError(res, 'Course data not found')
+        }
+    })
+
+    // get course detail (GET)
+    app.get('/api/course/:id', async (req, res) => {
+        try {
+            const course = await Course.findById(req.params.id).populate(
+                'teacher students'
+            )
+            if (!course) {
+                throw new Error('Course not found')
+            }
+            utils.sendSuccess(res, course)
+        } catch (err) {
+            console.log(err)
+            utils.sendError(res, err.message)
+        }
+    })
+
     // Add course (POST)
     app.post('/api/course/add', async (req, res) => {
         const {
@@ -33,14 +89,10 @@ export default (app, utils) => {
                 students: parsedStudents,
             })
             await newCourse.save()
-            res.redirect('/course')
+            utils.sendSuccess(res)
         } catch (err) {
             console.error('Error adding course:', err)
-            res.status(500).json({
-                success: false,
-                message: 'Error adding course',
-                error: err.message,
-            })
+            utils.sendError(res, 'Add course failed')
         }
     })
 
@@ -59,13 +111,9 @@ export default (app, utils) => {
         const excludeDatesArray = excludeDates
             ? excludeDates.split(',').map(date => new Date(date.trim()))
             : []
-        const studentsArray = students
-            ? students
-                  .split(',')
-                  .map(id => new mongoose.Types.ObjectId(id.trim()))
-            : []
 
         try {
+            const studentsArray = students.map(id => new mongoose.Types.ObjectId(id))
             const updatedCourse = await Course.findByIdAndUpdate(
                 req.params.id,
                 {
@@ -81,19 +129,12 @@ export default (app, utils) => {
                 { new: true }
             )
             if (!updatedCourse) {
-                return res
-                    .status(404)
-                    .render('error', { message: 'Course not found' })
+                return utils.sendError(res, 'Course not found')
             }
-            res.status(200).json({
-                success: true,
-                message: 'Course Update successfully',
-            })
+            utils.sendSuccess(res)
         } catch (err) {
-            console.error('Error updating course:', err)
-            res.status(500).render('error', {
-                message: 'Error updating course',
-            })
+            console.error('Error adding course:', err)
+            utils.sendError(res, 'Update course failed')
         }
     })
 
@@ -102,21 +143,12 @@ export default (app, utils) => {
         try {
             const deletedCourse = await Course.findByIdAndDelete(req.params.id)
             if (!deletedCourse) {
-                return res
-                    .status(404)
-                    .json({ success: false, message: 'Course not found' })
+                return utils.sendError(res, 'Course not found')
             }
-            res.status(200).json({
-                success: true,
-                message: 'Course deleted successfully',
-            })
+            utils.sendSuccess(res)
         } catch (err) {
             console.error('Error deleting course:', err)
-            res.status(500).json({
-                success: false,
-                message: 'Error deleting course',
-                error: err.message,
-            })
+            utils.sendError(res, 'Delete course failed')
         }
     })
 }

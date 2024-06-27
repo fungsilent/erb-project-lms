@@ -9,7 +9,6 @@
         $('#addAnnouncementForm').on('submit', event => {
             event.preventDefault()
             const data = $.getFormData('#addAnnouncementForm')
-            console.log('data', data)
             $.ajax({
                 url: '/api/announcement/add',
                 method: 'POST',

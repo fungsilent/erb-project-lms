@@ -35,7 +35,7 @@ const setConfig = () => {
 /*
  * router
  */
-const setRouter = () => {
+const setRouter = async () => {
     app.use(express.static(path.join(dirname, 'public')))
     apiRouter(app, utils)
     viewRouter(app, utils) // must be the last
@@ -66,7 +66,7 @@ const startServer = async () => {
     await initDatabase()
     setConfig()
     setMiddleware(app, utils)
-    setRouter()
+    await setRouter()
     app.listen(config.port, () =>
         console.log(`Server listen on http://localhost:${config.port}`)
     )

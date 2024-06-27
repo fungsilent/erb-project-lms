@@ -3,8 +3,16 @@ import moment from 'moment'
 import utils from '#root/routes/utils'
 import User from '#root/db/models/User'
 
+const getToken = req => {
+    try {
+        return req.headers.authorization.split(' ')[1]
+    } catch (err) {
+        return ''
+    }
+}
+
 export const auth = async (req, res, next) => {
-    const token = req.cookies.token
+    const token = getToken(req)
     req.auth = false
     req.user = null
     if (token) {
@@ -27,12 +35,12 @@ export const auth = async (req, res, next) => {
     next()
 }
 
-export const requiredViewAuth = async (req, res, next) => {
-    if (!req.auth) {
-        return res.redirect('/')
-    }
-    next()
-}
+// export const requiredViewAuth = async (req, res, next) => {
+//     if (!req.auth) {
+//         return res.redirect('/')
+//     }
+//     next()
+// }
 
 export const requiredApiAuth = async (req, res, next) => {
     if (!req.auth) {
@@ -43,6 +51,6 @@ export const requiredApiAuth = async (req, res, next) => {
 
 export default {
     auth,
-    requiredViewAuth,
+    // requiredViewAuth,
     requiredApiAuth,
 }

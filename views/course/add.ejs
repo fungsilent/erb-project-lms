@@ -1,6 +1,6 @@
 <div class="container mt-4">
     <h1>Add New Course</h1>
-    <form id="addCourseForm" action="/api/course/add" method="post">
+    <form id="addCourseForm">
         <div class="form-group">
             <label for="course_name">Course Name:</label>
             <input
@@ -23,9 +23,9 @@
         <div class="form-group">
             <label for="teacher">Teacher:</label>
             <select class="form-control" id="teacher" name="teacher" required>
-                <% teachers.forEach(teacher => { %>
-                <option value="<%= teacher._id %>"><%= teacher.name %></option>
-                <% }) %>
+                <template id="teacherOption">
+                    <option value="${value}">${text}</option>
+                </template>
             </select>
         </div>
         <div class="form-group">
@@ -71,9 +71,9 @@
         <div class="form-group">
             <label for="students">Assign Students:</label>
             <select multiple class="form-control" id="students" name="students">
-                <% students.forEach(student => { %>
-                <option value="<%= student._id %>"><%= student.name %></option>
-                <% }) %>
+                <template id="studentOption">
+                    <option value="${value}">${text}</option>
+                </template>
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Add Course</button>
@@ -95,6 +95,46 @@
         })
 
         $('#students').select2()
+
+        $.ajax({
+            url: '/api/course/option',
+            method: 'GET',
+            success: response => {
+                console.log('response', response)
+                if (!response.success) return
+                const { teachers, students } = response.data
+                teachers.forEach(teacher => {
+                    $.cloneTemplate('#teacherOption', {
+                        text: teacher.name,
+                        value: teacher._id
+                    })
+                })
+                students.forEach(student => {
+                    $.cloneTemplate('#studentOption', {
+                        text: student.name,
+                        value: student._id
+                    })
+                })
+            },
+        })
+
+        $('#addCourseForm').on('submit', event => {
+            event.preventDefault()
+            const data = $.getFormData('#addCourseForm')
+            $.ajax({
+                url: '/api/course/add',
+                method: 'POST',
+                data,
+                success: response => {
+                    console.log('response', response)
+                    if (response.success) {
+                        window.location.href = '/course'
+                    } else {
+                        alert(`An error occurred: ${response.message}`)
+                    }
+                },
+            })
+        })
     })
 </script>
 <%- contentFor('title') %>Add Course

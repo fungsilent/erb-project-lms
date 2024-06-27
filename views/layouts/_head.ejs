@@ -26,25 +26,59 @@
     }
 </style>
 <script>
+    $.ajaxSetup({
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        dataType: 'json',
+    })
+    $.ajaxPrefilter('json', (options, originalOptions) => {
+        if (originalOptions.data) {
+            options.data = JSON.stringify(originalOptions.data)
+        }
+        options.contentType = 'application/json'
+    })
+    
     /*
      ** Funtion
      */
+    $.getUrlParameter = (pathname) => {
+        const pattern = new URLPattern({ pathname })
+        return pattern.exec(window.location.href).pathname.groups
+    }
     $.getFormData = form => {
-        return $(`${form} [name]`)
+        const data = $(`${form} [name]`)
             .toArray()
             .reduce(
-                (result, elem) => ({
-                    ...result,
-                    [elem.name]: elem.value,
-                }),
+                (result, elem) => {
+                    elem = $(elem)
+                    return {
+                        ...result,
+                        [elem.prop('name')]: elem.val(),
+                    }
+                },
                 {}
             )
+        console.log('getFormData', data)
+        return data
+    }
+    $.setFormData = (formName, data = {}) => {
+        const form = $(formName)
+        let debug = []
+        for (const key in data) {
+            const elem = form.find(`[name=${key}]`)
+            if (elem.length <= 0) continue
+            let value = data[key]
+            elem.val(typeof value === 'function' ? value(elem) : value)
+            debug.push({ elem, key, value })
+        }
+        console.log('setFormData', debug)
     }
     $.cloneTemplate = (selector, data = {}, options = {}) => {
         const { insert = true } = options
         let elem = $(selector).clone().html()
         for (const key in data) {
-            elem = elem.replace(`\${${key}}`, data[key])
+            elem = elem.replaceAll(`\${${key}}`, data[key])
         }
         if (insert) {
             $(selector).before(elem)
