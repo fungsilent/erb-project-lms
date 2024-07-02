@@ -1,0 +1,93 @@
+<div class="container mt-4">
+    <h2>Mark Assignment</h2>
+    <h3 id="assignmentName"></h3>
+    <form id="markAssignmentForm">
+        <div id="studentsContainer">
+            <div class="mt-4">
+                <h4>Student List</h4>
+                <div class="form-group">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Student Email</th>
+                                <th>Marks</th>
+                            </tr>
+                            <tbody class="student-form">
+                                <!-- student rows -->
+                            </tbody>
+                        </thead>
+                    </table>
+                </div>          
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Submit Marks</button>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function() {
+        const assignmentId = window.location.pathname.split('/').pop();
+
+        $.ajax({
+            url: `/api/assignments/${assignmentId}/mark`,
+            method: 'GET',
+            success: response => {
+                if (response.success) {
+                    const assignment = response.data;
+                    $('#assignmentName').text(`Assignment: ${assignment.name}`);
+                    const studentsContainer = $('#studentsContainer .student-form');
+
+                    assignment.courseId.students.forEach((student, index) => {
+                        const studentMark = assignment.results.find(result => result.studentId.toString() === student._id.toString());
+                         const markValue = studentMark ? studentMark.marks : '';
+                        const studentForm = `
+                        <tr>
+                            <td>${student.name}</td>
+                            <td>${student.email}</td>
+                            <td>
+                                <input type="number" class="form-control" id="marks_${index}" name="marks" data-student-id="${student._id}" value="${markValue}" required>
+                            </td>
+                        </tr>`;
+                        studentsContainer.append(studentForm);
+                    });
+                } else {
+                    alert(`An error occurred: ${response.message}`);
+                }
+            },
+            error: err => {
+                alert(`An error occurred: ${err.responseText}`);
+            }
+        });
+
+        $('#markAssignmentForm').on('submit', function(event) {
+            event.preventDefault();
+            const marks = [];
+
+            $('#markAssignmentForm input[type="number"]').each(function() {
+                marks.push({
+                    studentId: $(this).data('student-id'),
+                    marks: $(this).val()
+                });
+            });
+
+            $.ajax({
+                url: `/api/assignments/${assignmentId}/mark`,
+                method: 'POST',
+                data: { marks },
+                success: response => {
+                    if (response.success) {
+                        alert('Marks submitted successfully');
+                        window.location.href = '/assignments';
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: (xhr, status, error) => {
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        });
+    });
+</script>
+<%- contentFor('title') %>Mark Assignment

@@ -33,7 +33,7 @@ export default (app, utils) => {
     })
 
     // Render edit course page
-    app.get('/course/edit/:id', async (req, res, next) => {
+    app.get('/course/edit/:id', async (req, res) => {
         try {
             const course = await Course.findById(req.params.id).populate(
                 'teacher students'
@@ -49,16 +49,5 @@ export default (app, utils) => {
         } catch (err) {
             next(err)
         }
-        // const course = await Course.findById(req.params.id).populate('teacher students');
-        // if (!course) {
-        //     // utils
-        //     return res.status(404).render('error', { message: 'Course not found' });
-        // }
-        // const teachers = await User.find({ role: { $in: ['teacher', 'admin', 'superAdmin'] } });
-        // const students = await User.find({ role: 'student' });
-        // if (!course) {
-        //     return res.status(404).render('error', { message: 'Course not found' });
-        // }
-        // res.render('course/edit', { course, teachers, students });
     })
 }

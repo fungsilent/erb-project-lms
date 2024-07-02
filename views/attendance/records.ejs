@@ -1,0 +1,45 @@
+<script>
+    $(document).ready(() => {
+        const courseId = window.location.pathname.split('/').pop();
+        const table = $('#table').DataTable({
+            ordering: true,
+            searching: true,
+            paging: true,
+            ajax: {
+                url: `/api/attendance/records/${courseId}`,
+                dataSrc: 'records',
+            },
+            columns: [
+                { title: 'Student Name', data: 'student.name' },
+                { 
+                title: 'Date', 
+                data: 'date',
+                    render: function (data, type, row, meta) {
+                        return moment(data).format('DD/MM/YYYY');
+                    }
+                },
+                { 
+                    title: 'Status', 
+                    data: 'status',
+                    render: function (data, type, row, meta) {
+                        return `
+                            <select class="form-control" name="status" data-student-id="${row.student._id}" data-date="${moment(row.date).format('YYYY-MM-DD')}">
+                                <option value="present" ${data === 'present' ? 'selected' : ''}>Present</option>
+                                <option value="absent" ${data === 'absent' ? 'selected' : ''}>Absent</option>
+                                <option value="late" ${data === 'late' ? 'selected' : ''}>Late</option>
+                            </select>
+                        `;
+                    }, 
+                }
+            ],
+        });
+    });
+</script>
+
+<div class="container mt-4">
+    <h2>Attendance Records for Course</h2>
+    <form id="updateAttendanceForm"></form>
+        <table id="table" class="table table-striped table-bordered" ></table>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</div>
+<%- contentFor('title') %>Attendance Records

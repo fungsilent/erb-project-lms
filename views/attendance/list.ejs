@@ -1,0 +1,51 @@
+<script>
+    $(document).ready(() => {
+        const table = $('#table').DataTable({
+            ordering: true,
+            searching: true,
+            paging: true,
+            ajax: '/api/course',
+            columns: [
+            { title: 'Course Name', data: 'name' },
+            { title: 'Teacher', data: 'teacher.name' },
+            { 
+                title: 'Start Date', 
+                data: 'startDate',
+                render: function (data, type, row, meta) {
+                    return moment(data).format('DD/MM/YYYY');
+                }
+            },
+            { 
+                title: 'End Date', 
+                data: 'endDate',
+                render: function (data, type, row, meta) {
+                    return moment(data).format('DD/MM/YYYY');
+                }
+            },
+            {
+                data: '_id',
+                render: function (data, type, row, meta) {
+                    if (moment().isBetween(row.startDate, row.endDate)) {
+                        return `
+                        <a href="/attendance/add/${data}" class="btn btn-primary btn-sm">Mark Attendance</a>
+                        <a href="/attendance/records/${data}" class="btn btn-secondary btn-sm">View Attendance</a>
+                        `;
+                    } else {
+                        return `<button class="btn btn-secondary btn-sm" disabled>No class today</button>
+                        <a href="/attendance/records/${data}" class="btn btn-secondary btn-sm">View Attendance</a>`;
+                    };
+                },
+            }
+            ],
+        })
+    })
+</script>
+
+<div class="container mt-4">
+    <h2>Attendance - Active Courses</h2>
+    <table id="table" class="table table-striped table-bordered" ></table>
+</div>
+
+<!-- isToday: isToday ? `<button class="btn btn-primary mark-attendance" data-id="${course._id}">Mark Attendance</button>` : '<button class="btn btn-secondary" disabled>No class today</button>', -->
+
+<%- contentFor('title') %>List Active Course

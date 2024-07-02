@@ -1,0 +1,107 @@
+<div class="container mt-4">
+    <h2>Assignments List</h2>
+    <a href="/assignments/add" class="btn btn-primary mb-3 admin hide">Add Assignment(s)</a>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Course Name</th>
+                <th>Assignment Name</th>
+                <th>Teacher</th>
+                <th>School Day</th>
+                <th>Due Date</th>
+                <th>Link</th>
+                <th>Marks</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template id="assignmentItem">
+                <tr>
+                    <td>${Course}</td>
+                    <td>${name}</td>
+                    <td>${teacher}</td>
+                    <td>${start} - ${end} </td>
+                    <td>${dueDate}</td>
+                    <td>
+                        <a href="${fileUrl}" target="_blank" class="btn btn-outline-secondary btn-sm" >Link</a>
+                    </td>
+                    <td>
+                        <a
+                            href="/assignments/mark/${id}"
+                            class="btn btn-secondary btn-sm"
+                        >Mark assignment</a>
+                    </td>
+                    <td class="actions">
+                        <a
+                            href="/assignments/edit/${id}"
+                            class="btn btn-secondary btn-sm"
+                        >Edit</a>
+                        <button
+                            class="btn btn-danger btn-sm delete-assignment"
+                            data-id="${id}"
+                        >
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(() => {
+        $(document).on('userInfoEvent', (event, user) => {
+            $.ajax({
+                url: '/api/assignments/',
+                method: 'GET',
+                success: response => {
+                    console.log('response', response);
+                    if (!response.success) return;
+
+                    response.data.forEach(assignment => {
+                        const elem = $.cloneTemplate('#assignmentItem', {
+                            Course: assignment.courseId.name,
+                            teacher: assignment.courseId.teacher.name,
+                            start: new Date(assignment.courseId.startDate).toLocaleDateString(),
+                            end: new Date(assignment.courseId.endDate).toLocaleDateString(),
+                            name: assignment.name,
+                            dueDate: new Date(assignment.dueDate).toLocaleDateString(),
+                            totalMarks: assignment.totalMarks,
+                            passingMarks: assignment.passingMarks,
+                            fileUrl: assignment.fileUrl,
+                            id: assignment._id,
+                        }, {
+                            insert: false
+                        });
+
+                        $('#assignmentItem').before(elem);
+                    });
+                },
+            });
+        });
+
+        $(document).on('click', '.delete-assignment', event => {
+            if (confirm('Are you sure you want to delete this assignment?')) {
+                const assignmentId = $(event.target).data('id')
+                console.log(assignmentId)
+                $.ajax({
+                    url: `/api/assignments/${assignmentId}`,
+                    method: 'DELETE',
+                    success: response => {
+                        if (response.success) {
+                            location.reload()
+                        } else {
+                            alert('An error occurred: ' + response.message)
+                        }
+                    },
+                    error: (xhr, status, error) => {
+                        console.error('Error:', error)
+                        alert('An error occurred. Please try again.')
+                    },
+                })
+            }
+        })
+    });
+</script>
+<%- contentFor('title') %>Assignments List

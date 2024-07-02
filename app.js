@@ -7,6 +7,7 @@ import connectDatabase from '#root/db/connect'
 import initDatabase from '#root/db/initialize'
 import setMiddleware from '#root/routes/middleware'
 
+
 // router
 import viewRouter from '#root/routes/views/route'
 import apiRouter from '#root/routes/api/route'

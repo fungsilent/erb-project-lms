@@ -5,12 +5,14 @@ import courseRouter from '#root/routes/api/course'
 import attendanceRouter from '#root/routes/api/attendance'
 import announcementRouter from '#root/routes/api/announcement'
 import calendarRouter from '#root/routes/api/calendar'
+import assignmentRouter from '#root/routes/api/assignment'
 
 export default (...all) => {
     const [app] = all
 
     // public APIs
     userPublicRouter(...all)
+    
 
     // protected APIs
     app.use('/api/*', requiredApiAuth)
@@ -20,5 +22,5 @@ export default (...all) => {
     attendanceRouter(...all)
     announcementRouter(...all)
     calendarRouter(...all)
+    assignmentRouter(...all)
 };
-

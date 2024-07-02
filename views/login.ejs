@@ -36,7 +36,35 @@
     })
 </script>
 
-<div class="login">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title text-center mb-4">LMS</h2>
+            <form id="loginForm">
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="admin@admin.com"  />
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" value="admin" required />
+              </div>
+              <button type="submit" class="btn btn-primary w-100">
+                Login
+              </button>
+
+              <div class="error"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- <div class="login">
     <h3>Login</h3>
     <form id="loginForm">
         <label for="email">Email:</label>
@@ -53,4 +81,4 @@
         <div>email: admin@admin.com</div>
         <div>password: admin</div>
     </div>
-</div>
+</div> -->

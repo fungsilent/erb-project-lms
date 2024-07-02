@@ -1,6 +1,7 @@
 <div class="container mt-4">
-    <h1>Courses</h1>
+    <h2>Courses</h2>
     <a href="/course/add" class="btn btn-primary mb-3 admin hide">Add New Course</a>
+
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
@@ -8,7 +9,8 @@
                 <th>Teacher</th>
                 <th>Start Date</th>
                 <th>End Date</th>
-                <th>Students</th>
+                <th >Students</th>
+                <th >Detail</th>
                 <th class="admin hide">Actions</th>
             </tr>
         </thead>
@@ -18,8 +20,11 @@
                     <td>${name}</td>
                     <td>${teacher}</td>
                     <td>${startDate}</td>
-                    <td>${endDate}</td>
-                    <td>${students}</td>
+                    <td >${endDate}</td>
+                    <td >${students}</td>
+                    <td>
+                        <a href="/course/detail/${id}" class="btn btn-outline-secondary btn-sm" >Link</a>
+                    </td>
                     <td class="admin hide">
                         <a
                             href="/course/edit/${id}"

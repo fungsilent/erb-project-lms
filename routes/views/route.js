@@ -1,7 +1,3 @@
-// import userView from '#root/routes/views/user'
-// import courseView from '#root/routes/views/course'
-// import calendarView from '#root/routes/views/calendar'
-
 export default (app, utils) => {
     const viewRoutes = [
         // user
@@ -19,9 +15,24 @@ export default (app, utils) => {
         { path: '/course', view: 'course/list' },
         { path: '/course/add', view: 'course/add' },
         { path: '/course/edit/:id', view: 'course/edit' },
+        { path: '/course/detail/:id', view: 'course/details' },
 
         // calendar
         { path: '/calendar', view: 'calendar' },
+
+        // assignment
+        { path: '/assignments', view: 'assignments/list_assignment' },
+        { path: '/assignments/add/', view: 'assignments/list_course' },
+        { path: '/assignments/add/:id', view: 'assignments/add' },
+
+        { path: '/assignments/edit/:id', view: 'assignments/edit' },
+        { path: '/assignments/mark/:id', view: 'assignments/mark_assignment' },
+
+        //attendance
+        { path: '/attendance', view: 'attendance/list' },
+        { path: '/attendance/add/:id', view: 'attendance/add' },
+        { path: '/attendance/records/:id', view: 'attendance/records' },
+
     ]
 
     // map route
@@ -30,13 +41,4 @@ export default (app, utils) => {
             res.render(route.view, route.locals)
         })
     })
-
-    app.get('/announcement/edit/:id', async (req, res) => {
-        const announcement = await Announcement.findById(req.params.id);
-        if (!announcement) {
-            return res.status(404).render('error', { message: 'Announcement not found' });
-        }
-        const { _id: id, content, to } = announcement
-        res.render('announcement/edit', { id, content, to, user: formatUser(req.user) });
-    });
 }

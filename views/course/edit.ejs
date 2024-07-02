@@ -1,13 +1,25 @@
 <div class="container mt-4">
-    <h1>Edit Course</h1>
+    <h2>Edit Course</h2>
     <form id="editCourseForm">
+        <input type="hidden" id="courseId" name="id" />
         <div class="form-group">
             <label for="course_name">Course Name:</label>
-            <input type="text" class="form-control" id="course_name" name="name" value="" required>
+            <input
+                type="text"
+                class="form-control"
+                id="course_name"
+                name="name"
+                required
+            />
         </div>
         <div class="form-group">
             <label for="description">Description:</label>
-            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+            <textarea
+                class="form-control"
+                id="description"
+                name="description"
+                rows="3"
+            ></textarea>
         </div>
         <div class="form-group">
             <label for="teacher">Teacher:</label>
@@ -19,139 +31,139 @@
         </div>
         <div class="form-group">
             <label for="startDate">Start Date:</label>
-            <input type="text" class="form-control" id="startDate" name="startDate" value="" required>
+            <input
+                type="text"
+                class="form-control"
+                id="startDate"
+                name="startDate"
+                required
+            />
         </div>
         <div class="form-group">
             <label for="endDate">End Date:</label>
-            <input type="text" class="form-control" id="endDate" name="endDate" value="" required>
+            <input
+                type="text"
+                class="form-control"
+                id="endDate"
+                name="endDate"
+                required
+            />
         </div>
         <div class="form-group">
             <label for="maxStudents">Max Students:</label>
-            <input type="number" class="form-control" id="maxStudents" name="maxStudents" value="" required>
+            <input
+                type="number"
+                class="form-control"
+                id="maxStudents"
+                name="maxStudents"
+                required
+            />
         </div>
         <div class="form-group">
             <label for="excludeDates">Exclude Specific Dates:</label>
-            <input type="text" class="form-control" id="excludeDates" name="excludeDates" value="">
+            <input
+                type="text"
+                class="form-control"
+                id="excludeDates"
+                name="excludeDates"
+                placeholder="Select dates"
+            />
         </div>
         <div class="form-group">
             <label for="students">Assign Students:</label>
             <select multiple class="form-control" id="students" name="students">
-                <template id="studentOption">
-                    <option value="${value}">${text}</option>
-                </template>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Update</button>
-        <button id="deleteCourseButton" type="button" class="btn btn-danger">Delete</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 </div>
 <script>
     $(document).ready(() => {
-        const { id } = $.getUrlParameter('/course/edit/:id')
-        $('#excludeDates').flatpickr({
-            mode: "multiple",
-            dateFormat: "Y-m-d"
+        const courseId = window.location.pathname.split('/').pop();
+
+        $.ajax({
+            url: `/api/course/${courseId}`,
+            method: 'GET',
+            success: response => {
+                console.log('response', response);
+                if (response.success) {
+                    const { course } = response.data;
+                    $('#courseId').val(course._id);
+                    $('#course_name').val(course.name);
+                    $('#description').val(course.description);
+                    $('#teacher').val(course.teacher._id);
+                    $('#startDate').flatpickr({
+                        dateFormat: 'Y-m-d',
+                        defaultDate: course.startDate.split('T')[0],
+                    });
+                    $('#endDate').flatpickr({
+                        dateFormat: 'Y-m-d',
+                        defaultDate: course.endDate.split('T')[0],
+                    });
+                    $('#maxStudents').val(course.maxStudents);
+
+                    $('#excludeDates').flatpickr({
+                        mode: 'multiple',
+                        dateFormat: 'Y-m-d',
+                        defaultDate: course.excludeDates.map(date => date.split('T')[0]), 
+                    });
+
+                    course.students.forEach(student => {
+                        $('#students').append(
+                            `<option value="${student._id}" selected>${student.name}</option>`
+                        );
+                    });
+
+                    $.ajax({
+                        url: '/api/course/option',
+                        method: 'GET',
+                        success: response => {
+                            console.log('response', response);
+                            if (!response.success) return;
+                            const { teachers, students } = response.data;
+                            teachers.forEach(teacher => {
+                                $.cloneTemplate('#teacherOption', {
+                                    text: teacher.name,
+                                    value: teacher._id,
+                                });
+                            });
+                            students.forEach(student => {
+                                const isAssigned = course.students.some(
+                                    assignedStudent => assignedStudent._id === student._id
+                                );
+                                if (!isAssigned) {
+                                    $('#students').append(
+                                        `<option value="${student._id}">${student.name}</option>`
+                                    );
+                                }
+                            });
+
+                            $('#students').select2();
+                        },
+                    });
+
+                } else {
+                    alert(`An error occurred: ${response.message}`);
+                }
+            },
         });
-
-        $('#startDate').flatpickr({
-            dateFormat: "Y-m-d"
-        });
-
-        $('#endDate').flatpickr({
-            dateFormat: "Y-m-d"
-        });
-
-        $('#students').select2();
-
-        const getCourseData = async () => {
-            const courseOption = $.ajax({
-                url: '/api/course/option',
-                method: 'GET',
-            })
-            const courseDetail = $.ajax({
-                url: `/api/course/${id}`,
-                method: 'GET',
-            })
-            const [optionResponse, courseResponse] = await Promise.all([courseOption, courseDetail])
-            if (optionResponse.success) {
-                const { teachers, students } = optionResponse.data
-                teachers.forEach(teacher => {
-                    $.cloneTemplate('#teacherOption', {
-                        text: teacher.name,
-                        value: teacher._id
-                    })
-                })
-                students.forEach(student => {
-                    $.cloneTemplate('#studentOption', {
-                        text: student.name,
-                        value: student._id
-                    })
-                })
-            }
-            
-            if (courseResponse.success) {
-                const course = courseResponse.data
-                $.setFormData('#editCourseForm', {
-                    ...course,
-                    startDate: moment(course.startDate).format('YYYY-MM-DD'),
-                    endDate: moment(course.endDate).format('YYYY-MM-DD'),
-                    excludeDates: course.excludeDates.map(date => moment(course.endDate).format('YYYY-MM-DD')).join(', '),
-                    teacher: course.teacher._id,
-                    students: elem => {
-                        elem.val(course.students.map(student => student._id)).trigger('change')
-                    }
-                })
-            }
-        }
-        getCourseData()
-        // const t = () => {
-        //     setTimeout(() => {
-        //         console.log('select2', $('#students').val())
-        //         t()
-        //     }, 1000)
-        // }
-        // t()
 
         $('#editCourseForm').on('submit', event => {
-            event.preventDefault()
-            const data = $.getFormData('#editCourseForm')
+            event.preventDefault();
+            const data = $.getFormData('#editCourseForm');
             $.ajax({
-                url: `/api/course/${id}`,
+                url: `/api/course/${courseId}`,
                 method: 'PUT',
                 data,
                 success: response => {
-                    console.log('response', response)
+                    console.log('response', response);
                     if (response.success) {
-                        window.location.href = '/course'
+                        window.location.href = '/course';
                     } else {
-                        alert(`An error occurred: ${response.message}`)
+                        alert(`An error occurred: ${response.message}`);
                     }
                 },
-                error: (xhr, status, error) => {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
-                }
-            })
-        })
-
-        $('#deleteCourseButton').on('click', () => {
-            if (confirm('Are you sure you want to delete this course?')) {
-                $.ajax({
-                    url: `/api/course/${id}`, 
-                    method: 'DELETE',
-                    success: response => {
-                        if (response.success) {
-                            window.location.href = '/course';
-                        } else {
-                            alert("An error occurred: " + response.message);
-                        }
-                    },
-                    error: (xhr, status, error) => {
-                        console.error('Error:', error);
-                        alert('An error occurred. Please try again.');
-                    }
-                });
-            }
+            });
         });
     });
 </script>
