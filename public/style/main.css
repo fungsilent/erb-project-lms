@@ -1,14 +1,11 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
-  color: #00B7FF;
 }
 
 .dt-length label {
-  padding-left: 80px;
+ padding-left: 8px;
 }
 /* outer */
 .container {
