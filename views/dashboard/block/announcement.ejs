@@ -1,7 +1,17 @@
-<div class="card">
+<style>
+    .announcement .body {
+        overflow-y: scroll;
+        flex: 1;
+    }
+    .announcement .content {
+        overflow-y: scroll;
+    }
+</style>
+
+<div class="announcement card">
     <div class="card-body">
-        <strong class="card-title">Announcement</strong>
-        <div class="body">
+        <h4 class="card-title">Announcement</h4>
+        <div class="content">
             <template id="announcementItem">
                 <p class="card-text">
                     ${content}
@@ -24,7 +34,7 @@
                     response.data.forEach(item => {
                         $.cloneTemplate('#announcementItem', {
                             content: item.content,
-                            date: moment(item.date).format('MM-DD-YYYY h:mm'),
+                            date: moment(item.date).format('DD/MM/YYYY h:mm'),
                         })
                     })
                 } else {

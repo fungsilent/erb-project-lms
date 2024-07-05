@@ -1,25 +1,54 @@
+<div class="p-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+        <li class="breadcrumb-item"><a href="/user">User</a></li>
+        <li class="breadcrumb-item active">Add</li>
+    </ol>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Add User</h4>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" value="" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="text" class="form-control" id="email" name="email" value="" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password" value="" required>
+                </div>
+                <div class="form-group">
+                    <label for="role">Role:</label>
+                    <select class="form-control" id="role" name="role" required>
+                        <option value="admin">Admin</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(() => {
-        $('#addForm').on('submit', event => {
+        $('#addUserForm').on('submit', event => {
             event.preventDefault()
-            const data = $.getFormData('#addForm')
-            $.ajax({
-                url: '/api/user/add',
-                method: 'POST',
-                data,
-                success: response => {
-                    console.log('response', response)
-                    if (response.success) {
-                        window.location.href = '/user'
-                    } else {
-                        $('.error').html(response.message)
-                    }
-                },
+            const data = $.getFormData('#addUserForm')
+            axios.post('/api/user/add', data).then(({ data: response }) => {
+                console.log('response', response)
+                if (!response.success) {
+                    return alert(`An error occurred: ${response.message}`)
+                }
+                window.location.href = '/user'
             })
         })
     })
 </script>
-
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -59,21 +88,4 @@
       </div>
     </div>
 </div>
-
-<!-- <form id="addForm">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required /><br />
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required /><br />
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required /><br />
-    <label for="role">Role:</label>
-    <select id="role" name="role" required>
-        <option value="admin">Admin</option>
-        <option value="teacher">Teacher</option>
-        <option value="student">Student</option></select
-    ><br />
-    <button type="submit">Add User</button>
-    <div class="error"></div>
-</form> -->
 <%- contentFor('title') %>User

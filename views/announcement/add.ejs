@@ -1,24 +1,33 @@
-<div class="container mt-4">
-    <h2>Add Announcement</h2>
-    <form id="addAnnouncementForm">
-        <div class="form-group">
-            <label for="content">Content:</label>
-            <textarea
-                class="form-control"
-                name="content"
-                rows="3"
-            ></textarea>
+<div class="p-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+        <li class="breadcrumb-item"><a href="/announcement">Announcement</a></li>
+        <li class="breadcrumb-item active">Add</li>
+    </ol>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Add Announcement</h4>
+            <form id="addAnnouncementForm">
+                <div class="form-group">
+                    <label for="content">Content:</label>
+                    <textarea
+                        class="form-control"
+                        name="content"
+                        rows="3"
+                    ></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="teacher">To:</label>
+                    <select class="form-control" name="to" required>
+                        <option value="all">All</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="teacher">To:</label>
-            <select class="form-control" name="to" required>
-                <option value="all">All</option>
-                <option value="teacher">Teacher</option>
-                <option value="student">Student</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Add Announcement</button>
-    </form>
+    </div>
 </div>
 
 <script>
@@ -39,4 +48,4 @@
         })
     })
 </script>
-<%- contentFor('title') %>Dashboard
+<%- contentFor('title') %>Add Announcement

@@ -45,7 +45,7 @@ export default (app, utils) => {
             if (!course) {
                 throw new Error('Course not found');
             }
-            utils.sendSuccess(res, { course });
+            utils.sendSuccess(res, course);
         } catch (err) {
             console.log(err);
             utils.sendError(res, err.message);

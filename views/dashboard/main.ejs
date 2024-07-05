@@ -1,26 +1,7 @@
-<style>
-    .board {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-    .board .card {
-        flex: 1 1 45%;
-        height: 50vh;
-    }
-    .board .card-body {
-        display: flex;
-        flex-direction: column;
-    }
-    .board .card .body {
-        overflow-y: scroll;
-        flex: 1;
-    }
-</style>
-<template id="title">
-    <h1>Welcome, ${name}</h1>
-</template>
-<div class="board">
+<div class="p-4">
+    <template id="title">
+        <h4 class="mb-4">Welcome, ${name}</h>
+    </template>
     <%- include('block/announcement.ejs') %>
 </div>
 <script>

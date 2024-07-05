@@ -1,44 +1,58 @@
-<link
-    rel="stylesheet"
-    href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css"
-/>
-<script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+<div class="p-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+        <li class="breadcrumb-item active">User</li>
+    </ol>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">User</h4>
+            <a href="/user/add" class="btn btn-primary mb-3">Add</a>
+            <table id="table" class="table table-striped table-bordered"></table>
+            <template id="action">
+                <button class="btn btn-danger btn-sm delete" data-id="${id}">Delete</button>
+            </template>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(() => {
         const table = $('#table').DataTable({
             ordering: true,
             searching: true,
-            paging: true,
+            paging: false,
             ajax: '/api/user',
             columns: [
                 { title: 'Name', data: 'name' },
-                { title: 'Email', data: 'email' },
+                { title: 'email', data: 'email' },
                 { title: 'Role', data: 'role' },
-                {
-                    data: 'button',
+                { 
+                    title: 'Actions', 
+                    data: '_id',
                     render: (data, type, row, meta) => {
-                        return `<button class="btn btn-danger btn-sm delete-course delete" data-id="${row?._id}">Delete</button>`
+                        return $.cloneTemplate('#action', {
+                            id: data,
+                        }, {
+                            insert: false,
+                            html: true,
+                        })
                     },
                 },
             ],
         })
+        
         $(document).on('click', '.delete', event => {
-            $.ajax({
-                url: `/api/user/${$(event.target).data('id')}`,
-                method: 'DELETE',
-                success: response => {
+            if (confirm('Are you sure you want to delete this user?')) {
+                const id = $(event.target).data('id')
+                axios.delete(`/api/user/${id}`).then(({ data: response }) => {
                     console.log('response', response)
-                    if (response.success) {
-                        table.ajax.reload()
+                    if (!response.success) {
+                        return alert(`An error occurred: ${response.message}`)
                     }
-                },
-            })
+                    window.location.href = '/user'
+                })
+            }
         })
     })
 </script>
-<div class="container mt-4">
-    <h2>User</h2>
-        <a href="/user/add" class="btn btn-primary mb-3 admin hide">Add New User</a>
-        <table id="table" class="table table-striped table-bordered" ></table>
-</div>
 <%- contentFor('title') %>User

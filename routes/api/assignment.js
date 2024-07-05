@@ -1,5 +1,6 @@
 import multer from 'multer';
 import fs from 'fs';
+import moment from 'moment';
 import Assignment from '#root/db/models/Assignment';
 import Course from '#root/db/models/Course';
 
@@ -132,6 +133,7 @@ export default (app, utils) => {
 
             res.status(200).json({ success: true, message: 'Assignment updated successfully', data: assignment });
         } catch (err) {
+            // console.log(err)
             res.status(500).json({ success: false, message: 'Error updating assignment', error: err.message });
         }
     });

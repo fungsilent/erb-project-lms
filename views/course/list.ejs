@@ -1,83 +1,74 @@
+<div class="p-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+        <li class="breadcrumb-item active">Course</li>
+    </ol>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Courses</h4>
+            <a href="/course/add" class="btn btn-primary mb-3 admin hide">Add</a>
+            <table id="table" class="table table-striped table-bordered"></table>
+            <template id="action">
+                <a href="/course/detail/${id}" class="btn btn-outline-secondary btn-sm" >View</a>
+                <a href="/course/edit/${id}" class="btn btn-secondary btn-sm">Edit</a>
+                <button class="btn btn-danger btn-sm delete-course" data-id="${id}">Delete</button>
+            </template>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(() => {
         const table = $('#table').DataTable({
             ordering: true,
             searching: true,
-            paging: true,
+            paging: false,
             ajax: '/api/course',
             columns: [
-            { title: 'Course Name', data: 'name' },
-            { title: 'Teacher', data: 'teacher.name' },
-            { 
-                title: 'Start Date', 
-                data: 'startDate',
-                render: function (data, type, row, meta) {
-                    return moment(data).format('DD/MM/YYYY');
-                }
-            },
-            { 
-                title: 'End Date', 
-                data: 'endDate',
-                render: function (data, type, row, meta) {
-                    return moment(data).format('DD/MM/YYYY');
-                }
-            },
-            { 
-                title: 'Students', 
-                data: 'students',
-                render: function (data, type, row, meta) {
-                    assignedStd = row.students.length.toString()
-                    maxStd = row.maxStudents.toString()
-                    data = assignedStd + '/' + maxStd;
-                    return data
+                { title: 'Course Name', data: 'name' },
+                { title: 'Teacher', data: 'teacher.name' },
+                { 
+                    title: 'Start Date', 
+                    data: 'startDate',
+                    render: (data, type, row, meta) => moment(data).format('DD/MM/YYYY')
                 },
-            },
-            {
-                title: 'Detail',
-                data: '_id',
-                render: function (data, type, row, meta) {
-                return `<a href="/course/detail/${data}" class="btn btn-outline-secondary btn-sm" >Link</a>`;
+                { 
+                    title: 'End Date', 
+                    data: 'endDate',
+                    render: (data, type, row, meta) => moment(data).format('DD/MM/YYYY')
                 },
-            },
-            { 
-                title: 'Action', 
-                data: '_id',
-                render: function (data, type, row, meta) {
-                    return `
-                        <a href="/course/edit/${data}" class="btn btn-secondary btn-sm">Edit</a>
-                        <button class="btn btn-danger btn-sm delete-course" data-id="${data}">Delete</button>
-                        `;
+                { 
+                    title: 'Students', 
+                    data: 'students',
+                    render: (data, type, row, meta) => `${row.students.length}/${row.maxStudents}`
                 },
-            },
+                { 
+                    title: 'Actions', 
+                    data: '_id',
+                    render: (data, type, row, meta) => {
+                        return $.cloneTemplate('#action', {
+                            id: data,
+                        }, {
+                            insert: false,
+                            html: true,
+                        })
+                    },
+                },
             ],
         })
 
         $(document).on('click', '.delete-course', event => {
             if (confirm('Are you sure you want to delete this course?')) {
                 const courseId = $(event.target).data('id')
-                console.log(courseId)
-                $.ajax({
-                    url: `/api/course/${courseId}`,
-                    method: 'DELETE',
-                    success: response => {
-                        if (response.success) {
-                            location.reload()
-                        } else {
-                            alert('An error occurred: ' + response.message)
-                        }
-                    },
-                    error: (xhr, status, error) => {
-                        console.error('Error:', error)
-                        alert('An error occurred. Please try again.')
-                    },
+                axios.delete(`/api/course/${courseId}`).then(({ data: response }) => {
+                    console.log('response', response)
+                    if (!response.success) {
+                        return alert(`An error occurred: ${response.message}`)
+                    }
+                    location.reload()
                 })
             }
         })
     })
 </script>
-<div class="container mt-4">
-    <h2>Courses</h2>
-    <a href="/course/add" class="btn btn-primary mb-3 admin hide">Add New Course</a>
-    <table id="table" class="table table-striped table-bordered" ></table>
-</div>
 <%- contentFor('title') %>Course

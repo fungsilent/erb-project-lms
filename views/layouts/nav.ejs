@@ -3,54 +3,76 @@
 <head>
     <%- include('_head.ejs') %>
     <style>
-        nav {
-            width: 200px;
+        nav.main {
             min-height: 100vh;
-            display: flex;
+            flex: 0 0 200px;
             flex-direction: column;
-            background: #e5e5e5;
+            padding: 12px;
         }
-
-        nav a {
-            padding: 8px 12px;
+        nav.main hr {
+            border-color: #bfbfbf;
         }
-
+        nav.main .logo {
+           display: flex;
+           align-items: center;
+        }
+        nav.main .logo i {
+           font-size: 30px;
+        }
         .page {
             width: 100%;
             display: flex;
             flex-direction: column;
         }
-
         header {
-            padding: 8px;
+            padding: 0 8px;
             display: flex;
             justify-content: end;
             gap: 12px;
-            background: #f3f3f3;
-            border-bottom: 1px solid #c3c3c3;
+            background: #fff;
+            border-bottom: 1px solid #e1e1e1;
         }
-
         main {
             flex: 1;
-            padding: 0 16px;
         }
-
         .admin.hide,
         .teacher.hide,
         .student.hide {
             display: none;
         }
+        .userInfo .box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .userInfo .box::after {
+            content: none;
+        }
+        .userInfo .icon {
+            width: 30px;
+            height: 30px;
+            font-size: 30px;
+        }
+        .userInfo .info {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+        }
+        .userInfo .role {
+            font-size: 12px;
+            color: #797979;
+        }
     </style>
     <script>
         $(document).ready(() => {
             const navList = [
-                { text: 'Dashboard', path: '/dashboard', access: ['admin', 'teacher', 'student'] },
-                { text: 'User', path: '/user', access: ['admin'] },
-                { text: 'Announcement', path: '/announcement', access: ['admin', 'teacher', 'student'] },
-                { text: 'Course', path: '/course', access: ['admin', 'teacher', 'student'] },
-                { text: 'Calendar', path: '/calendar', access: ['admin', 'teacher', 'student']},
-                { text: 'Assignment', path: '/assignments', access: ['admin', 'teacher'] },
-                { text: 'Attendance', path: '/attendance', access: ['admin', 'teacher'] },
+                { text: 'Dashboard', path: '/dashboard', access: ['admin', 'teacher', 'student'], icon: 'fa-solid fa-gauge-high' },
+                { text: 'User', path: '/user', access: ['admin'], icon: 'fa-solid fa-user' },
+                { text: 'Announcement', path: '/announcement', access: ['admin', 'teacher', 'student'], icon: 'fa-solid fa-bullhorn' },
+                { text: 'Course', path: '/course', access: ['admin', 'teacher'], icon: 'fa-solid fa-book' },
+                { text: 'Calendar', path: '/calendar', access: ['admin', 'teacher', 'student'], icon: 'fa-solid fa-calendar-days' },
+                { text: 'Assignment', path: '/assignments', access: ['admin', 'teacher'], icon: 'fa-solid fa-file-pen' },
+                { text: 'Attendance', path: '/attendance', access: ['admin', 'teacher'], icon: 'fa-solid fa-calendar-check' },
             ]
             $.ajax({
                 url: '/api/user/info',
@@ -65,11 +87,17 @@
                     // set nav
                     navList.forEach(nav => {
                         if (!nav.access.includes(user.role)) return
-                        $.cloneTemplate('#navItem', nav)
+                        $.cloneTemplate('#navItem', {
+                            ...nav,
+                            active: window.location.pathname.startsWith(nav.path) ? 'active' : ''
+                        })
                     })
 
                     // set header
-                    $.cloneTemplate('#userInfo', user)
+                    $.cloneTemplate('#userInfo', {
+                        ...user,
+                        role: _.upperFirst(user.role)
+                    })
 
                     // display block by role 
                     $(`.${user.role}`).removeClass('hide')
@@ -90,17 +118,39 @@
 </head>
 
 <body>
-    <nav>
-        <template id="navItem">
-            <a href="${path}">${text}</a>
-        </template>
+    <nav class="main text-white bg-dark">
+        <a href="/dashboard" class="logo text-white text-decoration-none">
+            <i class="fa-solid fa-graduation-cap mr-3"></i>
+            <h5 class="m-0">LMS</h5>
+        </a>
+        <hr class="text-white">
+        <ul class="nav nav-pills flex-column mb-auto">
+            <template id="navItem">
+                <li class="nav-item">
+                    <a href="${path}" class="nav-link text-white ${active}">
+                        <i class="mr-2 ${icon}"></i>
+                        ${text}
+                    </a>
+                </li>
+            </template>
+        </ul>
     </nav>
     <div class="page">
         <header>
             <template id="userInfo">
-                <div class="username">${name} (${role})</div>
-                <div class="email">${email}</div>
-                <button class="logout">Logout</button>
+                <div class="userInfo dropdown">
+                    <button class="box btn dropdown-toggle" type="button" data-toggle="dropdown">
+                        <i class="icon fa-solid fa-circle-user"></i>
+                        <div class="info">
+                            <strong class="name">${name}</strong>
+                            <div class="role">${role}</div>
+                        </div>
+                    </button>
+                    <div class="menu dropdown-menu dropdown-menu-right">
+                        <div class="dropdown-item disabled">${email}</div>
+                        <button class="dropdown-item active logout" type="button">Logout</button>
+                    </div>
+                </div>
             </template>
         </header>
         <main><%- body %></main>
