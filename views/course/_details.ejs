@@ -39,8 +39,8 @@
 
     <div class="card mb-4">
         <div id="assignmentList" class="card-body">
-            <h4 class="card-title">Assignment List
-                <button class="btn btn-primary" id="addAssignmentButton">Add Assignment(s)</button>
+            <h4 class="card-title">Assignment List 
+                <button class="btn btn-primary float-right" id="addAssignmentButton">Add Assignment</button>
             </h4>
             <table class="table table-striped table-bordered">
                 <thead>
@@ -49,7 +49,7 @@
                         <th>Avg Marks</th>
                         <th>Due Date</th>
                         <th>Assignment Link</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="assignments"></tbody>
@@ -59,9 +59,9 @@
 
     <div class="card">
         <div class="card-body mb-4">
-            <h4 class="card-title">Statisic</h4>
+            <h4 class="card-title">Attendance</h4>
             <div class="row">
-                <div class="col">
+                <div class="col-md-6">
                     <div id="attendanceRatio" class="card border-warning mb-3">
                         <div class="card-header">Attendance Ratio</div>
                         <div class="card-body">
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-md-6">
                     <div id="assignmentMarksRatio" class="card border-info mb-3">
                         <div class="card-header">Assignment Marks Ratio</div>
                         <div class="card-body">
@@ -141,7 +141,7 @@
             const assignmentList = $('#assignments');
             assignments.forEach(assignment => {
                 const totalMarks = assignment.results.reduce((acc, result) => acc + result.marks, 0);
-                const avgMarks = assignment.results.length > 0 ? parseFloat(totalMarks / assignment.results.length).toFixed(2) : 'N/A';
+                const avgMarks = (totalMarks / assignment.results.length).toFixed(2);
 
                 assignmentList.append(`<tr>
                     <td>${assignment.name}</td>
@@ -149,8 +149,8 @@
                     <td>${new Date(assignment.dueDate).toLocaleDateString()}</td>
                     <td><a href="${assignment.fileUrl}" target="_blank">View Assignment</a></td>
                     <td>
-                        <a href="/assignments/edit/${assignment._id}" class="btn btn-secondary btn-sm">Edit</a>
-                        <button class="btn btn-danger btn-sm delete-assignment" data-id="${assignment._id}">Delete</button>
+                        <button class="btn btn-sm btn-primary edit-assignment" data-assignment-id="${assignment._id}">Edit</button>
+                        <button class="btn btn-sm btn-danger delete-assignment" data-assignment-id="${assignment._id}">Delete</button>
                     </td>
                 </tr>`);
             });
@@ -206,24 +206,26 @@
             })
         })
 
-        //add assignment
-        $('#addAssignmentButton').on('click', event => {
-            window.location.href = `/assignments/add/${courseId}`
-        })
+        // Add Assignment Button Handler
+        $('#addAssignmentButton').on('click', () => {
+            // Handle the logic to add a new assignment
+            // You can open a modal or redirect to an assignment creation page
+            alert('Add Assignment button clicked');
+        });
 
-        //delete assignment
-        $(document).on('click', '.delete-assignment', event => {
-            if (confirm('Are you sure you want to delete this assignment?')) {
-                const assignmentId = $(event.target).data('id')
+        // Edit and Delete Assignment Handlers
+        $(document).on('click', '.edit-assignment', function () {
+            const assignmentId = $(this).data('assignment-id');
+            // Handle the logic to edit the assignment
+            // You can open a modal or redirect to an assignment edit page
+            alert(`Edit Assignment ID: ${assignmentId}`);
+        });
 
-                axios.delete(`/api/assignments/${assignmentId}`).then(({ data: response }) => {
-                    if (!response.success) {
-                        alert(`An error occurred: ${response.message}`)
-                    }
-                    location.reload()
-                })
-            }
-        })
-    })
+        $(document).on('click', '.delete-assignment', function () {
+            const assignmentId = $(this).data('assignment-id');
+            // Handle the logic to delete the assignment
+            // You might want to show a confirmation dialog before deleting
+            alert(`Delete Assignment ID: ${assignmentId}`);
+        });
+    });
 </script>
-<%- contentFor('title') %>Course Detail

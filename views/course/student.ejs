@@ -1,0 +1,273 @@
+<div class="p-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+        <li class="breadcrumb-item"><a href="/course">Course</a></li>
+        <li class="breadcrumb-item active">Detail</li>
+    </ol>
+    <h4 class="card-title">Course Details for <span id="courseName"></span></h4>
+
+    <div class="card mb-4">
+        <div id="courseDetails" class="card-body">
+            <h4 class="card-title">Course Information</h4>
+            <table class="table table-striped table-bordered">
+                <tr><th>Name</th><td id="courseNameDetail"></td></tr>
+                <tr><th>Teacher</th><td id="courseTeacher"></td></tr>
+                <tr><th>Start Date</th><td id="courseStartDate"></td></tr>
+                <tr><th>End Date</th><td id="courseEndDate"></td></tr>
+                <tr><th>Exclude Dates</th><td id="courseExcludeDates"></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div id="studentDetails" class="card-body">
+            <h4 class="card-title">Your Details</h4>
+            <table class="table table-striped table-bordered">
+                <tr><th>Name</th><td id="studentName"></td></tr>
+                <tr><th>Email</th><td id="studentEmail"></td></tr>
+                <tr><th>Attendance Ratio</th><td id="studentAttendanceRatio"></td></tr>
+            </table>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div id="assignmentList" class="card-body">
+            <h4 class="card-title">Assignment List</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Marks</th>
+                        <th>Due Date</th>
+                        <th>Assignment Link</th>
+                        <th>Submitted Assignment</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="assignments"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div id="attendanceList" class="card-body">
+            <h4 class="card-title">Attendance List</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="attendances"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body mb-4">
+            <h4 class="card-title">Statisic</h4>
+            <div class="row">
+                <div class="col">
+                    <div id="attendanceRatio" class="card border-warning mb-3">
+                        <div class="card-header">Attendance Ratio</div>
+                        <div class="card-body">
+                            <canvas id="attendanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div id="assignmentMarksRatio" class="card border-info mb-3">
+                        <div class="card-header">Assignment Marks Ratio</div>
+                        <div class="card-body">
+                            <canvas id="marksChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input field -->
+    <input type="file" id="assignmentFileInput" style="display: none;">
+</div>
+
+<script>
+    $(document).ready(() => {
+        $(document).on('userInfoEvent', (event, user) => {
+            const { id } = $.getUrlParameter('/course/student/:id');
+            const studentId = user._id;
+
+            axios.get(`/api/course/details/${id}`)
+                .then(response => {
+                    if (response.data.success) {
+                        const { course, assignments, attendanceRecords } = response.data;
+                        displayCourseDetails(course);
+                        displayStudentDetails(user, attendanceRecords);
+                        displayAssignmentList(assignments, user);
+                        displayAttendanceList(attendanceRecords);
+                        displayAttendanceChart(attendanceRecords);
+                        displayMarksChart(assignments, user);
+                    } else {
+                        alert(`Error fetching course details: ${response.data.message}`);
+                    }
+                })
+                .catch(err => {
+                    alert(`An error occurred: ${err.response.data}`);
+                });
+            
+
+            // Handle file input change
+            $('#assignmentFileInput').on('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const assignmentId = $(this).data('assignmentId');
+                    const formData = new FormData();
+                    formData.append('assignment', file);
+                    formData.append('assignmentId', assignmentId);
+
+                    axios.post('/api/course/student/upload', formData)
+                        .then(response => {
+                            if (response.data.success) {
+                                alert('Assignment uploaded successfully');
+                                location.reload(); // Reload the page to update the assignment list
+                            } else {
+                                alert(`Error uploading assignment: ${response.data.message}`);
+                            }
+                        })
+                        .catch(err => {
+                            alert(`An error occurred: ${err.response.data}`);
+                        });
+                }
+            });
+
+
+            // Handle upload and edit buttons
+            $(document).on('click', '.upload-assignment, .edit-assignment', function () {
+                const assignmentId = $(this).data('assignment-id');
+                $('#assignmentFileInput').data('assignmentId', assignmentId).click();
+            });
+
+            function displayCourseDetails(course) {
+                $('#courseName').text(course.name);
+                $('#courseNameDetail').text(course.name);
+                $('#courseTeacher').text(course.teacher.name);
+                $('#courseStartDate').text(new Date(course.startDate).toLocaleDateString());
+                $('#courseEndDate').text(new Date(course.endDate).toLocaleDateString());
+                $('#courseExcludeDates').text(course.excludeDates.map(date => new Date(date).toLocaleDateString()).join(', '));
+            }
+
+            function displayStudentDetails(student, attendanceRecords) {
+                $('#studentName').text(student.name);
+                $('#studentEmail').text(student.email);
+
+                // Calculate attendance ratio
+                const studentAttendance = attendanceRecords.reduce((acc, record) => {
+                    if (record.student._id === user._id) {
+                    if (record.status === 'present') {
+                        acc.present++;
+                    }
+                    acc.total++;
+                    }
+                    return acc;
+                }, { present: 0, total: 0 });
+                const attendanceRatio = studentAttendance.total ? ((studentAttendance.present / studentAttendance.total) * 100).toFixed(2) + '%' : 'N/A';
+                $('#studentAttendanceRatio').text(attendanceRatio);
+            }
+
+            function displayAssignmentList(assignments, user) {
+                const assignmentList = $('#assignments');
+                assignments.forEach(assignment => {
+                    const studentResult = assignment.results.find(result => result.studentId._id === user._id);
+                    //const studentMarks = studentResult ? studentResult.marks : 'N/A';
+                    const studentMarks = studentResult && studentResult.marks !== 0 ? studentResult.marks : 'N/A';
+                    const submittedAssignment = studentResult ? `<a href="${studentResult.studentFileUrl}" target="_blank">${studentResult.originalFileName}</a>` : 'N/A';
+                    const actionButton = studentResult ? 
+                        `<button class="btn btn-primary edit-assignment" data-assignment-id="${assignment._id}">Edit Assignment</button>` :
+                        `<button class="btn btn-primary upload-assignment" data-assignment-id="${assignment._id}">Upload Assignment</button>`;
+
+                    assignmentList.append(`<tr>
+                        <td>${assignment.name}</td>
+                        <td>${studentMarks}</td>
+                        <td>${new Date(assignment.dueDate).toLocaleDateString()}</td>
+                        <td><a href="${assignment.fileUrl}" target="_blank">View Assignment</a></td>
+                        <td>${submittedAssignment}</td>
+                        <td>${actionButton}</td>
+                    </tr>`);
+                });
+            }
+
+            function displayAttendanceList(attendanceRecords) {
+                const attendanceList = $('#attendances');
+                attendanceRecords.forEach(record => {
+                    if (record.student._id === user._id) {
+                        attendanceList.append(`<tr>
+                            <td>${record.student.name}</td>
+                            <td>${new Date(record.date).toLocaleDateString()}</td>
+                            <td>${record.status}</td>
+                        </tr>`);
+                    }
+                });
+            }
+
+            function displayAttendanceChart(attendanceRecords) {
+                const attendanceStats = {
+                    present: 0,
+                    absent: 0,
+                    late: 0
+                };
+                attendanceRecords.forEach(record => {
+                    if (record.student._id === user._id) {
+                        attendanceStats[record.status]++;
+                    }
+                });
+
+                const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+                new Chart(attendanceCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Present', 'Absent', 'Late'],
+                        datasets: [{
+                            data: [attendanceStats.present, attendanceStats.absent, attendanceStats.late],
+                            backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)']
+                        }]
+                    }
+                });
+            }
+
+            function displayMarksChart(assignments, user) {
+                const assignmentNames = assignments.map(assignment => assignment.name);
+                const studentMarks = assignments.map(assignment => {
+                    const result = assignment.results.find(result => result.studentId._id === user._id);
+                    return result ? result.marks : 0;
+                });
+            
+
+                const marksCtx = document.getElementById('marksChart').getContext('2d');
+                new Chart(marksCtx, {
+                    type: 'line',
+                    data: {
+                        labels: assignmentNames,
+                        datasets: [{
+                            label: 'Marks',
+                            data: studentMarks,
+                            backgroundColor: 'rgb(54, 162, 235)'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+        });
+    })
+
+</script>
+<%- contentFor('title') %>Course Detail

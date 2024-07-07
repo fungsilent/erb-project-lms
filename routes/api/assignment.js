@@ -6,20 +6,20 @@ import Course from '#root/db/models/Course';
 
 // file upload
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/'); 
+    destination: (req, file, cb) => {
+        const uploadDir = `uploads/`;
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
     },
-    filename: function (req, file, cb) {
-        cb(null, `${Date.now()}-${file.originalname}`); 
+    filename: (req, file, cb) => {
+        const timestamp = Date.now();
+        cb(null, `${timestamp}_${moment().format('YYYYMMDD')}_${file.originalname}`); 
     }
 });
 
 const upload = multer({ storage: storage });
-
-const dir = 'uploads';
-if (!fs.existsSync(dir)){
-    fs.mkdirSync(dir);
-}
 
 export default (app, utils) => {
     // list_assignment

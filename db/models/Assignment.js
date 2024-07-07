@@ -10,7 +10,10 @@ const assignmentSchema = new mongoose.Schema({
     results: [
         {
             studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-            marks: { type: Number, required: true }
+            marks: { type: Number },
+            studentFileUrl: { type: String },
+            originalFileName: { type: String },
+            uploadDate: { type: Date, default: Date.now }
         }
     ],
     uploadDate: { type: Date, default: Date.now }

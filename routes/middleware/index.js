@@ -11,7 +11,7 @@ const setMiddleware = (app, utils) => {
     app.use(cookieParser())
     app.use(expressLayouts)
     
-    // Serve static files (for uploaded files)
+    // Serve static folder (for uploaded files)
     app.use('/uploads', express.static('uploads'));
     app.use(auth)
 }

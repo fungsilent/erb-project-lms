@@ -12,6 +12,7 @@
                                 <th>Student Name</th>
                                 <th>Student Email</th>
                                 <th>Marks</th>
+                                <th>Submitted Assignment</th>
                             </tr>
                             <tbody class="student-form">
                                 <!-- student rows -->
@@ -40,7 +41,8 @@
 
                     assignment.courseId.students.forEach((student, index) => {
                         const studentMark = assignment.results.find(result => result.studentId.toString() === student._id.toString());
-                         const markValue = studentMark ? studentMark.marks : '';
+                        const markValue = studentMark ? studentMark.marks : '';
+                        const submittedAssignment = studentMark && studentMark.studentFileUrl ? `<a href="${studentMark.studentFileUrl}" target="_blank">View Submission</a>` : 'N/A';
                         const studentForm = `
                         <tr>
                             <td>${student.name}</td>
@@ -48,6 +50,7 @@
                             <td>
                                 <input type="number" class="form-control" id="marks_${index}" name="marks" data-student-id="${student._id}" value="${markValue}" required>
                             </td>
+                            <td>${submittedAssignment}</td>
                         </tr>`;
                         studentsContainer.append(studentForm);
                     });
