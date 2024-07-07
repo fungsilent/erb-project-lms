@@ -2,7 +2,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
         <li class="breadcrumb-item"><a href="/course">Course</a></li>
-        <li class="breadcrumb-item active">Detail</li>
+        <li class="breadcrumb-item active" id="courseBreadcrumb"></li>
     </ol>
     <h4 class="card-title">Course Details for <span id="courseName"></span></h4>
 
@@ -156,6 +156,9 @@
                 $('#courseStartDate').text(new Date(course.startDate).toLocaleDateString());
                 $('#courseEndDate').text(new Date(course.endDate).toLocaleDateString());
                 $('#courseExcludeDates').text(course.excludeDates.map(date => new Date(date).toLocaleDateString()).join(', '));
+                //breadcrumb
+                $('#courseBreadcrumb').text(course.name);
+
             }
 
             function displayStudentDetails(student, attendanceRecords) {
@@ -180,7 +183,6 @@
                 const assignmentList = $('#assignments');
                 assignments.forEach(assignment => {
                     const studentResult = assignment.results.find(result => result.studentId._id === user._id);
-                    //const studentMarks = studentResult ? studentResult.marks : 'N/A';
                     const studentMarks = studentResult && studentResult.marks !== 0 ? studentResult.marks : 'N/A';
                     const submittedAssignment = studentResult ? `<a href="${studentResult.studentFileUrl}" target="_blank">${studentResult.originalFileName}</a>` : 'N/A';
                     const actionButton = studentResult ? 

@@ -1,11 +1,13 @@
 <div class="p-4">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-        <li class="breadcrumb-item"><a href="/course">Assignment</a></li>
-        <li class="breadcrumb-item active">Edit</li>
+        <li class="breadcrumb-item"><a href="/course">Course</a></li>
+        <li class="breadcrumb-item"><a href=# id="courseBreadcrumb"></a></li>
+        <li class="breadcrumb-item active">Edit Assignment</li>
     </ol>
     <div class="card">
         <div class="card-body">
+            <h5 class="card-subtitle mb-2 text-muted" id="courseName"></h5>
             <h4 class="card-title">Edit Assignment</h4>
             <form id="editAssignmentForm" enctype="multipart/form-data">
                 <div class="form-group">
@@ -66,7 +68,12 @@
 
             // get course ID
             const courseId = assignment.courseId._id;
+            const courseName = assignment.courseId.name
             $('#editAssignmentForm').data('course-id', courseId);
+            
+            //breadcrumb
+            $('#courseBreadcrumb').text(courseName).attr('href', `/course/detail/${courseId}`);
+            $('#courseName').text(courseName);
         })
 
         $('#editAssignmentForm').on('submit', function(event) {
@@ -74,6 +81,7 @@
 
             //get course ID
             const courseId = $(this).data('course-id');
+
             const formData = new FormData(this);
 
             axios.put(`/api/assignments/${id}`, formData).then(response => {
