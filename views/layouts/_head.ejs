@@ -103,16 +103,27 @@
         const {
             insert = true,
             html = false,
+            role = '',
         } = options
+
         let elem = $(selector).clone().html()
         for (const key in data) {
             elem = elem.replaceAll(`\${${key}}`, data[key])
         }
+        elem = $(elem)
+
+        // option handle
+        if (role) {
+            const temp = $('<div></div>').append(elem)
+            temp.find(`.${role}`).removeClass('hide')
+            elem = temp.children()
+        }
 
         if (insert) {
             $(selector).before(elem)
-        } else {
-            return html ? elem : $(elem)
+        } else if (html) {
+            return $('<div></div>').append(elem).html()
         }
+        return $(elem)
     }
 </script>
