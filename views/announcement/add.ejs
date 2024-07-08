@@ -35,15 +35,10 @@
         $('#addAnnouncementForm').on('submit', event => {
             event.preventDefault()
             const data = $.getFormData('#addAnnouncementForm')
-            $.ajax({
-                url: '/api/announcement/add',
-                method: 'POST',
-                data,
-                success: response => {
-                    console.log('response', response)
-                    if (!response.success) return
-                    window.location.href = '/announcement'
-                },
+            axios.post('/api/announcement/add', data).then(({ data: response }) => {
+                console.log('response', response)
+                if (!response.success) return
+                window.location.href = '/announcement'
             })
         })
     })

@@ -39,53 +39,40 @@
     $(document).ready(() => {
         const { id } = $.getUrlParameter('/announcement/edit/:id')
 
-        $.ajax({
-            url: `/api/announcement/${id}`,
-            method: 'GET',
-            success: response => {
-                if (!response.success) return
-                const announcement = response.data
-                $.setFormData('#editAnnouncementForm', {
-                    ...announcement,
-                    date: moment(announcement.date).format('DD/MM/YYYY h:mm'),
-                    to: _.findKey(announcement.to, b => b),
-                })
-            }
+        axios.get(`/api/announcement/${id}`).then(({ data: response }) => {
+            if (!response.success) return
+            const announcement = response.data
+            $.setFormData('#editAnnouncementForm', {
+                ...announcement,
+                date: moment(announcement.date).format('DD/MM/YYYY h:mm'),
+                to: _.findKey(announcement.to, b => b),
+            })
         })
 
         $('#editAnnouncementForm').on('submit', event => {
             event.preventDefault()
             const data = $.getFormData('#editAnnouncementForm')
-            $.ajax({
-                url: `/api/announcement/${id}`,
-                method: 'PUT',
-                data,
-                success: response => {
-                    console.log('response', response)
-                    if (!response.success) {
-                        return alert(`An error occurred: ${response.message}`)
-                    }
-                    const announcement = response.data
-                    $.setFormData('#editAnnouncementForm', {
-                        ...announcement,
-                    })
-                    window.location.href = '/announcement'
-                },
+            axios.put(`/api/announcement/${id}`, data).then(({ data: response }) => {
+                console.log('response', response)
+                if (!response.success) {
+                    return alert(`An error occurred: ${response.message}`)
+                }
+                const announcement = response.data
+                $.setFormData('#editAnnouncementForm', {
+                    ...announcement,
+                })
+                window.location.href = '/announcement'
             })
         })
 
         $('.delete').click(event => {
             if (confirm('Are you sure you want to delete this announcement?')) {
-                $.ajax({
-                    url: `/api/announcement/${id}`,
-                    method: 'DELETE',
-                    success: response => {
-                        console.log('response', response)
-                        if (!response.success) {
-                            return alert(`An error occurred: ${response.message}`)
-                        }
-                        window.location.href = '/announcement'
-                    },
+                axios.delete(`/api/announcement/${id}`).then(({ data: response }) => {
+                    console.log('response', response)
+                    if (!response.success) {
+                        return alert(`An error occurred: ${response.message}`)
+                    }
+                    window.location.href = '/announcement'
                 })
             }
         })

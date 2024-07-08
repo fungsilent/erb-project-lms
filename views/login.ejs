@@ -77,19 +77,14 @@
         $('#loginForm').on('submit', event => {
             event.preventDefault()
             const data = $.getFormData('#loginForm')
-            $.ajax({
-                url: '/api/user/login',
-                method: 'POST',
-                data,
-                success: response => {
-                    console.log('response', response)
-                    if (response.success) {
-                        localStorage.setItem('token', response.data.token)
-                        window.location.href = '/dashboard'
-                    } else {
-                        $('.error').html(response.message)
-                    }
-                },
+            axios.get('/api/user/login', data).then(({ data: response }) => {
+                console.log('response', response)
+                if (response.success) {
+                    localStorage.setItem('token', response.data.token)
+                    window.location.href = '/dashboard'
+                } else {
+                    $('.error').html(response.message)
+                }
             })
         })
     })

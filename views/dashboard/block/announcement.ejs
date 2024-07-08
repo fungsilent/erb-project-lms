@@ -25,24 +25,20 @@
 
 <script>
     $(document).ready(() => {
-        $.ajax({
-            url: '/api/announcement',
-            method: 'GET',
-            success: response => {
-                console.log('response', response)
-                if (response.success) {
-                    response.data.forEach(item => {
-                        $.cloneTemplate('#announcementItem', {
-                            content: item.content,
-                            date: moment(item.date).format('DD/MM/YYYY h:mm'),
-                        })
+        axios.get('/api/announcement').then(({ data: response }) => {
+            console.log('response', response)
+            if (response.success) {
+                response.data.forEach(item => {
+                    $.cloneTemplate('#announcementItem', {
+                        content: item.content,
+                        date: moment(item.date).format('DD/MM/YYYY h:mm'),
                     })
-                } else {
-                    $.cloneTemplate('#announcementItemError', {
-                        message: 'Announcement not found',
-                    })
-                }
-            },
+                })
+            } else {
+                $.cloneTemplate('#announcementItemError', {
+                    message: 'Announcement not found',
+                })
+            }
         })
     })
 </script>

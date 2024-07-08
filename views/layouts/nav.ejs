@@ -74,37 +74,33 @@
                 { text: 'Assignment', path: '/assignments', access: ['admin', 'teacher'], icon: 'fa-solid fa-file-pen' },
                 { text: 'Attendance', path: '/attendance', access: ['admin', 'teacher'], icon: 'fa-solid fa-calendar-check' },
             ]
-            $.ajax({
-                url: '/api/user/info',
-                method: 'GET',
-                success: response => {
-                    console.log('response', response)
-                    if (!response.success) {
-                        return window.location.href = '/'
-                    }
-                    const user = response.data
+            axios.get('/api/user/info').then(({ data: response }) => {
+                console.log('response', response)
+                if (!response.success) {
+                    return window.location.href = '/'
+                }
+                const user = response.data
 
-                    // set nav
-                    navList.forEach(nav => {
-                        if (!nav.access.includes(user.role)) return
-                        $.cloneTemplate('#navItem', {
-                            ...nav,
-                            active: window.location.pathname.startsWith(nav.path) ? 'active' : ''
-                        })
+                // set nav
+                navList.forEach(nav => {
+                    if (!nav.access.includes(user.role)) return
+                    $.cloneTemplate('#navItem', {
+                        ...nav,
+                        active: window.location.pathname.startsWith(nav.path) ? 'active' : ''
                     })
+                })
 
-                    // set header
-                    $.cloneTemplate('#userInfo', {
-                        ...user,
-                        role: _.upperFirst(user.role)
-                    })
+                // set header
+                $.cloneTemplate('#userInfo', {
+                    ...user,
+                    role: _.upperFirst(user.role)
+                })
 
-                    // display block by role 
-                    $(`.${user.role}`).removeClass('hide')
+                // display block by role 
+                $(`.${user.role}`).removeClass('hide')
 
-                    // trigger event if other needed user info
-                    $(document).trigger('userInfoEvent', user)
-                },
+                // trigger event if other needed user info
+                $(document).trigger('userInfoEvent', user)
             })
 
             $(document).on('click', '.logout', event => {
