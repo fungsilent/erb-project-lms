@@ -1,29 +1,40 @@
 <div class="p-4">
-    <h2>Mark Assignment</h2>
-    <h3 id="assignmentName"></h3>
-    <form id="markAssignmentForm">
-        <div id="studentsContainer">
-            <div class="mt-4">
-                <h4>Student List</h4>
-                <div class="form-group">
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Student Email</th>
-                                <th>Marks</th>
-                            </tr>
-                            <tbody class="student-form">
-                                <!-- student rows -->
-                            </tbody>
-                        </thead>
-                    </table>
-                </div>          
-            </div>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+        <li class="breadcrumb-item"><a href="/course">Course</a></li>
+        <li class="breadcrumb-item"><a href=# id="courseBreadcrumb"></a></li>
+        <li class="breadcrumb-item active" id="assignmentBreadcrumb"></li>
+
+    </ol>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-subtitle mb-2 text-muted" id="courseName"></h5>
+            <h4 class="card-title" id="assignmentName"></h4>
+                <form id="markAssignmentForm">
+                    <div id="studentsContainer">
+                        <div class="mt-4">
+                            <h4>Student List</h4>
+                            <div class="form-group">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Student Name</th>
+                                            <th>Student Email</th>
+                                            <th>Marks</th>
+                                            <th>Submitted Assignment</th>
+                                        </tr>
+                                        <tbody class="student-form">
+                                            <!-- student rows -->
+                                        </tbody>
+                                    </thead>
+                                </table>
+                            </div>          
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Submit Marks</button>
+                </form>
         </div>
-        <button type="submit" class="btn btn-primary mt-2">Submit Marks</button>
-    </form>
-</div>
+    </div>
 
 <script>
     $(document).ready(function() {
@@ -36,11 +47,18 @@
                 if (response.success) {
                     const assignment = response.data;
                     $('#assignmentName').text(`Assignment: ${assignment.name}`);
+                    $('#courseName').text(`Course: ${assignment.courseId.name}`);
+
+                    //breadcrumb
+                    $('#courseBreadcrumb').text(assignment.courseId.name).attr('href', `/course/detail/${assignment.courseId._id}`);
+                    $('#assignmentBreadcrumb').text(`Mark ${assignment.name}`);
+
                     const studentsContainer = $('#studentsContainer .student-form');
 
                     assignment.courseId.students.forEach((student, index) => {
                         const studentMark = assignment.results.find(result => result.studentId.toString() === student._id.toString());
-                         const markValue = studentMark ? studentMark.marks : '';
+                        const markValue = studentMark ? studentMark.marks : '';
+                        const submittedAssignment = studentMark && studentMark.studentFileUrl ? `<a href="${studentMark.studentFileUrl}" target="_blank">View Submission</a>` : 'N/A';
                         const studentForm = `
                         <tr>
                             <td>${student.name}</td>
@@ -48,6 +66,7 @@
                             <td>
                                 <input type="number" class="form-control" id="marks_${index}" name="marks" data-student-id="${student._id}" value="${markValue}" required>
                             </td>
+                            <td>${submittedAssignment}</td>
                         </tr>`;
                         studentsContainer.append(studentForm);
                     });

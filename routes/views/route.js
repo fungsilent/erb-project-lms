@@ -16,6 +16,7 @@ export default (app, utils) => {
         { path: '/course/add', view: 'course/add' },
         { path: '/course/edit/:id', view: 'course/edit' },
         { path: '/course/detail/:id', view: 'course/details' },
+        { path: '/course/student/:id', view: 'course/student' },
 
         // calendar
         { path: '/calendar', view: 'calendar' },
