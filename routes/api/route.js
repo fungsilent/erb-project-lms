@@ -16,7 +16,7 @@ export default (...all) => {
     
 
     // protected APIs
-    // app.use('/api/*', requiredApiAuth)
+    app.use('/api/*', requiredApiAuth)
     
     userRouter(...all)
     courseRouter(...all)
