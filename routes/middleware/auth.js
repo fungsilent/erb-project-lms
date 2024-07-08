@@ -35,13 +35,6 @@ export const auth = async (req, res, next) => {
     next()
 }
 
-// export const requiredViewAuth = async (req, res, next) => {
-//     if (!req.auth) {
-//         return res.redirect('/')
-//     }
-//     next()
-// }
-
 export const requiredApiAuth = async (req, res, next) => {
     if (!req.auth) {
         return utils.sendError(res, 'authentication denied')
@@ -51,6 +44,5 @@ export const requiredApiAuth = async (req, res, next) => {
 
 export default {
     auth,
-    // requiredViewAuth,
     requiredApiAuth,
 }
