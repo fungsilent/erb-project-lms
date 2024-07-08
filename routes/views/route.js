@@ -30,7 +30,7 @@ export default (app, utils) => {
 
         //attendance
         { path: '/attendance', view: 'attendance/list' },
-        { path: '/attendance/add/:id', view: 'attendance/add' },
+        { path: '/attendance/mark/:courseId', view: 'attendance/mark' },
         { path: '/attendance/records/:id', view: 'attendance/records' },
 
     ]

@@ -1,14 +1,25 @@
+<style>
+    .btn:disabled {
+        opacity: 1;
+    }
+</style>
 <div class="p-4">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-        <li class="breadcrumb-item active">Attendance </li>
+        <li class="breadcrumb-item active">Attendance</li>
     </ol>
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">Attendance - Active Courses</h4>
             <table id="table" class="table table-striped table-bordered"></table>
+            <template id="reminder">
+                <button class="btn btn-sm ${class}" disabled>
+                    <i class="fa-solid ${icon}"></i>
+                    ${text}
+                </button>
+            </template>
             <template id="action">
-                <button class="btn btn-danger btn-sm delete" data-id="${id}">Delete</button>
+                <a href="/attendance/mark/${id}" class="btn btn-primary btn-sm">Mark Attendance</a> 
             </template>
         </div>
     </div>
@@ -22,36 +33,48 @@
             paging: false,
             ajax: '/api/course',
             columns: [
-            { title: 'Course Name', data: 'name' },
-            { title: 'Teacher', data: 'teacher.name' },
-            { 
-                title: 'Start Date', 
-                data: 'startDate',
-                render: function (data, type, row, meta) {
-                    return moment(data).format('DD/MM/YYYY');
-                }
-            },
-            { 
-                title: 'End Date', 
-                data: 'endDate',
-                render: function (data, type, row, meta) {
-                    return moment(data).format('DD/MM/YYYY');
-                }
-            },
-            {
-                data: '_id',
-                render: function (data, type, row, meta) {
-                    if (moment().isBetween(row.startDate, row.endDate)) {
-                        return `
-                        <a href="/attendance/add/${data}" class="btn btn-primary btn-sm">Mark Attendance</a>
-                        <a href="/attendance/records/${data}" class="btn btn-secondary btn-sm">View Attendance</a>
-                        `;
-                    } else {
-                        return `<button class="btn btn-secondary btn-sm" disabled>No class today</button>
-                        <a href="/attendance/records/${data}" class="btn btn-secondary btn-sm">View Attendance</a>`;
-                    };
+                { title: 'Course Name', data: 'name' },
+                { title: 'Teacher', data: 'teacher.name' },
+                { 
+                    title: 'Start Date', 
+                    data: 'startDate',
+                    render: (data, type, row, meta) => moment(data).format('DD/MM/YYYY')
                 },
-            }
+                { 
+                    title: 'End Date', 
+                    data: 'endDate',
+                    render: (data, type, row, meta) => moment(data).format('DD/MM/YYYY')
+                },
+                {
+                    title: 'Reminder',
+                    // data: 'excludeDates',
+                    render: (data, type, row, meta) => {
+                        let hasClassToday = false
+                        if (moment().isBetween(row.startDate, row.endDate)) {
+                            hasClassToday = !row.excludeDates.some(date => moment().isSame(date, 'day'))
+                        }
+                        return $.cloneTemplate('#reminder', {
+                            class: hasClassToday ? 'btn-outline-info' : 'btn-outline-secondary',
+                            text: hasClassToday ? 'Have classes today' : 'No classes today',
+                            icon: hasClassToday ? 'fa-circle-check' : 'fa-circle-xmark',
+                        },{
+                            insert: false,
+                            html: true,
+                        })
+                    },
+                },
+                {
+                    title: 'Actions', 
+                    data: '_id',
+                    render: (data, type, row, meta) => {
+                        return $.cloneTemplate('#action', {
+                            id: data,
+                        }, {
+                            insert: false,
+                            html: true,
+                        })
+                    },
+                }
             ],
         })
     })

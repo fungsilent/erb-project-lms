@@ -1,90 +1,60 @@
 import Attendance from '#root/db/models/Attendance';
 import Course from '#root/db/models/Course';
+import moment from 'moment';
 
 export default (app, utils) => {
-    // attendance list (GET) - within a date range
-    app.get('/api/attendance/courses', async (req, res) => {
+    // get cousre attendance info (GET)
+    app.get('/api/attendance/:courseId', async (req, res) => {
         try {
-            const today = new Date();
-            let query = {
-                startDate: { $lte: today },
-                endDate: { $gte: today },
-            };
-    
-            if (req.user.role !== 'superAdmin' && req.user.role !== 'admin') {
-                query.teacher = req.user._id;
-            }
-    
-            const courses = await Course.find(query).populate('teacher');
-            res.status(200).json({ success: true, data: courses });
+            const course = await Course.findById(req.params.courseId).populate('students')
+            utils.sendSuccess(res, course)
         } catch (err) {
-            res.status(500).json({ success: false, message: 'Error fetching courses', error: err.message });
+            utils.sendError(res, 'Fetch course details failed')
         }
-    });
+    })
 
-    app.get('/api/attendance/courses/:id', async (req, res) => {
+    // get all attendance record (GET)
+    app.get('/api/attendance/:courseId/mark', async (req, res) => {
         try {
-            const course = await Course.findById(req.params.id).populate('students');
-            const students = course.students;
-            const today = new Date().toISOString().split('T')[0]; 
-            res.json({ success: true, course, students, today });
+            const { date } = req.query
+            const records = await Attendance.find({
+                course: req.params.courseId,
+                date: moment(date).startOf().toISOString(),
+            })
+            utils.sendSuccess(res, records)
         } catch (err) {
-            utils.sendError(res, 'Error fetching course details');
+            console.log(err)
+            utils.sendError(res, 'Fetch attendance records failed')
         }
-    });
+    })
 
-    // update attendance record (POST)
-    app.post('/api/attendance/mark', async (req, res) => {
+    // create/update attendance record (POST)
+    app.post('/api/attendance/:courseId/mark', async (req, res) => {
         try {
-            const { courseId, date, records } = req.body;
+            const { courseId } = req.params
+            const { date, records } = req.body
             for (const record of records) {
-                const existingRecord = await Attendance.findOne({ course: courseId, date: new Date(date), student: record.studentId });
+                const existingRecord = await Attendance.findOne({
+                    course: courseId,
+                    date: moment(date).startOf().toISOString(),
+                    student: record.id,
+                })
                 if (existingRecord) {
-                    existingRecord.status = record.status;
-                    await existingRecord.save();
+                    existingRecord.status = record.status
+                    await existingRecord.save()
                 } else {
                     const newRecord = new Attendance({
                         course: courseId,
-                        date: new Date(date),
-                        student: record.studentId,
+                        date: moment(date).startOf().toISOString(),
+                        student: record.id,
                         status: record.status
-                    });
-                    await newRecord.save();
+                    })
+                    await newRecord.save()
                 }
             }
-            res.status(200).json({ success: true, message: 'Attendance marked successfully' });
+            utils.sendSuccess(res)
         } catch (err) {
-            res.status(500).json({ success: false, message: 'Error marking attendance', error: err.message });
+            utils.sendError(res, 'Mark attendance failed')
         }
-    });
-
-    // records.ejs (load attendance records)
-    app.get('/api/attendance/records/:id', async (req, res) => {
-        try {
-            const courseId = req.params.id;
-            const records = await Attendance.find({ course: courseId }).populate('student course');
-            res.status(200).json({ success: true, records });
-        } catch (err) {
-            res.status(500).json({ success: false, message: 'Error fetching attendance records', error: err.message });
-        }
-    });
-
-    // recrods.ejs (update attendance records)
-    app.put('/api/attendance/records/:id', async (req, res) => {
-        try {
-            const { id } = req.params;
-            const { attendance } = req.body;
-            for (let record of attendance) {
-                await Attendance.findOneAndUpdate(
-                    { course: id, student: record.studentId, date: new Date(record.date).toISOString().split('T')[0] },
-                    { status: record.status },
-                    { new: true, upsert: true }
-                );
-            }
-
-            res.status(200).json({ success: true, message: 'Attendance records updated successfully' });
-        } catch (err) {
-            res.status(500).json({ success: false, message: 'Error updating attendance records', error: err.message });
-        }
-    });
+    })
 }

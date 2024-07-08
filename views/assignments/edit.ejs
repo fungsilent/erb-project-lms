@@ -67,7 +67,7 @@
 
         $('#editAssignmentForm').on('submit', event => {
             event.preventDefault()
-            axios.put(`/api/assignments/${id}`, new FormData(event.target)).then(response => {
+            axios.put(`/api/assignments/${id}`, new FormData(event.target)).then(({ data: response }) => {
                 console.log('response', response)
                 if (!response.success) {
                     return (`An error occurred: ${response.message}`)
