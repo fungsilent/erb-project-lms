@@ -42,6 +42,11 @@
 </style>
 <script>
     axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
+    $.ajaxSetup({
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+    })
     /*
      ** Funtion
      */
