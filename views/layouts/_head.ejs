@@ -107,8 +107,8 @@
         } = options
 
         let elem = $(selector).clone().html()
-        if (!selector) {
-            console.log('[cloneTemplate] selector not found')
+        if (!elem) {
+            console.log(`[cloneTemplate] selector not found: ${selector}`)
             return
         }
         for (const key in data) {
