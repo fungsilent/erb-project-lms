@@ -3,11 +3,15 @@
 <head>
     <%- include('_head.ejs') %>
     <style>
-        nav.main {
-            min-height: 100vh;
+        #menu {
             flex: 0 0 200px;
+            min-height: 100vh;
+        }
+        nav.main {
             flex-direction: column;
             padding: 12px;
+            position: sticky;
+            top: 0;
         }
         nav.main hr {
             border-color: #bfbfbf;
@@ -19,7 +23,7 @@
         nav.main .logo i {
            font-size: 30px;
         }
-        .page {
+        #page {
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -114,24 +118,26 @@
 </head>
 
 <body>
-    <nav class="main text-white bg-dark">
-        <a href="/dashboard" class="logo text-white text-decoration-none">
-            <i class="fa-solid fa-graduation-cap mr-3"></i>
-            <h5 class="m-0">LMS</h5>
-        </a>
-        <hr class="text-white">
-        <ul class="nav nav-pills flex-column mb-auto">
-            <template id="navItem">
-                <li class="nav-item">
-                    <a href="${path}" class="nav-link text-white ${active}">
-                        <i class="mr-2 ${icon}"></i>
-                        ${text}
-                    </a>
-                </li>
-            </template>
-        </ul>
-    </nav>
-    <div class="page">
+    <div id="menu" class="bg-dark">
+        <nav class="main text-white">
+            <a href="/dashboard" class="logo text-white text-decoration-none">
+                <i class="fa-solid fa-graduation-cap mr-3"></i>
+                <h5 class="m-0">LMS</h5>
+            </a>
+            <hr class="text-white">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <template id="navItem">
+                    <li class="nav-item">
+                        <a href="${path}" class="nav-link text-white ${active}">
+                            <i class="mr-2 ${icon}"></i>
+                            ${text}
+                        </a>
+                    </li>
+                </template>
+            </ul>
+        </nav>
+    </div>
+    <div id="page">
         <header>
             <template id="userInfo">
                 <div class="userInfo dropdown">
