@@ -107,6 +107,10 @@
         } = options
 
         let elem = $(selector).clone().html()
+        if (!selector) {
+            console.log('[cloneTemplate] selector not found')
+            return
+        }
         for (const key in data) {
             elem = elem.replaceAll(`\${${key}}`, data[key])
         }
