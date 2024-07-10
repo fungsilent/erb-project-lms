@@ -1,0 +1,97 @@
+<style>
+    .bar-color {
+        background-color: rgba(255, 255, 2555, 0.5);
+    }
+</style>
+
+<div class="card-body" style="max-height: 680px; overflow-y: auto;">
+    <div class="content">
+        <template id="courseItem">
+            <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-md-50 mb-5 mb-xl-10 darker-color" style="background-color: ${color}">
+                <div class="card-header pt-5">
+                    <div class="card-title d-flex flex-column">   
+                        <span class="text-muted">Class Duration: <b>${startDate} to ${endDate}</b></span>
+                        <h4 class="py-3 text-muted">${name}</h4>
+                    </div>
+                    <!--list the by Date?-->     
+                    <div class="rounded bar-color" style="padding:10px;">
+                        <span class="pr-5 pl-4 fa-solid fa-calendar-days text-muted" data-toggle="tooltip" data-bs-placement="top" title="Class Days"> ${diffDays}</span>
+                        <span class="pr-5 fa-solid fa-file-pen text-muted" data-toggle="tooltip" data-bs-placement="top" title="No. of Assignments"></span>
+                        <span class="pr-5 fa-solid fa-user text-muted" data-toggle="tooltip" data-bs-placement="top" title="No. of Students"> ${students}</span>
+                        <!--different role, different view-->
+                        <a href="/course/detail/${id}" class="btn btn-secondary" data-toggle="tooltip" data-bs-placement="top" title="Check it out">Course Detail</a>
+                    </div>   
+                </div>           
+            </div>
+        </template>
+    </div>
+</div>
+
+<script>
+$(document).ready(() => {
+    $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+
+    function fetchCourses(user) {
+        axios.get('/api/course/')
+            .then(response => {
+                console.log('response - course', response.data); // debug line
+                if (!response.data.success) return;
+
+                response.data.data.forEach(course => {
+                    const elem = $.cloneTemplate('#courseItem', {
+                        id: course._id,
+                        name: course.name,
+                        teacher: course.teacher.name,
+                        students: course.students.length,
+                        diffDays: calculateDiffDays(course),
+                        startDate: moment(course.startDate).format('DD/MM/YYYY'),
+                        endDate: moment(course.endDate).format('DD/MM/YYYY'),
+                        color: course.color, //color course
+                    }, {
+                        insert: false
+                    });
+
+                    let courseDetailLink = `/course/detail/${course._id}`;
+                    if (user.role === 'student') {
+                        courseDetailLink = `/course/student/${course._id}`;
+                    }
+                    elem.find('.btn-secondary').attr('href', courseDetailLink);
+
+                    $('#courseItem').before(elem);
+
+                    fetchAssignmentCount(course._id, elem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching courses', error);
+            });
+    }
+
+    function fetchAssignmentCount(courseId, elem) {
+        axios.get(`/api/assignment/count/${courseId}`)
+        .then(assignmentResponse => {
+            console.log('response - assignment', assignmentResponse.data); // debug line
+            if (!assignmentResponse.data.success) return;
+
+            // assignment count
+            elem.find('.fa-file-pen').text(` ${assignmentResponse.data.data.count}`);
+        })
+        .catch(error => {
+            console.error('Error fetching assignment count', error);
+        });
+    }
+
+    function calculateDiffDays(course) {
+        const startDate = new Date(course.startDate);
+        const endDate = new Date(course.endDate);
+        const excludedDate = course.excludeDates.length;
+        const oneDay = 24 * 60 * 60 * 1000;
+        const diffDays = Math.abs(((endDate - startDate) / oneDay) + 1 - excludedDate);
+        return diffDays;
+    }
+
+    $(document).on('userInfoEvent', (event, user) => {
+        fetchCourses(user);
+    });
+});
+</script>

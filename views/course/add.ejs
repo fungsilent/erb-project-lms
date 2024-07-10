@@ -83,6 +83,20 @@
                         </template>
                     </select>
                 </div>
+
+                <!--add course color-->
+                <div class="form-group">
+                    <label for="color">Select Color:</label>
+                    <input
+                        type="color"
+                        class="form-control form-control-color"
+                        id="color"
+                        name="color"
+                        value="#E1E2F6"
+                        required
+                    />
+                </div>
+
                 <button type="submit" class="btn btn-primary">Add</button>
             </form>
         </div>
@@ -90,17 +104,48 @@
 </div>
 <script>
     $(document).ready(() => {
-        $('#excludeDates').flatpickr({
+        $('#students').select2()
+
+        const startDatePicker = $('#startDate').flatpickr({
+            dateFormat: 'Y-m-d',
+            onChange: function(selectedDates, dateStr, instance) {
+                if (endDatePicker.selectedDates.length > 0 && selectedDates[0] > endDatePicker.selectedDates[0]) {
+                    alert('Start date cannot be after end date.');
+                    instance.clear();
+                } else {
+                    endDatePicker.set('minDate', dateStr);
+                }
+            }
+        });
+
+        const endDatePicker = $('#endDate').flatpickr({
+            dateFormat: 'Y-m-d',
+            onChange: function(selectedDates, dateStr, instance) {
+                if (startDatePicker.selectedDates.length > 0 && selectedDates[0] < startDatePicker.selectedDates[0]) {
+                    alert('End date cannot be before start date.');
+                    instance.clear();
+                } else {
+                    excludeDatesPicker.set('maxDate', dateStr);
+                }
+            }
+        });
+
+        const excludeDatesPicker = $('#excludeDates').flatpickr({
             mode: 'multiple',
             dateFormat: 'Y-m-d',
-        })
-        $('#startDate').flatpickr({
-            dateFormat: 'Y-m-d',
-        })
-        $('#endDate').flatpickr({
-            dateFormat: 'Y-m-d',
-        })
-        $('#students').select2()
+            onChange: function(selectedDates, dateStr, instance) {
+                const startDate = startDatePicker.selectedDates[0];
+                const endDate = endDatePicker.selectedDates[0];
+                if (startDate && endDate) {
+                    selectedDates.forEach(date => {
+                        if (date < startDate || date > endDate) {
+                            alert('Exclude dates must be within the start and end dates.');
+                            instance.clear();
+                        }
+                    });
+                }
+            }
+        });
 
         axios.get('/api/course/option').then(({ data: response }) => {
             console.log('response', response)
@@ -121,16 +166,23 @@
         })
 
         $('#addCourseForm').on('submit', event => {
-            event.preventDefault()
-            const data = $.getFormData('#addCourseForm')
+            event.preventDefault();
+            const data = $.getFormData('#addCourseForm');
+            const maxStudents = parseInt(data.maxStudents);
+            const assignedStudents = data.students ? data.students.length : 0;
+
+            if (assignedStudents > maxStudents) {
+                return alert('Assigned students cannot be more than max students.')
+            }
+
             axios.post('/api/course/add', data).then(({ data: response }) => {
-                console.log('response', response)
+                console.log('response', response);
                 if (!response.success) {
-                    return alert(`An error occurred: ${response.message}`)
+                    return alert(`An error occurred: ${response.message}`);
                 }
-                window.location.href = '/course'
-            })
-        })
+                window.location.href = '/course';
+            });
+        });
     })
 </script>
 <%- contentFor('title') %>Add Course

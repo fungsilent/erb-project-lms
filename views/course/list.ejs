@@ -9,10 +9,12 @@
             <a href="/course/add" class="btn btn-primary mb-3 admin hide">Add Course</a>
             <table id="table" class="table table-striped table-bordered"></table>
             <template id="action">
-                <a href="/course/student/${id}" class="btn btn-outline-secondary btn-sm hide student">STD View</a>
-                <a href="/course/detail/${id}" class="btn btn-outline-secondary btn-sm hide admin teacher">View</a>
-                <a href="/course/edit/${id}" class="btn btn-secondary btn-sm hide admin teacher">Edit</a>
-                <button class="btn btn-danger btn-sm delete-course hide admin" data-id="${id}">Delete</button>
+                <td>
+                    <a href="/course/student/${id}" class="btn btn-outline-secondary btn-sm hide student">View</a>
+                    <a href="/course/detail/${id}" class="btn btn-outline-secondary btn-sm hide admin teacher">View</a>
+                    <a href="/course/edit/${id}" class="btn btn-secondary btn-sm hide admin teacher">Edit</a>
+                    <button class="btn btn-danger btn-sm delete-course hide admin" data-id="${id}">Delete</button>
+                </td>
             </template>
         </div>
     </div>

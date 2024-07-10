@@ -152,7 +152,8 @@
                     <td>${new Date(assignment.dueDate).toLocaleDateString()}</td>
                     <td><a href="${assignment.fileUrl}" target="_blank">View Assignment</a></td>
                     <td>
-                        <a href="/assignments/edit/${assignment._id}" class="btn btn-secondary btn-sm">Edit</a>
+                        <a href="/course/assignments/mark/${assignment._id}" class="btn btn-secondary btn-sm">Mark assignment</a>
+                        <a href="/course/assignments/edit/${assignment._id}" class="btn btn-secondary btn-sm">Edit</a>
                         <button class="btn btn-danger btn-sm delete-assignment" data-id="${assignment._id}">Delete</button>
                     </td>
                 </tr>`);
@@ -211,7 +212,7 @@
 
         //add assignment
         $('#addAssignmentButton').on('click', event => {
-            window.location.href = `/assignments/add/${courseId}`
+            window.location.href = `/course/assignments/add/${courseId}`
         })
 
         //delete assignment

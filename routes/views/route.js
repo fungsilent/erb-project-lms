@@ -22,17 +22,13 @@ export default (app, utils) => {
         { path: '/calendar', view: 'calendar' },
 
         // assignment
-        { path: '/assignments', view: 'assignments/list_assignment' },
-        { path: '/assignments/add/', view: 'assignments/list_course' },
-        { path: '/assignments/add/:id', view: 'assignments/add' },
-
-        { path: '/assignments/edit/:id', view: 'assignments/edit' },
-        { path: '/assignments/mark/:id', view: 'assignments/mark_assignment' },
+        { path: '/course/assignments/add/:id', view: 'course/assignments/add' },
+        { path: '/course/assignments/edit/:id', view: 'course/assignments/edit' },
+        { path: '/course/assignments/mark/:id', view: 'course/assignments/mark' },
 
         //attendance
         { path: '/attendance', view: 'attendance/list' },
         { path: '/attendance/mark/:courseId', view: 'attendance/mark' },
-        { path: '/attendance/records/:id', view: 'attendance/records' },
 
     ]
 

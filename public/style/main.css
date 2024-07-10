@@ -54,3 +54,7 @@ a {
 
 
 }
+
+input[type="color"].form-control-color {
+    height: 50px;
+}

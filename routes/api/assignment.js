@@ -3,6 +3,7 @@ import fs from 'fs';
 import moment from 'moment';
 import Assignment from '#root/db/models/Assignment';
 import Course from '#root/db/models/Course';
+import mongoose from 'mongoose';
 
 // file upload
 const storage = multer.diskStorage({
@@ -209,6 +210,23 @@ export default (app, utils) => {
                 message: 'Error deleting Assignment',
                 error: err.message,
             });
+        }
+    });
+
+    // number of assignment (dashboard)
+    app.get('/api/assignment/count/:id', async (req, res) => {
+        try {
+            const courseId = new mongoose.Types.ObjectId(req.params.id);
+            const result = await Assignment.aggregate([
+                { $match: { courseId: courseId } },
+                { $group: { _id: '$courseId', count: { $sum: 1 } } }
+            ]);
+            const count = result.length > 0 ? result[0].count : 0;
+            console.log(`assignment count: ${count}`);
+            res.json({ success: true, data: { count } });
+        } catch (error) {
+            console.error('Error fetching assignment count:', error);
+            res.status(500).json({ success: false, message: 'Error fetching assignment count' });
         }
     });
 }

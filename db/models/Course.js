@@ -9,11 +9,12 @@ const CourseSchema = new mongoose.Schema({
         required: true,
     },
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    materials: [{ type: String }],
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     maxStudents: { type: Number, required: true },
     excludeDates: [{ type: Date }],
+    color: { type: String, required: true } // Add course color
+
 })
 
 export default mongoose.model('Course', CourseSchema)

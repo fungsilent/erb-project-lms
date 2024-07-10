@@ -49,6 +49,13 @@
                         </template>
                     </select>
                 </div>
+                
+                <!--course color-->
+                <div class="form-group">
+                    <label for="color">Select Color:</label>
+                    <input type="color" class="form-control form-control-color" id="color" name="color" value="#ffffff" required>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Save</button>
                 <button id="deleteCourseButton" type="button" class="btn btn-danger">Delete</button>
             </form>
@@ -59,18 +66,48 @@
     $(document).ready(() => {
         const { id } = $.getUrlParameter('/course/edit/:id')
 
-        $('#excludeDates').flatpickr({
-            mode: "multiple",
-            dateFormat: "Y-m-d"
-        })
-
-        $('#startDate').flatpickr({
-            dateFormat: "Y-m-d"
-        })
-        $('#endDate').flatpickr({
-            dateFormat: "Y-m-d"
-        })
         $('#students').select2()
+
+        const startDatePicker = $('#startDate').flatpickr({
+            dateFormat: 'Y-m-d',
+            onChange: function(selectedDates, dateStr, instance) {
+                if (endDatePicker.selectedDates.length > 0 && selectedDates[0] > endDatePicker.selectedDates[0]) {
+                    alert('Start date cannot be after end date.');
+                    instance.clear();
+                } else {
+                    endDatePicker.set('minDate', dateStr);
+                }
+            }
+        });
+
+        const endDatePicker = $('#endDate').flatpickr({
+            dateFormat: 'Y-m-d',
+            onChange: function(selectedDates, dateStr, instance) {
+                if (startDatePicker.selectedDates.length > 0 && selectedDates[0] < startDatePicker.selectedDates[0]) {
+                    alert('End date cannot be before start date.');
+                    instance.clear();
+                } else {
+                    excludeDatesPicker.set('maxDate', dateStr);
+                }
+            }
+        });
+
+        const excludeDatesPicker = $('#excludeDates').flatpickr({
+            mode: 'multiple',
+            dateFormat: 'Y-m-d',
+            onChange: function(selectedDates, dateStr, instance) {
+                const startDate = startDatePicker.selectedDates[0];
+                const endDate = endDatePicker.selectedDates[0];
+                if (startDate && endDate) {
+                    selectedDates.forEach(date => {
+                        if (date < startDate || date > endDate) {
+                            alert('Exclude dates must be within the start and end dates.');
+                            instance.clear();
+                        }
+                    });
+                }
+            }
+        });
 
         const getCourseData = async () => {
             const courseOption = axios.get('/api/course/option')
@@ -118,6 +155,13 @@
         $('#editCourseForm').on('submit', event => {
             event.preventDefault()
             const data = $.getFormData('#editCourseForm')
+            const maxStudents = parseInt(data.maxStudents);
+            const assignedStudents = data.students ? data.students.length : 0;
+
+            if (assignedStudents > maxStudents) {
+                return alert('Assigned students cannot be more than max students.')
+            }
+
             axios.put(`/api/course/${id}`, data).then(({ data: response }) => {
                 console.log('response', response)
                 if (!response.success) {

@@ -40,16 +40,14 @@
     $(document).ready(function() {
         const assignmentId = window.location.pathname.split('/').pop();
 
-        $.ajax({
-            url: `/api/assignments/${assignmentId}/mark`,
-            method: 'GET',
-            success: response => {
-                if (response.success) {
-                    const assignment = response.data;
+        axios.get(`/api/assignments/${assignmentId}/mark`)
+            .then(response => {
+                if (response.data.success) {
+                    const assignment = response.data.data;
                     $('#assignmentName').text(`Assignment: ${assignment.name}`);
                     $('#courseName').text(`Course: ${assignment.courseId.name}`);
 
-                    //breadcrumb
+                    // breadcrumb
                     $('#courseBreadcrumb').text(assignment.courseId.name).attr('href', `/course/detail/${assignment.courseId._id}`);
                     $('#assignmentBreadcrumb').text(`Mark ${assignment.name}`);
 
@@ -71,17 +69,17 @@
                         studentsContainer.append(studentForm);
                     });
                 } else {
-                    alert(`An error occurred: ${response.message}`);
+                    alert(`An error occurred: ${response.data.message}`);
                 }
-            },
-            error: err => {
-                alert(`An error occurred: ${err.responseText}`);
-            }
-        });
+            })
+            .catch(error => {
+                alert(`An error occurred: ${error.response.data.message}`);
+            });
 
         $('#markAssignmentForm').on('submit', function(event) {
             event.preventDefault();
             const marks = [];
+            const courseId = $('#courseBreadcrumb').attr('href').split('/').pop();
 
             $('#markAssignmentForm input[type="number"]').each(function() {
                 marks.push({
@@ -90,22 +88,18 @@
                 });
             });
 
-            $.ajax({
-                url: `/api/assignments/${assignmentId}/mark`,
-                method: 'POST',
-                data: { marks },
-                success: response => {
-                    if (response.success) {
+            axios.post(`/api/assignments/${assignmentId}/mark`, { marks })
+                .then(response => {
+                    if (response.data.success) {
                         alert('Marks submitted successfully');
-                        window.location.href = '/assignments';
+                        window.location.href = `/course/detail/${courseId}`;
                     } else {
-                        alert('Error: ' + response.message);
+                        alert('Error: ' + response.data.message);
                     }
-                },
-                error: (xhr, status, error) => {
+                })
+                .catch(error => {
                     alert('An error occurred. Please try again.');
-                }
-            });
+                });
         });
     });
 </script>

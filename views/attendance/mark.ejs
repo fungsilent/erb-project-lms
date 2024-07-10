@@ -1,3 +1,33 @@
+<style>
+.deferloading{
+    cursor:default !important;
+    position:relative;
+    display:inline-block;
+    border-radius:1rem;
+    overflow:hidden;
+    opacity:0.8;
+    width: 100%;
+}
+.deferloading.inline{
+    display:inline;
+}
+.deferloading:before{
+    content:'';
+    display:block;
+    position:absolute;
+    z-index:10;
+    top:0;left:0;right:0;bottom:0;
+    animation:2.2s ease forwards infinite placeHolderShimmer;
+    background:#f2f2f2;
+    background:linear-gradient(-61deg,#f2f2f2 40%,#E1E3E1 50%,#f2f2f2 60%);
+    background-size:100vw 100%;
+}
+@keyframes placeHolderShimmer{
+    0%{background-position:-50vw 0;}
+    100%{background-position:50vw 0;}
+}
+</style>
+
 <div class="p-4">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
@@ -6,8 +36,8 @@
     </ol>
     <div class="card">
         <div class="card-body">
+            <h5 class="card-subtitle mb-2 text-muted" id="courseName"></h5>
             <h4 class="card-title">Mark Attendance</h4>
-            <h5>Course: <span id="courseName"></span></h5>
             <form id="markAttendanceForm">
                 <div class="form-group">
                     <label for="attendanceDate">Date:</label>
@@ -41,6 +71,17 @@
                 </table>
                 <button type="submit" class="btn btn-primary">Save Attendance</button>
             </form>
+
+            <!--FB loading-->
+            <div id="loadingAnimation">
+                <p></p>
+                <div class="deferloading">loading</div>
+                <p></p>
+                <div class="deferloading">loading</div>
+                <p></p>
+                <div class="deferloading">loading</div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -52,7 +93,7 @@
         const getCousreDays = course => {
             let current = moment(course.startDate)
             let days = []
-            while (current.isBefore(course.endDate)) {
+            while (current.isSameOrBefore(course.endDate)) {
                 days.push(current.format('YYYY-MM-DD'))
                 current.add(1, 'days')
             }
@@ -92,27 +133,39 @@
 
         $('#attendanceDate').on('change', event => {
             const elem = $(event.target)
-            axios.get(`/api/attendance/${courseId}/mark`, {
-                params: {
-                    date: moment(elem.val()).toISOString(true),
-                }
-            }).then(({ data: response }) => {
-                console.log('response', response)
-                if (!response.success) {
-                    alert(`Error fetching attendance records: ${response.message}`)
-                }
-                
-                const records = response.data
-                if (records.length > 0) {
-                    // have record, set value
-                    records.forEach(record => {
-                        $(`[data-student=${record.student}]`).val(record.status)
-                    })
-                } else {
-                    // no record, reset value
-                    $(`[data-student]`).val('present')
-                }
-            })
+
+            //loading animation
+            $('#loadingAnimation').show();
+            $('#markAttendanceForm').hide(); 
+
+            // Simulate loading delay
+            setTimeout(() => {
+                axios.get(`/api/attendance/${courseId}/mark`, {
+                    params: {
+                        date: moment(elem.val()).toISOString(true),
+                    }
+                }).then(({ data: response }) => {
+                    console.log('response', response)
+                    if (!response.success) {
+                        alert(`Error fetching attendance records: ${response.message}`)
+                    }
+                    
+                    const records = response.data
+                    if (records.length > 0) {
+                        // have record, set value
+                        records.forEach(record => {
+                            $(`[data-student=${record.student}]`).val(record.status)
+                        })
+                    } else {
+                        // no record, reset value
+                        $(`[data-student]`).val('present')
+                    }
+
+                    //loading animation
+                    $('#loadingAnimation').hide(); 
+                    $('#markAttendanceForm').show(); 
+                })
+            }, 500); // 1 second delay
         })
 
         $('#markAttendanceForm').on('submit', event => {

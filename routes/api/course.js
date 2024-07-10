@@ -63,6 +63,7 @@ export default (app, utils) => {
             maxStudents,
             excludeDates,
             students,
+            color, //add course color
         } = req.body;
         const parsedExcludeDates = excludeDates
             ? excludeDates.split(',').map(date => new Date(date.trim()))
@@ -81,6 +82,7 @@ export default (app, utils) => {
                 maxStudents,
                 excludeDates: parsedExcludeDates,
                 students: parsedStudents,
+                color, //add course color
             });
             await newCourse.save();
             res.status(200).json({ success: true, message: 'Course added successfully' });
@@ -105,6 +107,7 @@ export default (app, utils) => {
             maxStudents,
             excludeDates,
             students,
+            color, //add course color
         } = req.body;
         const excludeDatesArray = excludeDates
             ? excludeDates.split(',').map(date => new Date(date.trim()))
@@ -125,6 +128,7 @@ export default (app, utils) => {
                     maxStudents,
                     excludeDates: excludeDatesArray,
                     students: studentsArray,
+                    color, //add course color
                 },
                 { new: true }
             );

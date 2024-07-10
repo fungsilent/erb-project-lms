@@ -1,8 +1,27 @@
 <div class="p-4">
     <template id="title">
-        <h4 class="mb-4">Welcome, ${name}</h>
+        <h4 class="card-title">Welcome, ${name}</h4>
     </template>
-    <%- include('block/announcement.ejs') %>
+    <div class="row">
+        <div class="col">
+            <div class="card mb-4">
+                <div id="courseDetails" class="card-body">
+                    <h4 class="card-title">My Course</h4>
+                    <%- include('block/course.ejs') %>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card mb-4">
+                <div id="courseDetails" class="card-body">
+                    <h4 class="card-title">Announcement</h4>
+                    <%- include('block/announcement.ejs') %>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </div>
 <script>
     $(document).ready(() => {

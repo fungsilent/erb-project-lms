@@ -12,6 +12,7 @@ export default (app, utils) => {
                 startDate: course.startDate,
                 endDate: course.endDate,
                 excludeDates: course.excludeDates || [],
+                color: course.color,
             }))
 
             utils.sendSuccess(res, formattedCourses)
