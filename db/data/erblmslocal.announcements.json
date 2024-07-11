@@ -1,0 +1,60 @@
+[{
+  "_id": {
+    "$oid": "668e3399042d1b911fa55259"
+  },
+  "date": {
+    "$date": "2024-07-10T07:09:13.276Z"
+  },
+  "content": "Very Hot Weather Warning issued",
+  "to": {
+    "all": true,
+    "teacher": true,
+    "student": true
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e33a7042d1b911fa55262"
+  },
+  "date": {
+    "$date": "2024-07-10T07:09:27.119Z"
+  },
+  "content": "CHP reminds public on precautions against heat stroke during very hot weather",
+  "to": {
+    "all": true,
+    "teacher": true,
+    "student": true
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e33b7042d1b911fa5526b"
+  },
+  "date": {
+    "$date": "2024-07-10T07:09:43.605Z"
+  },
+  "content": "Special traffic arrangements for race meeting in Happy Valley",
+  "to": {
+    "all": true,
+    "teacher": true,
+    "student": true
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e38e00d7a38c7af40127d"
+  },
+  "date": {
+    "$date": "2024-07-10T07:33:12.599Z"
+  },
+  "content": "<span style=\"color: #87CEEB\">Welcome to LMS!</span>",
+  "to": {
+    "all": true,
+    "teacher": true,
+    "student": true
+  },
+  "__v": 0
+}]
