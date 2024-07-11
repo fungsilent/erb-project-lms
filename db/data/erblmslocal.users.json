@@ -1,0 +1,250 @@
+[{
+  "_id": {
+    "$oid": "6673f69df08b2cd9c5b203d2"
+  },
+  "name": "admin",
+  "email": "admin@admin.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5e3dhW5UdjHDqBONofaofD5NhZdg0Uvna",
+  "role": "superAdmin",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0629db355e9ef3430480"
+  },
+  "name": "SCOPE",
+  "email": "scope@teacher.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "teacher",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0653db355e9ef3430488"
+  },
+  "name": "HKCT",
+  "email": "hkct@teacher.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "teacher",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e066adb355e9ef3430490"
+  },
+  "name": "HKSC",
+  "email": "hksc@teacher.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "teacher",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0684db355e9ef3430498"
+  },
+  "name": "HKFY",
+  "email": "hkfyg@teacher.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "teacher",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e09c0db355e9ef34305ec"
+  },
+  "name": "Emily Ho",
+  "email": "std001@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e09eadb355e9ef34305f4"
+  },
+  "name": "Liam Lee",
+  "email": "std002@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e09fddb355e9ef34305fc"
+  },
+  "name": "Olivia Wong",
+  "email": "std003@demo.copm",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0a0bdb355e9ef3430604"
+  },
+  "name": "Ethan Poon",
+  "email": "std004@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0aa1db355e9ef3430668"
+  },
+  "name": "Isabella Lo",
+  "email": "std005@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0ab1db355e9ef3430670"
+  },
+  "name": "Jacob Chan",
+  "email": "std006@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0ac9db355e9ef3430678"
+  },
+  "name": "Sophia So",
+  "email": "std007@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0adbdb355e9ef3430680"
+  },
+  "name": "Noah Cheung",
+  "email": "std008@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0aeadb355e9ef3430688"
+  },
+  "name": "Ava Wo",
+  "email": "std009@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0b0bdb355e9ef3430698"
+  },
+  "name": "Mia Li",
+  "email": "std011@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0b1cdb355e9ef34306a0"
+  },
+  "name": "Daniel Fong",
+  "email": "std012@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0b42db355e9ef34306ae"
+  },
+  "name": "Alexander Lo",
+  "email": "std010@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0b64db355e9ef34306b6"
+  },
+  "name": "Ivy Ho",
+  "email": "std013@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0b79db355e9ef34306be"
+  },
+  "name": "William Wong",
+  "email": "std014@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0b8adb355e9ef34306c6"
+  },
+  "name": "Gordon So",
+  "email": "std015@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0b9cdb355e9ef34306ce"
+  },
+  "name": "Lucas Chan",
+  "email": "std016@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0bacdb355e9ef34306d6"
+  },
+  "name": "Emma Ma",
+  "email": "std017@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0bc2db355e9ef34306de"
+  },
+  "name": "Michael Ko",
+  "email": "std018@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0bd4db355e9ef34306e6"
+  },
+  "name": "Avery Ho",
+  "email": "std019@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0be9db355e9ef34306ee"
+  },
+  "name": "Benjamin Wong",
+  "email": "std020@demo.com",
+  "password": "$2a$10$JW2eicISpWglmYENAPBm5eNpzo3a7ADHno/JePFB2HVfi2kIYL5nq",
+  "role": "student",
+  "__v": 0
+}]

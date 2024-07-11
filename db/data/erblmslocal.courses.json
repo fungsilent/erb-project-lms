@@ -1,0 +1,248 @@
+[{
+  "_id": {
+    "$oid": "668e06eadb355e9ef34304e9"
+  },
+  "name": "Certificate in Backend Web Developer",
+  "description": "PE076DS",
+  "teacher": {
+    "$oid": "6673f69df08b2cd9c5b203d2"
+  },
+  "students": [
+    {
+      "$oid": "668e09c0db355e9ef34305ec"
+    },
+    {
+      "$oid": "668e09eadb355e9ef34305f4"
+    },
+    {
+      "$oid": "668e09fddb355e9ef34305fc"
+    },
+    {
+      "$oid": "668e0a0bdb355e9ef3430604"
+    },
+    {
+      "$oid": "668e0aa1db355e9ef3430668"
+    }
+  ],
+  "startDate": {
+    "$date": "2024-07-01T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2024-07-26T00:00:00.000Z"
+  },
+  "maxStudents": 10,
+  "excludeDates": [
+    {
+      "$date": "2024-07-07T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-07-14T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-07-21T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-07-06T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-07-13T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-07-20T00:00:00.000Z"
+    }
+  ],
+  "color": "#e1e2f6",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0775db355e9ef3430563"
+  },
+  "name": "Certificate in Frontend Web Developer",
+  "description": "HK282DS",
+  "teacher": {
+    "$oid": "668e0629db355e9ef3430480"
+  },
+  "students": [
+    {
+      "$oid": "668e0b9cdb355e9ef34306ce"
+    },
+    {
+      "$oid": "668e0bacdb355e9ef34306d6"
+    },
+    {
+      "$oid": "668e0bc2db355e9ef34306de"
+    },
+    {
+      "$oid": "668e0bd4db355e9ef34306e6"
+    },
+    {
+      "$oid": "668e0be9db355e9ef34306ee"
+    }
+  ],
+  "startDate": {
+    "$date": "2024-08-01T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2024-08-31T00:00:00.000Z"
+  },
+  "maxStudents": 10,
+  "excludeDates": [
+    {
+      "$date": "2024-08-04T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-11T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-25T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-18T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-31T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-24T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-17T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-10T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-03T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-07T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-14T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-21T00:00:00.000Z"
+    },
+    {
+      "$date": "2024-08-28T00:00:00.000Z"
+    }
+  ],
+  "color": "#e4f7f1",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e07a1db355e9ef343056e"
+  },
+  "name": "Certificate in Cyber Security Technician Training",
+  "description": "CT299DS",
+  "teacher": {
+    "$oid": "668e066adb355e9ef3430490"
+  },
+  "students": [
+    {
+      "$oid": "668e0ab1db355e9ef3430670"
+    },
+    {
+      "$oid": "668e0ac9db355e9ef3430678"
+    },
+    {
+      "$oid": "668e0adbdb355e9ef3430680"
+    },
+    {
+      "$oid": "668e0aeadb355e9ef3430688"
+    },
+    {
+      "$oid": "668e0b0bdb355e9ef3430698"
+    }
+  ],
+  "startDate": {
+    "$date": "2024-07-28T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2024-08-03T00:00:00.000Z"
+  },
+  "maxStudents": 10,
+  "excludeDates": [
+    {
+      "$date": "2024-07-31T00:00:00.000Z"
+    }
+  ],
+  "color": "#f7f2e4",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e07d3db355e9ef3430579"
+  },
+  "name": "Certificate in Python Programming",
+  "description": "HE111ES",
+  "teacher": {
+    "$oid": "668e0684db355e9ef3430498"
+  },
+  "students": [
+    {
+      "$oid": "668e0b1cdb355e9ef34306a0"
+    },
+    {
+      "$oid": "668e0b42db355e9ef34306ae"
+    },
+    {
+      "$oid": "668e0b64db355e9ef34306b6"
+    },
+    {
+      "$oid": "668e0b79db355e9ef34306be"
+    },
+    {
+      "$oid": "668e0b8adb355e9ef34306c6"
+    }
+  ],
+  "startDate": {
+    "$date": "2024-08-04T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2024-08-17T00:00:00.000Z"
+  },
+  "maxStudents": 10,
+  "excludeDates": [],
+  "color": "#f7e9e4",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0814db355e9ef3430584"
+  },
+  "name": "Certificate in Network Management",
+  "description": "CT105ES",
+  "teacher": {
+    "$oid": "668e0653db355e9ef3430488"
+  },
+  "students": [
+    {
+      "$oid": "668e09c0db355e9ef34305ec"
+    },
+    {
+      "$oid": "668e09eadb355e9ef34305f4"
+    },
+    {
+      "$oid": "668e09fddb355e9ef34305fc"
+    },
+    {
+      "$oid": "668e0a0bdb355e9ef3430604"
+    },
+    {
+      "$oid": "668e0aa1db355e9ef3430668"
+    }
+  ],
+  "startDate": {
+    "$date": "2024-08-19T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2024-08-30T00:00:00.000Z"
+  },
+  "maxStudents": 10,
+  "excludeDates": [],
+  "color": "#f7f4e4",
+  "__v": 0
+}]
