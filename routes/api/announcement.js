@@ -21,7 +21,7 @@ export default (app, utils) => {
                     break
                 }
             }
-            const announcements = await Announcement.find(option).sort({ date: 1 })
+            const announcements = await Announcement.find(option).sort({ date: -1 })
             utils.sendSuccess(res, announcements)
         } catch (err) {
             console.log(err)

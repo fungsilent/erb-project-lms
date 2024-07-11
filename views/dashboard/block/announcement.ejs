@@ -1,21 +1,30 @@
 <style>
-    .announcement .body {
-        overflow-y: scroll;
-        flex: 1;
+    .announcement {
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
     }
     .announcement .content {
+        flex: 1;
         overflow-y: scroll;
+        scrollbar-width: none;
+    }
+    .announcement .item {
+        background: #fbfbfb;
+    }
+    .announcement .item span {
+        align-self: end;
     }
 </style>
 
-<div class="announcement card">
-    <div class="card-body">
+<div class="card">
+    <div class="announcement card-body">
+        <h4 class="card-title">Announcement</h4>
         <div class="content">
             <template id="announcementItem">
-                <p class="card-text">
-                    ${content}
-                    <br/>
-                    ${date}
+                <p class="item card p-3 text-muted">
+                    <b>${content}</b>
+                    <span>${date}</span>
                 </p>
             </template>
         </div>
@@ -30,7 +39,7 @@
                 response.data.forEach(item => {
                     $.cloneTemplate('#announcementItem', {
                         content: item.content,
-                        date: moment(item.date).format('DD/MM/YYYY h:mm'),
+                        date: moment(item.date).format('DD-MM-YYYY h:mm'),
                     })
                 })
             } else {

@@ -1,28 +1,24 @@
+<style>
+    .grid {
+        display: flex;
+        gap: 16px;
+        height: 627px;
+    }
+    .grid .card {
+        flex: 1 0 45%;
+    }
+</style>
+
 <div class="p-4">
     <template id="title">
         <h4 class="card-title">Welcome, ${name}</h4>
     </template>
-    <div class="row">
-        <div class="col">
-            <div class="card mb-4">
-                <div id="courseDetails" class="card-body">
-                    <h4 class="card-title">My Course</h4>
-                    <%- include('block/course.ejs') %>
-                </div>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card mb-4">
-                <div id="courseDetails" class="card-body">
-                    <h4 class="card-title">Announcement</h4>
-                    <%- include('block/announcement.ejs') %>
-                </div>
-            </div>
-        </div>
+    <div class="grid">
+        <%- include('block/announcement.ejs') %>
+        <%- include('block/course.ejs') %>
     </div>
-    
 </div>
+
 <script>
     $(document).ready(() => {
         $(document).on('userInfoEvent', (event, user) => {

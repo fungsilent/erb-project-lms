@@ -2,28 +2,41 @@
     .bar-color {
         background-color: rgba(255, 255, 2555, 0.5);
     }
+    .course {
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+    }
+    .course .content {
+        flex: 1;
+        overflow-y: scroll;
+        scrollbar-width: none;
+    }
 </style>
 
-<div class="card-body" style="max-height: 680px; overflow-y: auto;">
-    <div class="content">
-        <template id="courseItem">
-            <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-md-50 mb-5 mb-xl-10 darker-color" style="background-color: ${color}">
-                <div class="card-header pt-5">
-                    <div class="card-title d-flex flex-column">   
-                        <span class="text-muted">Class Duration: <b>${startDate} to ${endDate}</b></span>
-                        <h4 class="py-3 text-muted">${name}</h4>
-                    </div>
-                    <!--list the by Date?-->     
-                    <div class="rounded bar-color" style="padding:10px;">
-                        <span class="pr-5 pl-4 fa-solid fa-calendar-days text-muted" data-toggle="tooltip" data-bs-placement="top" title="Class Days"> ${diffDays}</span>
-                        <span class="pr-5 fa-solid fa-file-pen text-muted" data-toggle="tooltip" data-bs-placement="top" title="No. of Assignments"></span>
-                        <span class="pr-5 fa-solid fa-user text-muted" data-toggle="tooltip" data-bs-placement="top" title="No. of Students"> ${students}</span>
-                        <!--different role, different view-->
-                        <a href="/course/detail/${id}" class="btn btn-secondary" data-toggle="tooltip" data-bs-placement="top" title="Check it out">Course Detail</a>
-                    </div>   
-                </div>           
-            </div>
-        </template>
+<div class="card">
+    <div class="course card-body">
+        <h4 class="card-title">My Course</h4>
+        <div class="content">
+            <template id="courseItem">
+                <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-md-50 mb-5 mb-xl-10 darker-color" style="background-color: ${color}">
+                    <div class="card-header pt-5">
+                        <div class="card-title d-flex flex-column">   
+                            <span class="text-muted">Class Duration: <b>${startDate} to ${endDate}</b></span>
+                            <h4 class="py-3 text-muted">${name}</h4>
+                        </div>
+                        <!--list the by Date?-->     
+                        <div class="rounded bar-color" style="padding:10px;">
+                            <span class="pr-5 pl-4 fa-solid fa-calendar-days text-muted" data-toggle="tooltip" data-bs-placement="top" title="Class Days"> ${diffDays}</span>
+                            <span class="pr-5 fa-solid fa-file-pen text-muted" data-toggle="tooltip" data-bs-placement="top" title="No. of Assignments"></span>
+                            <span class="pr-5 fa-solid fa-user text-muted" data-toggle="tooltip" data-bs-placement="top" title="No. of Students"> ${students}</span>
+                            <!--different role, different view-->
+                            <a href="/course/detail/${id}" class="btn btn-secondary" data-toggle="tooltip" data-bs-placement="top" title="Check it out">Course Detail</a>
+                        </div>   
+                    </div>           
+                </div>
+            </template>
+        </div>
     </div>
 </div>
 
