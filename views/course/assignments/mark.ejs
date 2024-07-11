@@ -10,96 +10,103 @@
         <div class="card-body">
             <h5 class="card-subtitle mb-2 text-muted" id="courseName"></h5>
             <h4 class="card-title" id="assignmentName"></h4>
-                <form id="markAssignmentForm">
-                    <div id="studentsContainer">
-                        <div class="mt-4">
-                            <h4>Student List</h4>
-                            <div class="form-group">
-                                <table class="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Student Name</th>
-                                            <th>Student Email</th>
-                                            <th>Marks</th>
-                                            <th>Submitted Assignment</th>
-                                        </tr>
-                                        <tbody class="student-form">
-                                            <!-- student rows -->
-                                        </tbody>
-                                    </thead>
-                                </table>
-                            </div>          
-                        </div>
+            <form id="markAssignmentForm">
+                <div id="studentsContainer">
+                    <div class="mt-4">
+                        <h4>Student List</h4>
+                        <div class="form-group">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Student Name</th>
+                                        <th>Student Email</th>
+                                        <th>Marks</th>
+                                        <th>Submitted Assignment</th>
+                                    </tr>
+                                    <tbody class="student-form">
+                                        <!-- student rows -->
+                                        <template id="studentItem">
+                                            <tr>
+                                                <td>${name}</td>
+                                                <td>${email}</td>
+                                                <td>
+                                                    <input type="number" class="form-control" id="marks_${index}" name="marks" data-student-id="${id}" value="${markValue}">
+                                                </td>
+                                                <td>
+                                                    <a href="${fileUrl}" target="_blank" class="file-link hide btn btn-sm btn-outline-secondary">View Submission</a>
+                                                    <span class="no-file hide">N/A</span>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </thead>
+                            </table>
+                        </div>          
                     </div>
-                    <button type="submit" class="btn btn-primary mt-2">Submit Marks</button>
-                </form>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Submit Marks</button>
+            </form>
         </div>
     </div>
 
 <script>
-    $(document).ready(function() {
-        const assignmentId = window.location.pathname.split('/').pop();
+    $(document).ready(() => {
+        const { assignmentId } = $.getUrlParameter('/course/assignments/mark/:assignmentId')
 
-        axios.get(`/api/assignments/${assignmentId}/mark`)
-            .then(response => {
-                if (response.data.success) {
-                    const assignment = response.data.data;
-                    $('#assignmentName').text(`Assignment: ${assignment.name}`);
-                    $('#courseName').text(`Course: ${assignment.courseId.name}`);
-
-                    // breadcrumb
-                    $('#courseBreadcrumb').text(assignment.courseId.name).attr('href', `/course/detail/${assignment.courseId._id}`);
-                    $('#assignmentBreadcrumb').text(`Mark ${assignment.name}`);
-
-                    const studentsContainer = $('#studentsContainer .student-form');
-
-                    assignment.courseId.students.forEach((student, index) => {
-                        const studentMark = assignment.results.find(result => result.studentId.toString() === student._id.toString());
-                        const markValue = studentMark ? studentMark.marks : '';
-                        const submittedAssignment = studentMark && studentMark.studentFileUrl ? `<a href="${studentMark.studentFileUrl}" target="_blank">View Submission</a>` : 'N/A';
-                        const studentForm = `
-                        <tr>
-                            <td>${student.name}</td>
-                            <td>${student.email}</td>
-                            <td>
-                                <input type="number" class="form-control" id="marks_${index}" name="marks" data-student-id="${student._id}" value="${markValue}" required>
-                            </td>
-                            <td>${submittedAssignment}</td>
-                        </tr>`;
-                        studentsContainer.append(studentForm);
-                    });
-                } else {
-                    alert(`An error occurred: ${response.data.message}`);
+        axios.get(`/api/assignments/${assignmentId}`).then(({ data: response }) => {
+                console.log('response', response)
+                if (!response.success) {
+                    alert(`An error occurred: ${response.message}`);
                 }
-            })
-            .catch(error => {
-                alert(`An error occurred: ${error.response.data.message}`);
-            });
+                const assignment = response.data;
+                $('#assignmentName').text(`Assignment: ${assignment.name}`);
+                $('#courseName').text(`Course: ${assignment.course.name}`);
 
-        $('#markAssignmentForm').on('submit', function(event) {
+                // breadcrumb
+                $('#courseBreadcrumb').text(assignment.course.name).attr('href', `/course/detail/${assignment.course._id}`);
+                $('#assignmentBreadcrumb').text(`Mark ${assignment.name}`);
+
+                const studentsContainer = $('#studentsContainer .student-form');
+
+                assignment.course.students.forEach((student, index) => {
+                    const studentMark = assignment.results.find(result => result.studentId === student._id)
+                    let data = {
+                        ...student,
+                        id: student._id,
+                        index,
+                        markValue: studentMark?.marks,
+                        fileUrl: studentMark?.studentFileUrl,
+                    }
+                    const elem = $.cloneTemplate('#studentItem', data, { insert: false })
+                    if (data.fileUrl) {
+                        elem.find('.file-link').removeClass('hide')
+                    } else {
+                        elem.find('.no-file').removeClass('hide')
+                    }
+                    studentsContainer.before(elem)
+                });
+            })
+
+        $('#markAssignmentForm').on('submit', event => {
             event.preventDefault();
             const marks = [];
             const courseId = $('#courseBreadcrumb').attr('href').split('/').pop();
 
-            $('#markAssignmentForm input[type="number"]').each(function() {
+            $('#markAssignmentForm [name="marks"]').each((index, elem) => {
+                elem = $(elem)
                 marks.push({
-                    studentId: $(this).data('student-id'),
-                    marks: $(this).val()
+                    studentId: elem.data('student-id'),
+                    marks: elem.val()
                 });
             });
 
-            axios.post(`/api/assignments/${assignmentId}/mark`, { marks })
-                .then(response => {
-                    if (response.data.success) {
-                        alert('Marks submitted successfully');
-                        window.location.href = `/course/detail/${courseId}`;
-                    } else {
-                        alert('Error: ' + response.data.message);
-                    }
-                })
-                .catch(error => {
-                    alert('An error occurred. Please try again.');
-                });
+            axios.post(`/api/assignments/${assignmentId}/mark`, { marks }).then(({ data: response }) => {
+                if (!response.success) {
+                    return alert(response.message);
+                }
+                alert('Marks submitted successfully');
+                window.location.href = `/course/detail/${courseId}`;
+            })
         });
     });
 </script>

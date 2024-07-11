@@ -85,14 +85,10 @@ export default (app, utils) => {
                 color, //add course color
             });
             await newCourse.save();
-            res.status(200).json({ success: true, message: 'Course added successfully' });
+            utils.sendSuccess(res, course);
         } catch (err) {
             console.error('Error adding course:', err);
-            res.status(500).json({
-                success: false,
-                message: 'Error adding course',
-                error: err.message,
-            });
+            utils.sendError(res, 'Error adding course');
         }
     });
 
@@ -133,19 +129,12 @@ export default (app, utils) => {
                 { new: true }
             );
             if (!updatedCourse) {
-                return res.status(404).json({ success: false, message: 'Course not found' });
+                return utils.sendError(res, 'Course not found')
             }
-            res.status(200).json({
-                success: true,
-                message: 'Course updated successfully',
-            });
+            utils.sendSuccess(res);
         } catch (err) {
             console.error('Error updating course:', err);
-            res.status(500).json({
-                success: false,
-                message: 'Error updating course',
-                error: err.message,
-            });
+            utils.sendError(res, 'Error updating course');
         }
     });
 
@@ -154,21 +143,12 @@ export default (app, utils) => {
         try {
             const deletedCourse = await Course.findByIdAndDelete(req.params.id);
             if (!deletedCourse) {
-                return res
-                    .status(404)
-                    .json({ success: false, message: 'Course not found' });
+                return utils.sendError(res, 'Course not found');
             }
-            res.status(200).json({
-                success: true,
-                message: 'Course deleted successfully',
-            });
+            utils.sendError(res);
         } catch (err) {
             console.error('Error deleting course:', err);
-            res.status(500).json({
-                success: false,
-                message: 'Error deleting course',
-                error: err.message,
-            });
+            utils.sendError(res, 'Error deleting course');
         }
     });
 
@@ -189,15 +169,14 @@ export default (app, utils) => {
             const attendanceRecords = await Attendance.find({ course: courseId })
                 .populate('student')
                 .lean();
-    
-            res.status(200).json({
-                success: true,
+            
+            utils.sendSuccess(res, {
                 course,
                 assignments,
                 attendanceRecords
-            });
+            })
         } catch (err) {
-            res.status(500).json({ success: false, message: 'Error fetching course details', error: err.message });
+            utils.sendError(res, 'Error fetching course details')
         }
     });
 };

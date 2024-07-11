@@ -50,16 +50,6 @@ export default (app, utils) => {
         }
     });
 
-    // Add assignment
-    app.get('/api/assignments/add/:id', async (req, res) => {
-        try {
-            const course = await Course.findById(req.params.id).populate('students');
-            res.json({ success: true, course });
-        } catch (err) {
-            utils.sendError(res, 'Error fetching course details');
-        }
-    });
-
     // Upload assignment
     app.post('/api/assignments/upload', upload.array('assignments'), async (req, res) => {
         try {
@@ -82,22 +72,9 @@ export default (app, utils) => {
                 };
             });
             await Assignment.insertMany(assignments);
-            res.status(200).json({ success: true, message: 'Assignments uploaded successfully' });
+            utils.sendSuccess(res)
         } catch (err) {
-            res.status(500).json({ success: false, message: 'Error uploading assignments', error: err.message });
-        }
-    });
-
-    // edit assignment
-    app.get('/api/assignments/:id/edit', async (req, res) => {
-        try {
-            const assignment = await Assignment.findById(req.params.id).populate('courseId').lean();
-            if (!assignment) {
-                return res.status(404).json({ success: false, message: 'Assignment not found' });
-            }
-            res.status(200).json({ success: true, data: assignment });
-        } catch (err) {
-            res.status(500).json({ success: false, message: 'Error fetching assignment details', error: err.message });
+            utils.sendError(res, 'Error uploading assignments')
         }
     });
 
@@ -129,34 +106,37 @@ export default (app, utils) => {
             );
 
             if (!assignment) {
-                return res.status(404).json({ success: false, message: 'Assignment not found' });
+                return utils.sendError(res, 'Assignment not found')
             }
-
-            res.status(200).json({ success: true, message: 'Assignment updated successfully', data: assignment });
+            utils.sendSuccess(res, { message: assignment })
         } catch (err) {
-            // console.log(err)
-            res.status(500).json({ success: false, message: 'Error updating assignment', error: err.message });
+            utils.sendError(res, 'Error updating assignment')
         }
     });
 
     //mark_assignment
-    app.get('/api/assignments/:id/mark', async (req, res) => {
+    app.get('/api/assignments/:id', async (req, res) => {
         try {
             const assignment = await Assignment.findById(req.params.id).populate({
                 path: 'courseId',
                 populate: {
                     path: 'students',
                     model: 'User'
-                }
+                },
             }).lean();
-
+            
             if (!assignment) {
-                return res.status(404).json({ success: false, message: 'Assignment not found' });
+                return utils.sendError(res, 'Assignment not found')
             }
 
-            res.status(200).json({ success: true, data: assignment });
+            const data = {
+                ...assignment,
+                course: assignment.courseId
+            }
+            delete data.courseId
+            utils.sendSuccess(res, data)
         } catch (err) {
-            res.status(500).json({ success: false, message: 'Error fetching assignment details', error: err.message });
+            utils.sendError(res, 'Error fetching assignment details')
         }
     });
 
@@ -168,9 +148,9 @@ export default (app, utils) => {
 
             const assignment = await Assignment.findById(assignmentId);
             if (!assignment) {
-                return res.status(404).json({ success: false, message: 'Assignment not found' });
+                utils.sendError(res, 'Assignment not found')
             }
-
+            
             marks.forEach(mark => {
                 const existingMark = assignment.results.find(result => result.studentId.toString() === mark.studentId);
                 if (existingMark) {
@@ -184,9 +164,10 @@ export default (app, utils) => {
             });
 
             await assignment.save();
-            res.status(200).json({ success: true, message: 'Marks updated successfully', data: assignment });
+        
+            utils.sendSuccess(res)
         } catch (err) {
-            res.status(500).json({ success: false, message: 'Error updating marks', error: err.message });
+            utils.sendError(res, 'Error updating marks')
         }
     });
 
@@ -195,21 +176,12 @@ export default (app, utils) => {
         try {
             const deletedAssignment = await Assignment.findByIdAndDelete(req.params.id);
             if (!deletedAssignment) {
-                return res
-                    .status(404)
-                    .json({ success: false, message: 'Assignment not found' });
+                return utils.sendError(res, 'Assignment not found')
             }
-            res.status(200).json({
-                success: true,
-                message: 'Assignment deleted successfully',
-            });
+            utils.sendSuccess(res)
         } catch (err) {
             console.error('Error deleting Assignment:', err);
-            res.status(500).json({
-                success: false,
-                message: 'Error deleting Assignment',
-                error: err.message,
-            });
+            utils.sendError(res, 'Error deleting Assignment')
         }
     });
 
@@ -217,16 +189,12 @@ export default (app, utils) => {
     app.get('/api/assignment/count/:id', async (req, res) => {
         try {
             const courseId = new mongoose.Types.ObjectId(req.params.id);
-            const result = await Assignment.aggregate([
-                { $match: { courseId: courseId } },
-                { $group: { _id: '$courseId', count: { $sum: 1 } } }
-            ]);
-            const count = result.length > 0 ? result[0].count : 0;
+            const count = await Assignment.countDocuments({ courseId })
             console.log(`assignment count: ${count}`);
-            res.json({ success: true, data: { count } });
+            utils.sendSuccess(res, { count })
         } catch (error) {
             console.error('Error fetching assignment count:', error);
-            res.status(500).json({ success: false, message: 'Error fetching assignment count' });
+            utils.sendError(res, 'Error fetching assignment count')
         }
     });
 }

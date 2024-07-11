@@ -5,107 +5,76 @@
         <li class="breadcrumb-item"><a href=# id="courseBreadcrumb"></a></li>
         <li class="breadcrumb-item active">Add Assignment</li>
     </ol>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-subtitle mb-2 text-muted" id="courseName"></h5>
-            <h4 class="card-title">Add Assignment</h4>
-            <form id="addAssignmentsForm" enctype="multipart/form-data">
-                <div id="assignmentsContainer">
-                    <div class="assignment-form mt-4">
-                        <h4>Assignment 1</h4>
-                        <div class="form-group">
-                            <label for="name_1">Name:</label>
-                            <input type="text" class="form-control" id="name_1" name="name" required>
+    <h5 class="mb-2 text-muted" id="courseName"></h5>
+    <h4>Add Assignment</h4>
+    <form id="addAssignmentsForm" enctype="multipart/form-data">
+        <template id="assignmentTemplate">
+            <div class="card mb-3">
+                <div class="card-body">              
+                        <div class="assignment-form">
+                            <h4>Assignment ${assignmentCount}</h4>
+                            <div class="form-group">
+                                <label for="name_${assignmentCount}">Name:</label>
+                                <input type="text" class="form-control" id="name_${assignmentCount}" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dueDate_${assignmentCount}">Due Date:</label>
+                                <input type="text" class="form-control due-date" id="dueDate_${assignmentCount}" name="dueDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="totalMarks_${assignmentCount}">Total Marks:</label>
+                                <input type="number" class="form-control" id="totalMarks_${assignmentCount}" name="totalMarks" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="passingMarks_${assignmentCount}">Passing Marks:</label>
+                                <input type="number" class="form-control" id="passingMarks_${assignmentCount}" name="passingMarks" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="assignment_${assignmentCount}">Assignment File:</label>
+                                <input type="file" class="form-control" id="assignment_${assignmentCount}" name="assignments" required>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="dueDate_1">Due Date:</label>
-                            <input type="text" class="form-control due-date" id="dueDate_1" name="dueDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="totalMarks_1">Total Marks:</label>
-                            <input type="number" class="form-control" id="totalMarks_1" name="totalMarks" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="passingMarks_1">Passing Marks:</label>
-                            <input type="number" class="form-control" id="passingMarks_1" name="passingMarks" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="assignment_1">Assignment File:</label>
-                            <input type="file" class="form-control" id="assignment_1" name="assignments" required>
-                        </div>
-                    </div>
                 </div>
-                
-                <template id="assignmentTemplate">
-                    <div class="assignment-form mt-4">
-                        <h4>Assignment ${assignmentCount}</h4>
-                        <div class="form-group">
-                            <label for="name_${assignmentCount}">Name:</label>
-                            <input type="text" class="form-control" id="name_${assignmentCount}" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dueDate_${assignmentCount}">Due Date:</label>
-                            <input type="text" class="form-control due-date" id="dueDate_${assignmentCount}" name="dueDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="totalMarks_${assignmentCount}">Total Marks:</label>
-                            <input type="number" class="form-control" id="totalMarks_${assignmentCount}" name="totalMarks" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="passingMarks_${assignmentCount}">Passing Marks:</label>
-                            <input type="number" class="form-control" id="passingMarks_${assignmentCount}" name="passingMarks" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="assignment_${assignmentCount}">Assignment File:</label>
-                            <input type="file" class="form-control" id="assignment_${assignmentCount}" name="assignments" required>
-                        </div>
-                    </div>
-                </template>
-                <button type="button" id="addMoreAssignments" class="btn btn-secondary mt-2">Add More Assignment</button>
-                <button type="submit" class="btn btn-primary mt-2">Save Assignments</button>
-            </form>
-        </div>
-    </div>
+            </div>
+        </template>
+        <button type="button" id="addMoreAssignments" class="btn btn-secondary mt-2">Add More Assignment</button>
+        <button type="submit" class="btn btn-primary mt-2">Save Assignments</button>
+    </form>
 </div>
 
 <script>
-    $(document).ready(function() {
-        const courseId = window.location.pathname.split('/').pop();
-        $.ajax({
-            url: `/api/assignments/add/${courseId}`,
-            method: 'GET',
-            success: response => {
-                if (response.success) {
-                    const { course } = response;
-                    $('#courseName').text(course.name);
+    $(document).ready(() => {
+        const { courseId } = $.getUrlParameter('/course/assignments/add/:courseId')
 
-                    //breadcrumb
-                    $('#courseBreadcrumb').text(course.name).attr('href', `/course/detail/${course._id}`);
-
-                } else {
-                    alert(`An error occurred: ${response.message}`);
-                }
-            },
-            error: err => {
-                alert(`An error occurred: ${err.responseText}`);
-            }
-        });
-
-        let assignmentCount = 1;
-        $('.due-date').flatpickr({ dateFormat: 'Y-m-d' });
-
-        $('#addMoreAssignments').on('click', function() {
+        let assignmentCount = 0;
+        const addAssignment = () => {
             assignmentCount++;
-            const newAssignmentForm = $.cloneTemplate('#assignmentTemplate', {
+            const elem = $.cloneTemplate('#assignmentTemplate', {
                 assignmentCount: assignmentCount
-            }, { insert: false });
-            $('#assignmentsContainer').append(newAssignmentForm);
-            $('.due-date').flatpickr({ dateFormat: 'Y-m-d' });
-        });
+            });
+            $('#assignmentsContainer').before(elem);
+            elem.find('.due-date').flatpickr({ dateFormat: 'Y-m-d' });
+        }
+        // create one by default
+        addAssignment()
 
-        $('#addAssignmentsForm').on('submit', function(event) {
+        axios.get(`/api/course/${courseId}`).then(({ data: response }) => {
+            if (!response.success) {
+                return alert(`An error occurred: ${response.message}`);
+            }
+            console.log('response', response)
+            const course = response.data;
+            $('#courseName').text(course.name);
+
+            //breadcrumb
+            $('#courseBreadcrumb').text(course.name).attr('href', `/course/detail/${course._id}`);
+        })
+
+        $('#addMoreAssignments').on('click', addAssignment);
+
+        $('#addAssignmentsForm').on('submit', event => {
             event.preventDefault();
-            const formData = new FormData(this);
+            const formData = new FormData(event.target);
 
             const files = document.querySelectorAll('input[type="file"]');
 
@@ -115,25 +84,14 @@
 
             formData.append('course', courseId);            
 
-            fetch('/api/assignments/upload', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+
+            axios.post('/api/assignments/upload', formData).then(({ data: response }) => {
+                if (!response.success) {
+                    console.error('Upload failed:', response.message);
                 }
+                console.log('Upload successful:', response);
+                window.location.href = `/course/detail/${courseId}`;
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('Upload successful:', data);
-                    window.location.href = `/course/detail/${courseId}`;
-                } else {
-                    console.error('Upload failed:', data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
         });
     });
 </script>

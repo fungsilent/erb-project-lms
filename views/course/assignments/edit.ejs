@@ -45,12 +45,12 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(() => {
         const { id } = $.getUrlParameter('/course/assignments/edit/:id');
 
         $('.due-date').flatpickr({ dateFormat: 'Y-m-d' })
 
-        axios.get(`/api/assignments/${id}/edit`).then(({ data: response }) => {
+        axios.get(`/api/assignments/${id}`).then(({ data: response }) => {
             console.log('response', response)
             if (!response.success) {
                 return (`An error occurred: ${response.message}`)
@@ -67,8 +67,8 @@
             })
 
             // get course ID
-            const courseId = assignment.courseId._id;
-            const courseName = assignment.courseId.name
+            const courseId = assignment.course._id;
+            const courseName = assignment.course.name
             $('#editAssignmentForm').data('course-id', courseId);
             
             //breadcrumb
@@ -76,20 +76,21 @@
             $('#courseName').text(courseName);
         })
 
-        $('#editAssignmentForm').on('submit', function(event) {
+        $('#editAssignmentForm').on('submit', event => {
             event.preventDefault()
 
             //get course ID
-            const courseId = $(this).data('course-id');
+            const courseId = $(event.target).data('course-id');
 
-            const formData = new FormData(this);
+            const formData = new FormData(event.target);
 
-            axios.put(`/api/assignments/${id}`, formData).then(response => {
+            axios.put(`/api/assignments/${id}`, formData).then(({ data: response }) => {
                 console.log('response update assignment', response)
-                window.location.href = `/course/detail/${courseId}`
                 if (!response.success) {
                     return (`An error occurred: ${response.message}`)
                 }
+                alert('Update assignment successfully')
+                window.location.href = `/course/detail/${courseId}`
             })
         })
     })
