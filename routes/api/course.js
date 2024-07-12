@@ -167,15 +167,26 @@ export default (app, utils) => {
 
             // assignments list
             const assignmentsData = assignments.map(assignment => {
+                const data = _.reduce(assignment.results, (result, studentAssignment) => {
+                    result.marks += studentAssignment.marks || 0
+                    if (!!studentAssignment.marks) result.markedCount++
+                    if (!!studentAssignment.studentFileUrl) result.submittedCount++
+                    if (studentAssignment.marks >= assignment.passingMarks) result.status.passed++
+                    if (studentAssignment.marks < assignment.passingMarks) result.status.failed++
+                    return result
+                }, {
+                    marks: 0,
+                    markedCount: 0,
+                    submittedCount: 0,
+                    status: {
+                        passed: 0,
+                        failed: 0,
+                    }
+                })
                 return {
                     ..._.pick(assignment, ['_id', 'name', 'marks', 'dueDate', 'fileUrl']),
-                    avgMarks: _.sumBy(assignment.results, 'marks') / assignment.totalMarks,
-                    markedCount: _.chain(assignment.results).countBy(item => !!item.marks).get('true').value() || 0,
-                    submittedCount: _.chain(assignment.results).countBy(item => !!item.studentFileUrl).get('true').value() || 0,
-                    status: {
-                        passed: _.chain(assignment.results).countBy(item => item.marks >= assignment.passingMarks).get('true').value() || 0,
-                        failed:  _.chain(assignment.results).countBy(item => item.marks < assignment.passingMarks).get('true').value() || 0,
-                    }
+                    ...data,
+                    avgMarks: data.marks / data.submittedCount,
                 }
             })
 
@@ -225,11 +236,6 @@ export default (app, utils) => {
                 course,
                 students,
                 assignments: assignmentsData,
-
-                _debug: {
-                    assignments,
-                    attendances
-                }
             })
         } catch (err) {
             console.log(err)

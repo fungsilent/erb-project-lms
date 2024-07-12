@@ -83,7 +83,6 @@ export default (app, utils) => {
         const announcementId = req.params.id
         try {
             let announcement = await Announcement.findOne({_id:announcementId});
-            console.log(announcement);
             if (announcement) { //if return false, no action
                 announcement.content = content;
                 announcement.date = moment().toDate(),
@@ -96,7 +95,6 @@ export default (app, utils) => {
                 // await announcement.updateOne ({_id:announcementId}, announcement);
                 await announcement.save()
             }
-            console.log(announcement);
             utils.sendSuccess(res)
         } catch (err) {
             console.log(err)

@@ -152,13 +152,13 @@ export default (app, utils) => {
             }
             
             marks.forEach(mark => {
-                const existingMark = assignment.results.find(result => result.studentId.toString() === mark.studentId);
+                const existingMark = assignment.results.find(result => result.studentId.equals(mark.studentId))
                 if (existingMark) {
-                    existingMark.marks = mark.marks;
+                    // set marks while submitted assignment
+                    existingMark.marks = !!existingMark.studentFileUrl ? mark.marks : null
                 } else {
                     assignment.results.push({
                         studentId: mark.studentId,
-                        marks: mark.marks
                     });
                 }
             });

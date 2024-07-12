@@ -148,8 +148,8 @@
             students.forEach(student => {
                 $.cloneTemplate('#studentItem', {
                     ...student,
-                    marks: `${student.marks.sum}/${student.marks.total} (${student.marks.sum / student.marks.total * 100}%)`,
-                    attendanceRatio: `${Math.trunc(student.attendance.ratio * 100)}%`
+                    marks: `${student.marks.sum}/${student.marks.total} (${(student.marks.sum / student.marks.total * 100).toFixed(2)}%)`,
+                    attendanceRatio: `${Math.trunc(student.attendance.ratio * 100).toFixed(2)}%`
                 })
             })
         }
@@ -160,7 +160,7 @@
                     ...assignment,
                     id: assignment._id,
                     dueDate: moment(assignment.dueDate).utc().format('DD-MM-YYYY'),
-                    avgMarks: assignment.avgMarks * 100,
+                    avgMarks: assignment.avgMarks.toFixed(2),
                 })
             })
         }
