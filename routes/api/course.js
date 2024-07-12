@@ -205,7 +205,9 @@ export default (app, utils) => {
 
                 // attendance ratio
                 const attendancesData = attendances.reduce((result, attendance) => {
-                    result[attendance.status] += 1
+                    if (attendance.student.equals(student._id)) {
+                        result[attendance.status] += 1
+                    }
                     return result
                 }, {
                     present: 0,

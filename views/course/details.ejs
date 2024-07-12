@@ -149,7 +149,7 @@
                 $.cloneTemplate('#studentItem', {
                     ...student,
                     marks: `${student.marks.sum}/${student.marks.total} (${student.marks.sum / student.marks.total * 100}%)`,
-                    attendanceRatio: `${Math.trunc(student.attendanceRatio * 100)}%`
+                    attendanceRatio: `${Math.trunc(student.attendance.ratio * 100)}%`
                 })
             })
         }
