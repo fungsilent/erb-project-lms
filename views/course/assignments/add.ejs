@@ -52,17 +52,17 @@
             const elem = $.cloneTemplate('#assignmentTemplate', {
                 assignmentCount: assignmentCount
             }, { insert: false });
-            $('#addAssignmentsForm').before(elem);
+            $('#assignmentTemplate').before(elem);
             elem.find('.due-date').flatpickr({ dateFormat: 'Y-m-d' });
         }
         // create one by default
         addAssignment()
 
         axios.get(`/api/course/${courseId}`).then(({ data: response }) => {
+            console.log('response', response)
             if (!response.success) {
                 return alert(`An error occurred: ${response.message}`);
             }
-            console.log('response', response)
             const course = response.data;   
             $('#courseName').text(course.name);
 
@@ -74,15 +74,15 @@
 
         $('#addAssignmentsForm').on('submit', event => {
             event.preventDefault();
-            const formData = new FormData(event.target);
 
+            const formData = new FormData(event.target);
             const files = document.querySelectorAll('input[type="file"]');
 
             files.forEach((fileInput, index) => {
                 console.log(`File input ${index}:`, fileInput.files);
             });
 
-            formData.append('course', courseId);            
+            formData.append('course', courseId);     
 
 
             axios.post('/api/assignments/upload', formData).then(({ data: response }) => {
