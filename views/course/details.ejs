@@ -160,7 +160,7 @@
                     ...assignment,
                     id: assignment._id,
                     dueDate: moment(assignment.dueDate).utc().format('DD-MM-YYYY'),
-                    avgMarks: assignment.avgMarks.toFixed(2),
+                    avgMarks: assignment.avgMarks?.toFixed(2) || 0,
                 })
             })
         }
