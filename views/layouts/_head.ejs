@@ -107,6 +107,7 @@
             insert = true,
             html = false,
             role = '',
+            show = [],
         } = options
 
         let elem = $(selector).clone().html()
@@ -114,23 +115,28 @@
             console.log(`[cloneTemplate] selector not found: ${selector}`)
             return
         }
+
+        // set data value
         for (const key in data) {
             elem = elem.replaceAll(`\${${key}}`, data[key])
         }
-        elem = $(elem)
 
         // option handle
-        if (role) {
-            const temp = $('<div></div>').append(elem)
-            temp.find(`.${role}`).removeClass('hide')
-            elem = temp.children()
-        }
+        let temp = $('<div></div>').append(elem)
 
-        if (insert) {
-            $(selector).before(elem)
-        } else if (html) {
-            return $('<div></div>').append(elem).html()
+        if (role) {
+            temp.find(`.${role}`).removeClass('hide')
         }
-        return $(elem)
+        show.forEach(className => {
+            temp.find(`.${className}`).removeClass('hide')
+        })
+
+        // output
+        if (insert) {
+            $(selector).before(temp.children())
+        } else if (html) {
+            return temp.html()
+        }
+        return $(temp.children())
     }
 </script>

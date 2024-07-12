@@ -1,10 +1,11 @@
+import multer from 'multer';
+import fs from 'fs';
+import moment from 'moment'; // Ensure moment.js is imported
+import _ from 'lodash'
 import Course from '#root/db/models/Course';
 import Assignment from '#root/db/models/Assignment';
 import Attendance from '#root/db/models/Attendance';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import moment from 'moment'; // Ensure moment.js is imported
+import { name } from 'ejs';
 
 // Set up multer for file uploads
 const storage = multer.diskStorage({
@@ -28,34 +29,50 @@ export default (app, utils) => {
     // Course Details (Student)
     app.get('/api/course/student/:courseId', async (req, res) => {
         try {
-            const courseId = req.params.courseId;
-            const studentId = req.user._id; // Assuming req.user contains the logged-in user's info
+            const courseId = req.params.courseId
+            const studentId = req.user._id // Assuming req.user contains the logged-in user's info
 
             const course = await Course.findById(courseId)
                 .populate('teacher')
-                .populate({ path: 'students', match: { _id: studentId } })
                 .lean();
     
-            const assignments = await Assignment.find({ courseId }) // Corrected to find by courseId
-                .populate({ path: 'results.studentId', match: { _id: studentId } })
-                .lean();
+            // assignments
+            const assignments = await Assignment.find({ courseId }).lean() // Corrected to find by courseId
+            const studentAssignments = assignments.map(assignment => {
+                const studentAssignment = _.find(assignment.results, item => item.studentId.equals(studentId))
+                return {
+                    ..._.pick(assignment, ['name', 'dueDate', 'fileUrl']),
+                    marks: studentAssignment?.marks || -1,
+                    studentFileUrl: studentAssignment?.studentFileUrl || '',
+                    studentFileName: studentAssignment?.originalFileName || '',
+                }
+            })
 
-            const attendanceRecords = await Attendance.find({ course: courseId, student: studentId })
-                .populate('student')
-                .lean();
+            // attendance
+            const attendances = await Attendance.find({ course: courseId, student: studentId }).lean();
+            const attendanceCount = attendances.reduce((count, attendance) => {
+                if (attendance.status === 'present') {
+                    count.present++
+                }
+                count.total++
+                return count
+            }, {
+                present: 0,
+                total: 0
+            })
+            const attendanceRatio = attendanceCount.total ? ((attendanceCount.present / attendanceCount.total) * 100).toFixed(2) : 0
             
-            res.status(200).json({
-                success: true,
+            utils.sendSuccess(res, {
                 course,
-                assignments: assignments.map(assignment => ({
-                    ...assignment,
-                    results: assignment.results.filter(result => result.studentId._id.toString() === studentId.toString())
-                })),
-                attendanceRecords
-            });
+                assignments: studentAssignments,
+                attendance: {
+                    ratio: attendanceRatio,
+                    list: attendances,
+                },
+            })
         } catch (err) {
             console.error('Error fetching course details:', err);
-            res.status(500).json({ success: false, message: 'Error fetching course details' });
+            utils.sendError('Error fetching course details')
         }
     });
 
@@ -69,7 +86,7 @@ export default (app, utils) => {
 
             const assignment = await Assignment.findById(assignmentId);
             if (!assignment) {
-                return res.status(404).json({ success: false, message: 'Assignment not found' });
+                return utils.sendError('Assignment not found')
             }
 
             const resultIndex = assignment.results.findIndex(result => result.studentId.toString() === studentId.toString());
@@ -89,10 +106,10 @@ export default (app, utils) => {
 
             await assignment.save();
 
-            res.status(200).json({ success: true, message: 'Assignment submitted successfully' });
+            utils.sendSuccess(res)
         } catch (err) {
             console.error('Error uploading assignment:', err);
-            res.status(500).json({ success: false, message: 'Error uploading assignment', error: err.message });
+            utils.sendError('Error uploading assignment')
         }
     });
 };

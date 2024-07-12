@@ -104,7 +104,7 @@
         axios.get(`/api/attendance/${courseId}`).then(({ data: response }) => {
             console.log('response', response)
             if (!response.success) {
-                alert(`Error fetching course details: ${response.message}`)
+                return (`Error fetching course details: ${response.message}`)
             }
             const course = response.data
 
@@ -147,7 +147,7 @@
                 }).then(({ data: response }) => {
                     console.log('response', response)
                     if (!response.success) {
-                        alert(`Error fetching attendance records: ${response.message}`)
+                        return alert(`Error fetching attendance records: ${response.message}`)
                     }
                     
                     const records = response.data
@@ -185,7 +185,7 @@
 
             axios.post(`/api/attendance/${courseId}/mark`, data).then(({ data: response }) => {
                 if (!response.success) {
-                    alert(`Error: ${response.message}`)
+                    return alert(`Error: ${response.message}`)
                 }
                 alert('Save attendance successful')
             })

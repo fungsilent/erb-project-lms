@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import _ from 'lodash'
 import Course from '#root/db/models/Course';
 import User from '#root/db/models/User';
 import Assignment from '#root/db/models/Assignment';
@@ -153,29 +154,83 @@ export default (app, utils) => {
     });
 
     // course details (GET)
-    app.get('/api/course/details/:courseId', async (req, res) => {
+    app.get('/api/course/details/:id', async (req, res) => {
         try {
-            const courseId = req.params.courseId;
+            const courseId = req.params.id;
     
             const course = await Course.findById(courseId)
                 .populate('teacher')
                 .populate('students')
                 .lean();
-    
-            const assignments = await Assignment.find({ courseId })
-                .populate('results.studentId')
-                .lean();
-    
-            const attendanceRecords = await Attendance.find({ course: courseId })
-                .populate('student')
-                .lean();
+            const assignments = await Assignment.find({ courseId }).lean()
+            const attendances = await Attendance.find({ course: courseId }).lean()
+
+            // assignments list
+            const assignmentsData = assignments.map(assignment => {
+                return {
+                    ..._.pick(assignment, ['_id', 'name', 'marks', 'dueDate', 'fileUrl']),
+                    avgMarks: _.sumBy(assignment.results, 'marks') / assignment.totalMarks,
+                    markedCount: _.chain(assignment.results).countBy(item => !!item.marks).get('true').value() || 0,
+                    submittedCount: _.chain(assignment.results).countBy(item => !!item.studentFileUrl).get('true').value() || 0,
+                    status: {
+                        passed: _.chain(assignment.results).countBy(item => item.marks >= assignment.passingMarks).get('true').value() || 0,
+                        failed:  _.chain(assignment.results).countBy(item => item.marks < assignment.passingMarks).get('true').value() || 0,
+                    }
+                }
+            })
+
+            // students list
+            const courseDays = utils.getCousreDays(course)
+            const students = course.students.map(student => {
+                let data = {
+                    name: student.name,
+                    email: student.email,
+                }
+
+                // assignment marks
+                const allAssignmentMarks = assignments.reduce((result, assignment) => {
+                    const studentAssignment = _.find(assignment.results, item => item.studentId.equals(student._id))
+                    const marks = studentAssignment?.marks || 0
+                    result.sum += marks
+                    result.total += assignment.totalMarks
+                    return result
+                }, {
+                    sum: 0,
+                    total: 0,
+                })
+                data.marks = {
+                    sum: allAssignmentMarks.sum,
+                    total:  allAssignmentMarks.total,
+                }
+
+                // attendance ratio
+                const attendancesData = attendances.reduce((result, attendance) => {
+                    result[attendance.status] += 1
+                    return result
+                }, {
+                    present: 0,
+                    absent: 0,
+                    late: 0,
+                })
+                data.attendance = {
+                    ...attendancesData,
+                    ratio: attendancesData.present / courseDays.length
+                }
+                return data
+            })
             
             utils.sendSuccess(res, {
                 course,
-                assignments,
-                attendanceRecords
+                students,
+                assignments: assignmentsData,
+
+                _debug: {
+                    assignments,
+                    attendances
+                }
             })
         } catch (err) {
+            console.log(err)
             utils.sendError(res, 'Error fetching course details')
         }
     });

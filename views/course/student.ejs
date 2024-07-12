@@ -18,17 +18,6 @@
             </table>
         </div>
     </div>
-
-    <div class="card mb-4">
-        <div id="studentDetails" class="card-body">
-            <h4 class="card-title">Your Details</h4>
-            <table class="table table-striped table-bordered">
-                <tr><th>Name</th><td id="studentName"></td></tr>
-                <tr><th>Email</th><td id="studentEmail"></td></tr>
-                <tr><th>Attendance Ratio</th><td id="studentAttendanceRatio"></td></tr>
-            </table>
-        </div>
-    </div>
     
     <div class="card mb-4">
         <div id="assignmentList" class="card-body">
@@ -44,7 +33,24 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="assignments"></tbody>
+                <tbody id="assignments">
+                    <template id="assignmentItem">
+                        <tr>
+                            <td>${name}</td>
+                            <td>${marks}</td>
+                            <td>${dueDate}</td>
+                            <td><a href="${assignmentFileUrl}" target="_blank">View Assignment</a></td>
+                            <td>
+                                <a href="${studentFileUrl}" target="_blank" class="student-file hide">${studentFileName}</a>
+                                <span class="no-student-file hide">N/A</span>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary edit-assignment hide" data-assignment-id="${id}">Edit Assignment</button>
+                                <button class="btn btn-primary upload-assignment hide" data-assignment-id="${id}">Upload Assignment</button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
             </table>
         </div>
     </div>
@@ -52,15 +58,25 @@
     <div class="card mb-4">
         <div id="attendanceList" class="card-body">
             <h4 class="card-title">Attendance List</h4>
+            <div class="row pt-2 pb-2 mb-2">
+                <div class="col text"><b>Attendance Ratio</b></div>
+                <div class="col"><span id="studentAttendanceRatio"></span></div>
+            </div>
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <th>Student Name</th>
                         <th>Date</th>
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="attendances"></tbody>
+                <tbody id="attendances">
+                    <template id="attendanceItem">
+                        <tr>
+                            <td>${date}</td>
+                            <td>${status}</td>
+                        </tr>
+                    </template>
+                </tbody>
             </table>
         </div>
     </div>
@@ -95,180 +111,132 @@
 
 <script>
     $(document).ready(() => {
-        $(document).on('userInfoEvent', (event, user) => {
-            const { id } = $.getUrlParameter('/course/student/:id');
-            const studentId = user._id;
+        const { courseId } = $.getUrlParameter('/course/student/:courseId')
 
-            axios.get(`/api/course/details/${id}`)
-                .then(response => {
-                    if (response.data.success) {
-                        const { course, assignments, attendanceRecords } = response.data;
-                        displayCourseDetails(course);
-                        displayStudentDetails(user, attendanceRecords);
-                        displayAssignmentList(assignments, user);
-                        displayAttendanceList(attendanceRecords);
-                        displayAttendanceChart(attendanceRecords);
-                        displayMarksChart(assignments, user);
-                    } else {
-                        alert(`Error fetching course details: ${response.data.message}`);
+        axios.get(`/api/course/student/${courseId}`).then(({ data: response }) => {
+            console.log('response', response)
+            if (!response.success) {
+                return alert(`Error fetching course details: ${response.message}`)
+            }
+            const { course, assignments, attendance } = response.data;
+            displayCourseDetails(course)
+            displayAssignmentList(assignments)
+            displayAttendanceList(attendance)
+            displayAttendanceChart(attendance.list)
+            displayMarksChart(assignments)
+        })
+        
+
+        // Handle file input change
+        $('#assignmentFileInput').on('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const assignmentId = $(this).data('assignmentId');
+                const formData = new FormData();
+                formData.append('assignment', file);
+                formData.append('assignmentId', assignmentId);
+
+                axios.post('/api/course/student/upload', formData).then(({ data: response }) => {
+                    if (!response.success) {
+                        return alert(`Error uploading assignment: ${response.message}`);
                     }
+                    alert('Assignment uploaded successfully');
+                    location.reload(); // Reload the page to update the assignment list
                 })
-                .catch(err => {
-                    alert(`An error occurred: ${err.response.data}`);
-                });
-            
+            }
+        });
 
-            // Handle file input change
-            $('#assignmentFileInput').on('change', function() {
-                const file = this.files[0];
-                if (file) {
-                    const assignmentId = $(this).data('assignmentId');
-                    const formData = new FormData();
-                    formData.append('assignment', file);
-                    formData.append('assignmentId', assignmentId);
 
-                    axios.post('/api/course/student/upload', formData)
-                        .then(response => {
-                            if (response.data.success) {
-                                alert('Assignment uploaded successfully');
-                                location.reload(); // Reload the page to update the assignment list
-                            } else {
-                                alert(`Error uploading assignment: ${response.data.message}`);
-                            }
-                        })
-                        .catch(err => {
-                            alert(`An error occurred: ${err.response.data}`);
-                        });
+        // Handle upload and edit buttons
+        $(document).on('click', '.upload-assignment, .edit-assignment', () => {
+            const assignmentId = $(event.target).data('assignment-id');
+            $('#assignmentFileInput').data('assignmentId', assignmentId).click();
+        });
+
+        const displayCourseDetails = course => {
+            $('#courseName').text(course.name);
+            $('#courseNameDetail').text(course.name);
+            $('#courseTeacher').text(course.teacher.name);
+            $('#courseStartDate').text(new Date(course.startDate).toLocaleDateString());
+            $('#courseEndDate').text(new Date(course.endDate).toLocaleDateString());
+            $('#courseExcludeDates').text(course.excludeDates.map(date => new Date(date).toLocaleDateString()).join(', '));
+            //breadcrumb
+            $('#courseBreadcrumb').text(course.name);
+
+        }
+
+        const displayAssignmentList = assignments => {
+            assignments.forEach(assignment => {
+                $.cloneTemplate('#assignmentItem', {
+                    ...assignment,
+                    assignmentFileUrl: assignment.fileUrl,
+                    marks: assignment.marks === -1 ? 'N/A' : assignment.marks,
+                    dueDate: moment(assignment.dueDate).utc().format('DD-MM-YYYY'),
+                }, {
+                    show: [
+                        assignment.studentFileUrl ? 'student-file' : 'no-student-file',
+                        assignment.studentFileUrl ? 'edit-assignment' : 'upload-assignment',
+                    ]
+                })
+            });
+        }
+
+        const displayAttendanceList = attendance => {
+            $('#studentAttendanceRatio').text(`${attendance.ratio}%`)
+            attendance.list.forEach(record => {
+                $.cloneTemplate('#attendanceItem', {
+                    ...record,
+                    date: moment(record.date).utc().format('DD-MM-YYYY'),
+                })
+            })
+        }
+
+        const displayAttendanceChart = list => {
+            const attendanceStats = {
+                present: 0,
+                absent: 0,
+                late: 0
+            }
+            list.forEach(record => attendanceStats[record.status]++)
+
+            const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+            new Chart(attendanceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Present', 'Absent', 'Late'],
+                    datasets: [{
+                        data: [attendanceStats.present, attendanceStats.absent, attendanceStats.late],
+                        backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)']
+                    }]
                 }
             });
+        }
 
-
-            // Handle upload and edit buttons
-            $(document).on('click', '.upload-assignment, .edit-assignment', function () {
-                const assignmentId = $(this).data('assignment-id');
-                $('#assignmentFileInput').data('assignmentId', assignmentId).click();
-            });
-
-            function displayCourseDetails(course) {
-                $('#courseName').text(course.name);
-                $('#courseNameDetail').text(course.name);
-                $('#courseTeacher').text(course.teacher.name);
-                $('#courseStartDate').text(new Date(course.startDate).toLocaleDateString());
-                $('#courseEndDate').text(new Date(course.endDate).toLocaleDateString());
-                $('#courseExcludeDates').text(course.excludeDates.map(date => new Date(date).toLocaleDateString()).join(', '));
-                //breadcrumb
-                $('#courseBreadcrumb').text(course.name);
-
-            }
-
-            function displayStudentDetails(student, attendanceRecords) {
-                $('#studentName').text(student.name);
-                $('#studentEmail').text(student.email);
-
-                // Calculate attendance ratio
-                const studentAttendance = attendanceRecords.reduce((acc, record) => {
-                    if (record.student._id === user._id) {
-                    if (record.status === 'present') {
-                        acc.present++;
-                    }
-                    acc.total++;
-                    }
-                    return acc;
-                }, { present: 0, total: 0 });
-                const attendanceRatio = studentAttendance.total ? ((studentAttendance.present / studentAttendance.total) * 100).toFixed(2) + '%' : 'N/A';
-                $('#studentAttendanceRatio').text(attendanceRatio);
-            }
-
-            function displayAssignmentList(assignments, user) {
-                const assignmentList = $('#assignments');
-                assignments.forEach(assignment => {
-                    const studentResult = assignment.results.find(result => result.studentId._id === user._id);
-                    const studentMarks = studentResult && studentResult.marks !== 0 ? studentResult.marks : 'N/A';
-                    const submittedAssignment = studentResult ? `<a href="${studentResult.studentFileUrl}" target="_blank">${studentResult.originalFileName}</a>` : 'N/A';
-                    const actionButton = studentResult ? 
-                        `<button class="btn btn-primary edit-assignment" data-assignment-id="${assignment._id}">Edit Assignment</button>` :
-                        `<button class="btn btn-primary upload-assignment" data-assignment-id="${assignment._id}">Upload Assignment</button>`;
-
-                    assignmentList.append(`<tr>
-                        <td>${assignment.name}</td>
-                        <td>${studentMarks}</td>
-                        <td>${new Date(assignment.dueDate).toLocaleDateString()}</td>
-                        <td><a href="${assignment.fileUrl}" target="_blank">View Assignment</a></td>
-                        <td>${submittedAssignment}</td>
-                        <td>${actionButton}</td>
-                    </tr>`);
-                });
-            }
-
-            function displayAttendanceList(attendanceRecords) {
-                const attendanceList = $('#attendances');
-                attendanceRecords.forEach(record => {
-                    if (record.student._id === user._id) {
-                        attendanceList.append(`<tr>
-                            <td>${record.student.name}</td>
-                            <td>${new Date(record.date).toLocaleDateString()}</td>
-                            <td>${record.status}</td>
-                        </tr>`);
-                    }
-                });
-            }
-
-            function displayAttendanceChart(attendanceRecords) {
-                const attendanceStats = {
-                    present: 0,
-                    absent: 0,
-                    late: 0
-                };
-                attendanceRecords.forEach(record => {
-                    if (record.student._id === user._id) {
-                        attendanceStats[record.status]++;
-                    }
-                });
-
-                const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
-                new Chart(attendanceCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Present', 'Absent', 'Late'],
-                        datasets: [{
-                            data: [attendanceStats.present, attendanceStats.absent, attendanceStats.late],
-                            backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)']
-                        }]
-                    }
-                });
-            }
-
-            function displayMarksChart(assignments, user) {
-                const assignmentNames = assignments.map(assignment => assignment.name);
-                const studentMarks = assignments.map(assignment => {
-                    const result = assignment.results.find(result => result.studentId._id === user._id);
-                    return result ? result.marks : 0;
-                });
-            
-
-                const marksCtx = document.getElementById('marksChart').getContext('2d');
-                new Chart(marksCtx, {
-                    type: 'line',
-                    data: {
-                        labels: assignmentNames,
-                        datasets: [{
-                            label: 'Marks',
-                            data: studentMarks,
-                            backgroundColor: 'rgb(54, 162, 235)'
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100
-                            }
+        const displayMarksChart = assignments => {
+            const assignmentNames = assignments.map(assignment => assignment.name)
+            const studentMarks = assignments.map(assignment => assignment.marks === -1 ? 0 : assignment.marks)
+        
+            const marksCtx = document.getElementById('marksChart').getContext('2d');
+            new Chart(marksCtx, {
+                type: 'bar',
+                data: {
+                    labels: assignmentNames,
+                    datasets: [{
+                        label: 'Marks',
+                        data: studentMarks,
+                        backgroundColor: 'rgb(54, 162, 235)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
                         }
                     }
-                });
-            }
-
-        });
+                }
+            });
+        }
     })
 
 </script>

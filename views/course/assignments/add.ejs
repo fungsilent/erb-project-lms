@@ -87,7 +87,7 @@
 
             axios.post('/api/assignments/upload', formData).then(({ data: response }) => {
                 if (!response.success) {
-                    console.error('Upload failed:', response.message);
+                    return console.error('Upload failed:', response.message);
                 }
                 console.log('Upload successful:', response);
                 window.location.href = `/course/detail/${courseId}`;

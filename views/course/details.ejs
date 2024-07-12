@@ -28,7 +28,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Assignment Avg Marks</th>
+                        <th>Assignment Marks</th>
                         <th>Attendance Ratio</th>
                     </tr>
                 </thead>
@@ -37,7 +37,7 @@
                         <tr>
                             <td>${name}</td>
                             <td>${email}</td>
-                            <td>${avgMarks}</td>
+                            <td>${marks}</td>
                             <td>${attendanceRatio}</td>
                         </tr>
                     </template>
@@ -55,8 +55,10 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Avg Marks</th>
                         <th>Due Date</th>
+                        <th>Avg Marks</th>
+                        <th>Marked</th>
+                        <th>Submitted</th>
                         <th>Assignment Link</th>
                         <th>Action</th>
                     </tr>
@@ -65,10 +67,12 @@
                     <template id="assignmentItem">
                         <tr>
                             <td>${name}</td>
-                            <td>${avgMarks}</td>
                             <td>${dueDate}</td>
+                            <td>${avgMarks}</td>
+                            <td>${markedCount}</td>
+                            <td>${submittedCount}</td>
                             <td>
-                                <a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-secondary">View Submission</a>
+                                <a href="${fileUrl}" target="_blank">View Submission</a>
                             </td>
                             <td>
                                 <a href="/course/assignments/mark/${id}" class="btn btn-secondary btn-sm">Mark assignment</a>
@@ -116,11 +120,16 @@
             if (!response.success) {
                 return alert(`Error fetching course details: ${response.message}`)
             }
-            const { course, assignments, attendanceRecords } = response.data;
+            const { course, assignments, students } = response.data;
 
-            //breadcrumb
-            $('#courseBreadcrumb').text(course.name).attr('href', `/course/detail/${course._id}`);
-
+            displayCourseDetails(course)
+            displayStudentList(students)
+            displayAssignmentList(assignments)
+            displayAttendanceChart(students)
+            displayMarksChart(assignments)
+        })
+        
+        const displayCourseDetails = course => {
             // Course Details
             $('#courseName').text(course.name)
             $('#courseNameDetail').text(course.name)
@@ -130,106 +139,78 @@
             $('#courseExcludeDates').text(course.excludeDates.map(date => moment(date).format('YYYY-MM-DD')).join(', '))
             $('#courseStudentCount').text(course.students.length)
 
-            // Student List
-            const studentMarks = {};
-            assignments.forEach(assignment => {
-                assignment.results.forEach(result => {
-                    if (!studentMarks[result.studentId._id]) {
-                        studentMarks[result.studentId._id] = { totalMarks: 0, count: 0 };
-                    }
-                    studentMarks[result.studentId._id].totalMarks += result.marks;
-                    studentMarks[result.studentId._id].count++;
-                });
-            });
+            //breadcrumb
+            $('#courseBreadcrumb').text(course.name).attr('href', `/course/detail/${course._id}`);
 
-            const studentAttendance = {};
-            attendanceRecords.forEach(record => {
-                if (!studentAttendance[record.student._id]) {
-                    studentAttendance[record.student._id] = { present: 0, total: 0 };
-                }
-                if (record.status === 'present') {
-                    studentAttendance[record.student._id].present++;
-                }
-                studentAttendance[record.student._id].total++;
-            });
+        }
 
-            const studentList = $('#students');
-            course.students.forEach(student => {
-                const avgMarks = studentMarks[student._id] ? (studentMarks[student._id].totalMarks / studentMarks[student._id].count).toFixed(2) : 'N/A';
-                const attendanceRatio = studentAttendance[student._id] ? ((studentAttendance[student._id].present / studentAttendance[student._id].total) * 100).toFixed(2) + '%' : 'N/A';
-
+        const displayStudentList = students => {
+            students.forEach(student => {
                 $.cloneTemplate('#studentItem', {
                     ...student,
-                    avgMarks,
-                    attendanceRatio,
+                    marks: `${student.marks.sum}/${student.marks.total} (${student.marks.sum / student.marks.total * 100}%)`,
+                    attendanceRatio: `${Math.trunc(student.attendanceRatio * 100)}%`
                 })
-            });
+            })
+        }
 
-            // Assignment List
-            const assignmentList = $('#assignments');
+        const displayAssignmentList = assignments => {
             assignments.forEach(assignment => {
-                const totalMarks = assignment.results.reduce((acc, result) => acc + result.marks, 0);
-                const avgMarks = assignment.results.length > 0 ? parseFloat(totalMarks / assignment.results.length).toFixed(2) : 'N/A';
-
                 $.cloneTemplate('#assignmentItem', {
                     ...assignment,
                     id: assignment._id,
                     dueDate: moment(assignment.dueDate).utc().format('DD-MM-YYYY'),
-                    avgMarks,
-                    attendanceRatio,
+                    avgMarks: assignment.avgMarks * 100,
                 })
-            });
+            })
+        }
 
-            // Attendance Ratio
-            const attendanceStats = {
+        const displayAttendanceChart = students => {
+            const status = students.reduce((result, student) => {
+                console.log(student)
+                result.present += student.attendance.present
+                result.absent += student.attendance.absent
+                result.late += student.attendance.late
+                return result
+            }, {
                 present: 0,
                 absent: 0,
-                late: 0
-            };
-            attendanceRecords.forEach(record => {
-                attendanceStats[record.status]++;
-            });
-
+                late: 0,
+            })
             const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
             new Chart(attendanceCtx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Present', 'Absent', 'Late'],
                     datasets: [{
-                        data: [attendanceStats.present, attendanceStats.absent, attendanceStats.late],
+                        data: [status.present, status.absent, status.late],
                         backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)']
                     }]
                 }
             });
+        }
 
-            // Assignment Marks Ratio
-            const marksStats = {
+        const displayMarksChart = assignments => {
+            const status = assignments.reduce((result, assignment) => {
+                result.passed += assignment.status.passed
+                result.failed += assignment.status.failed
+                return result
+            }, {
                 passed: 0,
-                failed: 0
-            };
-
-            assignments.forEach(assignment => {
-                assignment.results.forEach(result => {
-                    if (result.marks >= assignment.passingMarks) {
-                        marksStats.passed++;
-                    } else {
-                        marksStats.failed++;
-                    }
-                });
-            });
-
+                failed: 0,
+            })
             const marksCtx = document.getElementById('marksChart').getContext('2d');
             new Chart(marksCtx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Passed', 'Failed'],
                     datasets: [{
-                        data: [marksStats.passed, marksStats.failed],
+                        data: [status.passed, status.failed],
                         backgroundColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)']
                     }]
                 }
             })
-        })
+        }
 
         //add assignment
         $('#addAssignmentButton').on('click', event => {
@@ -243,7 +224,7 @@
 
                 axios.delete(`/api/assignments/${assignmentId}`).then(({ data: response }) => {
                     if (!response.success) {
-                        alert(`An error occurred: ${response.message}`)
+                        return alert(`An error occurred: ${response.message}`)
                     }
                     location.reload()
                 })
