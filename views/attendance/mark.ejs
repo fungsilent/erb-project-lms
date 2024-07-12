@@ -90,17 +90,6 @@
     $(document).ready(() => {
         const { courseId } = $.getUrlParameter('/attendance/mark/:courseId')
 
-        const getCousreDays = course => {
-            let current = moment(course.startDate)
-            let days = []
-            while (current.isSameOrBefore(course.endDate)) {
-                days.push(current.format('YYYY-MM-DD'))
-                current.add(1, 'days')
-            }
-            const excludeDates = course.excludeDates.map(date => moment(date).format('YYYY-MM-DD'))
-            return _.difference(days, excludeDates)
-        }
-
         axios.get(`/api/attendance/${courseId}`).then(({ data: response }) => {
             console.log('response', response)
             if (!response.success) {
@@ -109,8 +98,8 @@
             const course = response.data
 
             $('#courseName').text(course.name)
-            const courseDays = getCousreDays(course)
-            courseDays.forEach(day => {
+
+            course.days.forEach(day => {
                 $.cloneTemplate('#attendanceOption', {
                     value: day,
                     text: day,
@@ -118,8 +107,8 @@
             })
 
             let selected = moment().format('YYYY-MM-DD')
-            if (!courseDays.includes(selected)) {
-                selected = courseDays[0]
+            if (!course.days.includes(selected)) {
+                selected = course.days[0]
             }
             $('#attendanceDate').val(selected).change()
 
@@ -135,16 +124,16 @@
             const elem = $(event.target)
 
             //loading animation
-            $('#loadingAnimation').show();
-            $('#markAttendanceForm').hide(); 
+            $('#loadingAnimation').show()
+            $('#markAttendanceForm').hide();
 
             // Simulate loading delay
-            setTimeout(() => {
-                axios.get(`/api/attendance/${courseId}/mark`, {
-                    params: {
-                        date: moment(elem.val()).toISOString(true),
-                    }
-                }).then(({ data: response }) => {
+            axios.get(`/api/attendance/${courseId}/mark`, {
+                params: {
+                    date: moment(elem.val()).toISOString(true),
+                }
+            }).then(({ data: response }) => {
+                setTimeout(() => {
                     console.log('response', response)
                     if (!response.success) {
                         return alert(`Error fetching attendance records: ${response.message}`)
@@ -164,8 +153,8 @@
                     //loading animation
                     $('#loadingAnimation').hide(); 
                     $('#markAttendanceForm').show(); 
-                })
-            }, 500); // 1 second delay
+                }, 200)
+            })
         })
 
         $('#markAttendanceForm').on('submit', event => {

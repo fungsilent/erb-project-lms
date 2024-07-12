@@ -180,7 +180,7 @@ export default (app, utils) => {
             })
 
             // students list
-            const courseDays = utils.getCousreDays(course)
+            const courseDays = utils.getCourseDays(course)
             const students = course.students.map(student => {
                 let data = {
                     name: student.name,

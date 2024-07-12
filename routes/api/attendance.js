@@ -3,11 +3,15 @@ import Course from '#root/db/models/Course';
 import moment from 'moment';
 
 export default (app, utils) => {
-    // get cousre attendance info (GET)
+    // get Course attendance info (GET)
     app.get('/api/attendance/:courseId', async (req, res) => {
         try {
-            const course = await Course.findById(req.params.courseId).populate('students')
-            utils.sendSuccess(res, course)
+            const course = await Course.findById(req.params.courseId).populate('students').lean()
+            const courseDays = utils.getCourseDays(course)
+            utils.sendSuccess(res, {
+                ...course,
+                days: courseDays,
+            })
         } catch (err) {
             utils.sendError(res, 'Fetch course details failed')
         }

@@ -13,9 +13,10 @@ const getTimestamp = date => {
     return moment(date).unix() * 1000 // in seconds
 }
 
-const getCousreDays = course => {
+const getCourseDays = course => {
     let current = moment(course.startDate)
     let days = []
+    console.log(current.isSameOrBefore(course.endDate))
     while (current.isSameOrBefore(course.endDate)) {
         days.push(current.format('YYYY-MM-DD'))
         current.add(1, 'days')
@@ -28,5 +29,5 @@ export default {
     sendSuccess,
     sendError,
     getTimestamp,
-    getCousreDays,
+    getCourseDays,
 }
