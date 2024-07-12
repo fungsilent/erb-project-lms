@@ -167,7 +167,6 @@
 
         const displayAttendanceChart = students => {
             const status = students.reduce((result, student) => {
-                console.log(student)
                 result.present += student.attendance.present
                 result.absent += student.attendance.absent
                 result.late += student.attendance.late
