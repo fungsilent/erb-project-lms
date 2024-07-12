@@ -42,11 +42,11 @@ export default (app, utils) => {
     // get course detail (GET)
     app.get('/api/course/:id', async (req, res) => {
         try {
-            const course = await Course.findById(req.params.id).populate('teacher students');
+            const course = await Course.findById(req.params.id).populate('teacher students').lean();
             if (!course) {
                 throw new Error('Course not found');
             }
-            utils.sendSuccess(res, course);
+            utils.sendSuccess(res, course)
         } catch (err) {
             console.log(err);
             utils.sendError(res, err.message);

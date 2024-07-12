@@ -51,8 +51,8 @@
             assignmentCount++;
             const elem = $.cloneTemplate('#assignmentTemplate', {
                 assignmentCount: assignmentCount
-            });
-            $('#assignmentsContainer').before(elem);
+            }, { insert: false });
+            $('#addAssignmentsForm').before(elem);
             elem.find('.due-date').flatpickr({ dateFormat: 'Y-m-d' });
         }
         // create one by default
@@ -63,7 +63,7 @@
                 return alert(`An error occurred: ${response.message}`);
             }
             console.log('response', response)
-            const course = response.data;
+            const course = response.data;   
             $('#courseName').text(course.name);
 
             //breadcrumb

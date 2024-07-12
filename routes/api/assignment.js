@@ -57,7 +57,7 @@ export default (app, utils) => {
             const files = req.files;
 
             if (!files || files.length === 0) {
-                return res.status(400).json({ success: false, message: 'No files uploaded' });
+                return utils.sendError(res, 'No files uploaded')
             }
             const assignments = files.map((file, index) => {
                 const filePath = `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
