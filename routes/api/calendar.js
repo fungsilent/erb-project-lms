@@ -2,10 +2,17 @@ import Course from '#root/db/models/Course'
 
 export default (app, utils) => {
     app.get('/api/calendar/events', async (req, res) => {
+        let query = {};
         try {
-            const courses = await Course.find({
-                $or: [{ teacher: req.user._id }, { students: req.user._id }],
-            }).lean()
+            switch (req.user.role) {
+                case 'teacher':
+                    query = { teacher: req.user._id };
+                    break;
+                case 'student':
+                    query = { students: req.user._id };
+                    break;
+            }
+            const courses = await Course.find(query).lean();
 
             const formattedCourses = courses.map(course => ({
                 name: course.name,

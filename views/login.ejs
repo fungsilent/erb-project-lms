@@ -50,21 +50,19 @@
                 </svg>
             </button>
             <div class="menu dropdown-menu dropdown-menu-right">
-                <div class="dropdown-item disabled">
-                    <div>Default admin:</div>
-                    <div>email: admin@admin.com</div>
-                    <div>password: admin</div>
-                </div>
+                <button class="dropdown-item" data-email="admin@admin.com" data-password="admin">Admin</button>
+                <button class="dropdown-item" data-email="scope@teacher.com" data-password="demo">Teacher</button>
+                <button class="dropdown-item" data-email="std001@demo.com" data-password="demo">Student</button>
             </div>
         </div>
         <form id="loginForm">
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="text" class="form-control" id="email" name="email"  value="admin@admin.com">
+                <input type="text" class="form-control" id="email" name="email" value="">
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" class="form-control" id="password" name="password" value="admin" required>
+                <input type="password" class="form-control" id="password" name="password" value="" required>
             </div>
             <p class="error"></p>
             <button type="submit" class="btn btn-primary">Login</button>
@@ -88,4 +86,19 @@
             })
         })
     })
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const emailField = document.getElementById('email');
+        const passwordField = document.getElementById('password');
+        const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const email = this.getAttribute('data-email');
+                const password = this.getAttribute('data-password');
+                emailField.value = email;
+                passwordField.value = password;
+            });
+        });
+    });
 </script>

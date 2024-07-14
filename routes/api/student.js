@@ -41,10 +41,11 @@ export default (app, utils) => {
             const studentAssignments = assignments.map(assignment => {
                 const studentAssignment = _.find(assignment.results, item => item.studentId.equals(studentId))
                 return {
-                    ..._.pick(assignment, ['name', 'dueDate', 'fileUrl']),
+                    ..._.pick(assignment, ['name', 'dueDate', 'fileUrl', '_id']),
                     marks: studentAssignment?.marks || -1,
                     studentFileUrl: studentAssignment?.studentFileUrl || '',
                     studentFileName: studentAssignment?.originalFileName || '',
+                    studentId
                 }
             })
 

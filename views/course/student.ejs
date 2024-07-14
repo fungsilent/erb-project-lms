@@ -41,7 +41,7 @@
                             <td>${dueDate}</td>
                             <td><a href="${assignmentFileUrl}" target="_blank">View Assignment</a></td>
                             <td>
-                                <a href="${studentFileUrl}" target="_blank" class="student-file hide">${studentFileName}</a>
+                                <a href="/download/${id}/${studentId}" target="_blank" class="student-file hide">${studentFileName}</a>
                                 <span class="no-student-file hide">N/A</span>
                             </td>
                             <td>
@@ -140,7 +140,6 @@
                     if (!response.success) {
                         return alert(`Error uploading assignment: ${response.message}`);
                     }
-                    alert('Assignment uploaded successfully');
                     location.reload(); // Reload the page to update the assignment list
                 })
             }
@@ -172,6 +171,8 @@
                     assignmentFileUrl: assignment.fileUrl,
                     marks: assignment.marks === -1 ? 'N/A' : assignment.marks,
                     dueDate: moment(assignment.dueDate).utc().format('DD-MM-YYYY'),
+                    id: assignment._id,
+                    stdId: assignment.studentId
                 }, {
                     show: [
                         assignment.studentFileUrl ? 'student-file' : 'no-student-file',
