@@ -217,8 +217,9 @@
         })
 
         //delete assignment
-        $(document).on('click', '.delete-assignment', event => {
-            if (confirm('Are you sure you want to delete this assignment?')) {
+        $(document).on('click', '.delete-assignment', async event => {
+            const AssignmentConfirmed = await confirm('Are you sure you want to delete this assignment?');
+            if (AssignmentConfirmed) {
                 const assignmentId = $(event.target).data('id')
 
                 axios.delete(`/api/assignments/${assignmentId}`).then(({ data: response }) => {

@@ -5,7 +5,7 @@
   "name": "Certificate in Backend Web Developer",
   "description": "PE076DS",
   "teacher": {
-    "$oid": "6673f69df08b2cd9c5b203d2"
+    "$oid": "668e0629db355e9ef3430480"
   },
   "students": [
     {
@@ -138,7 +138,7 @@
   "name": "Certificate in Cyber Security Technician Training",
   "description": "CT299DS",
   "teacher": {
-    "$oid": "668e066adb355e9ef3430490"
+    "$oid": "668e0653db355e9ef3430488"
   },
   "students": [
     {
@@ -158,15 +158,15 @@
     }
   ],
   "startDate": {
-    "$date": "2024-07-28T00:00:00.000Z"
+    "$date": "2024-07-07T00:00:00.000Z"
   },
   "endDate": {
-    "$date": "2024-08-03T00:00:00.000Z"
+    "$date": "2024-07-13T00:00:00.000Z"
   },
   "maxStudents": 10,
   "excludeDates": [
     {
-      "$date": "2024-07-31T00:00:00.000Z"
+      "$date": "2024-07-10T00:00:00.000Z"
     }
   ],
   "color": "#f7f2e4",
@@ -216,7 +216,7 @@
   "name": "Certificate in Network Management",
   "description": "CT105ES",
   "teacher": {
-    "$oid": "668e0653db355e9ef3430488"
+    "$oid": "668e0684db355e9ef3430498"
   },
   "students": [
     {
@@ -236,13 +236,13 @@
     }
   ],
   "startDate": {
-    "$date": "2024-08-19T00:00:00.000Z"
+    "$date": "2024-07-21T00:00:00.000Z"
   },
   "endDate": {
-    "$date": "2024-08-30T00:00:00.000Z"
+    "$date": "2024-07-24T00:00:00.000Z"
   },
   "maxStudents": 10,
   "excludeDates": [],
-  "color": "#f7f4e4",
+  "color": "#fdd5b4",
   "__v": 0
 }]

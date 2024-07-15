@@ -29,7 +29,7 @@ export default (app, utils) => {
     app.get('/api/course/option', async (req, res) => {
         try {
             const teachers = await User.find({
-                role: { $in: ['teacher', 'admin', 'superAdmin'] },
+                role: { $in: ['teacher'] },
             });
             const students = await User.find({ role: 'student' });
             utils.sendSuccess(res, { teachers, students });
@@ -86,7 +86,7 @@ export default (app, utils) => {
                 color, //add course color
             });
             await newCourse.save();
-            utils.sendSuccess(res, course);
+            utils.sendSuccess(res, Course);
         } catch (err) {
             console.error('Error adding course:', err);
             utils.sendError(res, 'Error adding course');
@@ -146,7 +146,7 @@ export default (app, utils) => {
             if (!deletedCourse) {
                 return utils.sendError(res, 'Course not found');
             }
-            utils.sendError(res);
+            utils.sendSuccess(res);
         } catch (err) {
             console.error('Error deleting course:', err);
             utils.sendError(res, 'Error deleting course');

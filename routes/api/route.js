@@ -7,6 +7,7 @@ import announcementRouter from '#root/routes/api/announcement'
 import calendarRouter from '#root/routes/api/calendar'
 import assignmentRouter from '#root/routes/api/assignment'
 import studentRouter from '#root/routes/api/student'
+import downloadRouter from '#root/routes/api/download'
 
 export default (...all) => {
     const [app] = all
@@ -25,4 +26,5 @@ export default (...all) => {
     calendarRouter(...all)
     assignmentRouter(...all)
     studentRouter(...all)
+    downloadRouter(...all)
 };

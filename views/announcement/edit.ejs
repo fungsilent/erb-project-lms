@@ -65,8 +65,9 @@
             })
         })
 
-        $('.delete').click(event => {
-            if (confirm('Are you sure you want to delete this announcement?')) {
+        $('.delete').click(async event => {
+            const AnnouncementConfirmed = await confirm('Are you sure you want to delete this announcement?');
+            if (AnnouncementConfirmed) {
                 axios.delete(`/api/announcement/${id}`).then(({ data: response }) => {
                     console.log('response', response)
                     if (!response.success) {

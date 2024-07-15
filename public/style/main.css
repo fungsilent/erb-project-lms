@@ -1,60 +1,24 @@
-body {
-}
-
-a {
-}
-
 .dt-length label {
  padding-left: 8px;
-}
-/* outer */
-.container {
-
-}
-
-.mt-4 {
-
-}
-
-.table {
-
-}
-
-.table-striped {
-
-}
-
-.table-bordered {
-
-}
-
-.form-control{
-
-}
-
-.form-group{
-
-}
-
-/*form label*/
-.form-group label{
-
-}
-
-
-.btn{
-
-}
-
-.btn-primary{
-
-}
-
-.mt-2{
-
-
 }
 
 input[type="color"].form-control-color {
     height: 50px;
 }
+
+/* Custom styles for the modal */
+.modal-content {
+    border-radius: 10px;
+}
+.modal-header {
+    background-color: #343a40;
+    color: white;
+}
+.modal-footer .btn-primary {
+    background-color: #007bff;
+}
+.close {
+    color: #FFF;
+}
+
+  

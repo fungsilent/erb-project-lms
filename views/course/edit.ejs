@@ -171,8 +171,9 @@
             })
         })
 
-        $('#deleteCourseButton').on('click', () => {
-            if (confirm('Are you sure you want to delete this course?')) {
+        $('#deleteCourseButton').on('click', async () => {
+            const CourseConfirmed = await confirm('Are you sure you want to delete this course?');
+            if (CourseConfirmed) {
                 axios.delete(`/api/course/${id}`).then(({ data: response }) => {
                     console.log('response', response)
                     if (!response.success) {
