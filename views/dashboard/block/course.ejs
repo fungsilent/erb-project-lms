@@ -87,15 +87,9 @@ $(document).ready(() => {
     }
 
     const calculateDiffDays = course => {
-        // const startDate = new Date(course.startDate);
-        // const endDate = new Date(course.endDate);
-        // const excludedDate = course.excludeDates.length;
-        // const oneDay = 24 * 60 * 60 * 1000;
-        // const diffDays = Math.abs(((endDate - startDate) / oneDay) + 1 - excludedDate);
-        // console.log(startDate, endDate, excludedDate, diffDays)
-        const startDate = moment(course.startDate)
-        const endDate = moment(course.endDate)
-        const diffDays = endDate.diff(startDate, 'days') - course.excludeDates.length
+        const startDate = moment(course.startDate).startOf('day')
+        const endDate = moment(course.endDate).endOf('day')
+        const diffDays = Math.ceil(endDate.diff(startDate, 'days', true)) - course.excludeDates.length
         return diffDays;
     }
 
