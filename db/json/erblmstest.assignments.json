@@ -1,0 +1,317 @@
+[{
+  "_id": {
+    "$oid": "668e0ee7db355e9ef34307dc"
+  },
+  "name": "CT105ES Assignment",
+  "dueDate": {
+    "$date": "2024-08-30T00:00:00.000Z"
+  },
+  "totalMarks": 100,
+  "passingMarks": 50,
+  "fileUrl": "http://localhost:3000/uploads/1720585959326_20240710_CT105ES.pdf",
+  "courseId": {
+    "$oid": "668e0814db355e9ef3430584"
+  },
+  "results": [],
+  "uploadDate": {
+    "$date": "2024-07-10T04:32:39.331Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0f14db355e9ef34307f2"
+  },
+  "name": "CT299DS Assignment",
+  "dueDate": {
+    "$date": "2024-08-03T00:00:00.000Z"
+  },
+  "totalMarks": 100,
+  "passingMarks": 50,
+  "fileUrl": "http://localhost:3000/uploads/1720586004310_20240710_CT299DS.pdf",
+  "courseId": {
+    "$oid": "668e07a1db355e9ef343056e"
+  },
+  "results": [],
+  "uploadDate": {
+    "$date": "2024-07-10T04:33:24.316Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0f3ddb355e9ef3430808"
+  },
+  "name": "HE111ES Assignment ",
+  "dueDate": {
+    "$date": "2024-08-17T00:00:00.000Z"
+  },
+  "totalMarks": 100,
+  "passingMarks": 50,
+  "fileUrl": "http://localhost:3000/uploads/1720586045612_20240710_HE111ES.pdf",
+  "courseId": {
+    "$oid": "668e07d3db355e9ef3430579"
+  },
+  "results": [],
+  "uploadDate": {
+    "$date": "2024-07-10T04:34:05.622Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668e0f6edb355e9ef343081e"
+  },
+  "name": "HK282DS Assignment",
+  "dueDate": {
+    "$date": "2024-08-31T00:00:00.000Z"
+  },
+  "totalMarks": 100,
+  "passingMarks": 50,
+  "fileUrl": "http://localhost:3000/uploads/1720586094048_20240710_HK282DS.pdf",
+  "courseId": {
+    "$oid": "668e0775db355e9ef3430563"
+  },
+  "results": [],
+  "uploadDate": {
+    "$date": "2024-07-10T04:34:54.049Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6692011eab70f62397b2f874"
+  },
+  "name": "Assignment001",
+  "dueDate": {
+    "$date": "2024-07-27T00:00:00.000Z"
+  },
+  "totalMarks": 100,
+  "passingMarks": 50,
+  "fileUrl": "http://localhost:3000/uploads/1720844574519_20240713_abc.rtf",
+  "courseId": {
+    "$oid": "668e06eadb355e9ef34304e9"
+  },
+  "results": [
+    {
+      "studentId": {
+        "$oid": "668e09c0db355e9ef34305ec"
+      },
+      "marks": 80,
+      "studentFileUrl": "http://localhost:3000/uploads/submit_1720873137923_Emily_Ho_20240713_abc.rtf",
+      "originalFileName": "abc.rtf",
+      "uploadDate": {
+        "$date": "2024-07-13T12:18:57.933Z"
+      },
+      "_id": {
+        "$oid": "669270b11704fb76a8a2696b"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e09eadb355e9ef34305f4"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:07.401Z"
+      },
+      "_id": {
+        "$oid": "669270f71704fb76a8a269ab"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e09fddb355e9ef34305fc"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:07.402Z"
+      },
+      "_id": {
+        "$oid": "669270f71704fb76a8a269ac"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e0a0bdb355e9ef3430604"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:07.402Z"
+      },
+      "_id": {
+        "$oid": "669270f71704fb76a8a269ad"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e0aa1db355e9ef3430668"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:07.402Z"
+      },
+      "_id": {
+        "$oid": "669270f71704fb76a8a269ae"
+      }
+    }
+  ],
+  "uploadDate": {
+    "$date": "2024-07-13T04:22:54.523Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66920145ab70f62397b2f883"
+  },
+  "name": "Assignment002",
+  "dueDate": {
+    "$date": "2024-07-27T00:00:00.000Z"
+  },
+  "totalMarks": 100,
+  "passingMarks": 50,
+  "fileUrl": "http://localhost:3000/uploads/1720844613658_20240713_def.rtf",
+  "courseId": {
+    "$oid": "668e06eadb355e9ef34304e9"
+  },
+  "results": [
+    {
+      "studentId": {
+        "$oid": "668e09c0db355e9ef34305ec"
+      },
+      "marks": 70,
+      "studentFileUrl": "http://localhost:3000/uploads/submit_1720873144631_Emily_Ho_20240713_def.rtf",
+      "originalFileName": "def.rtf",
+      "uploadDate": {
+        "$date": "2024-07-13T12:19:04.641Z"
+      },
+      "_id": {
+        "$oid": "669270b81704fb76a8a26975"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e09eadb355e9ef34305f4"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:14.660Z"
+      },
+      "_id": {
+        "$oid": "669270fe1704fb76a8a269bf"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e09fddb355e9ef34305fc"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:14.661Z"
+      },
+      "_id": {
+        "$oid": "669270fe1704fb76a8a269c0"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e0a0bdb355e9ef3430604"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:14.661Z"
+      },
+      "_id": {
+        "$oid": "669270fe1704fb76a8a269c1"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e0aa1db355e9ef3430668"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:14.661Z"
+      },
+      "_id": {
+        "$oid": "669270fe1704fb76a8a269c2"
+      }
+    }
+  ],
+  "uploadDate": {
+    "$date": "2024-07-13T04:23:33.660Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66920145ab70f62397b2f884"
+  },
+  "name": "Assignment003",
+  "dueDate": {
+    "$date": "2024-07-27T00:00:00.000Z"
+  },
+  "totalMarks": 100,
+  "passingMarks": 50,
+  "fileUrl": "http://localhost:3000/uploads/1720844613659_20240713_xyz.rtf",
+  "courseId": {
+    "$oid": "668e06eadb355e9ef34304e9"
+  },
+  "results": [
+    {
+      "studentId": {
+        "$oid": "668e09c0db355e9ef34305ec"
+      },
+      "marks": 88,
+      "studentFileUrl": "http://localhost:3000/uploads/submit_1720873172506_Emily_Ho_20240713_xyz.rtf",
+      "originalFileName": "xyz.rtf",
+      "uploadDate": {
+        "$date": "2024-07-13T12:19:32.512Z"
+      },
+      "_id": {
+        "$oid": "669270d41704fb76a8a2697f"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e09eadb355e9ef34305f4"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:21.638Z"
+      },
+      "_id": {
+        "$oid": "669271051704fb76a8a269d3"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e09fddb355e9ef34305fc"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:21.638Z"
+      },
+      "_id": {
+        "$oid": "669271051704fb76a8a269d4"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e0a0bdb355e9ef3430604"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:21.639Z"
+      },
+      "_id": {
+        "$oid": "669271051704fb76a8a269d5"
+      }
+    },
+    {
+      "studentId": {
+        "$oid": "668e0aa1db355e9ef3430668"
+      },
+      "uploadDate": {
+        "$date": "2024-07-13T12:20:21.639Z"
+      },
+      "_id": {
+        "$oid": "669271051704fb76a8a269d6"
+      }
+    }
+  ],
+  "uploadDate": {
+    "$date": "2024-07-13T04:23:33.660Z"
+  },
+  "__v": 0
+}]
