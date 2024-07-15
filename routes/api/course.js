@@ -65,6 +65,7 @@ export default (app, utils) => {
             excludeDates,
             students,
             color, //add course color
+            titleColor, //add titleColor
         } = req.body;
         const parsedExcludeDates = excludeDates
             ? excludeDates.split(',').map(date => new Date(date.trim()))
@@ -84,6 +85,7 @@ export default (app, utils) => {
                 excludeDates: parsedExcludeDates,
                 students: parsedStudents,
                 color, //add course color
+                titleColor, //add titleColor
             });
             await newCourse.save();
             utils.sendSuccess(res, Course);
@@ -105,6 +107,7 @@ export default (app, utils) => {
             excludeDates,
             students,
             color, //add course color
+            titleColor, //add titleColor
         } = req.body;
         const excludeDatesArray = excludeDates
             ? excludeDates.split(',').map(date => new Date(date.trim()))
@@ -126,6 +129,7 @@ export default (app, utils) => {
                     excludeDates: excludeDatesArray,
                     students: studentsArray,
                     color, //add course color
+                    titleColor,  //add titleColor
                 },
                 { new: true }
             );

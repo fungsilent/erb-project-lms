@@ -1,3 +1,30 @@
+<style>
+:root {
+        --fc-today-bg-color: #cfe2ff;
+ }
+ .fc .fc-daygrid-event{
+    margin-top: 10px;
+}
+
+/* .fc-daygrid-day-events{
+    padding: 5px;
+ } */
+
+ /* .fc .fc-daygrid-day-frame{
+    min-height: 180px;
+ } */
+
+.fc-daygrid-day-number{
+    font-size: large;
+ 
+ }
+
+ .fc-daygrid-day-number:hover{
+    text-decoration: none;
+ }
+
+</style>
+
 <div class="p-4">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
@@ -14,6 +41,9 @@
 <script>
     $(document).ready(() => {
         const calendar = new FullCalendar.Calendar($('#calendar').get(0), {
+            height: 580,
+            contentHeight: 500,
+            aspectRatio: 1,
             initialView: 'dayGridMonth',
             initialDate: new Date(),
             headerToolbar: {
@@ -52,7 +82,7 @@
                                             allDay: true,
                                             backgroundColor: course.color, // color course
                                             borderColor: course.color, // border color
-                                            textColor: '#6c757d', // Set the event text color
+                                            textColor: course.titleColor, // Set the event text color
                                         })
                                     }
                                     startDate.add(1, 'days')

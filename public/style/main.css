@@ -1,5 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;700;800&display=swap');
+*{
+  font-family: 'Poppins', sans-serif;}
+
 .dt-length label {
  padding-left: 8px;
+}
+
+.dt-length label {
+ padding-left: 8px;
+}
+/* outer */
+.container {
+
+}
+
+.mt-4 {
+
+}
+
+.table {
+
+}
+
+.table-striped {
+
+}
+
+.table-bordered {
+
+}
+
+.form-control{
+
+}
+
+.form-group{
+
+}
+
+/*form label*/
+.form-group label{
+
+}
+
+
+.btn{
+    border-radius: 30px;
+}
+
+.btn-primary{
+
+}
+
+.mt-2{
+
+
 }
 
 input[type="color"].form-control-color {

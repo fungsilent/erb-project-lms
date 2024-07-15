@@ -20,6 +20,7 @@ export default (app, utils) => {
                 endDate: course.endDate,
                 excludeDates: course.excludeDates || [],
                 color: course.color,
+                titleColor: course.titleColor //textColor
             }))
 
             utils.sendSuccess(res, formattedCourses)

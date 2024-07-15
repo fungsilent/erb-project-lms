@@ -19,26 +19,25 @@
         <h4 class="card-title">My Course</h4>
         <div class="content">
             <template id="courseItem">
-                <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-md-50 mb-5 mb-xl-10 darker-color" style="background-color: ${color};">
-                    <div class="card-header pt-5">
+                <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-md-50 mb-5 mb-xl-10 darker-color" style="background-color: ${color}">
+                    <div class="card-header pt-5" style="color: ${titleColor};">
                         <div class="card-title d-flex flex-column">   
-                            <span class="text-muted">Class Duration: <b>${startDate} to ${endDate}</b></span>
-                            <h4 class="py-3 text-muted">${name}</h4>
+                            <span>Class Duration: <b>${startDate} to ${endDate}</b></span>
+                            <h4 class="py-3">${name}</h4>
                         </div>
                         <!--list the by Date?-->     
-                        <div class="rounded bar-color" style="padding:10px;">
-                            <span class="pr-5 pl-4 fa-solid fa-calendar-days text-muted" data-toggle="tooltip" data-bs-placement="top" title="Class Days"> ${diffDays}</span>
-                            <span class="pr-5 fa-solid fa-file-pen text-muted" data-toggle="tooltip" data-bs-placement="top" title="No. of Assignments"></span>
-                            <span class="pr-5 fa-solid fa-user text-muted" data-toggle="tooltip" data-bs-placement="top" title="No. of Students"> ${students}</span>
+                        <div class="rounded bar-color" style="padding:10px; color: ${titleColor};">
+                            <span class="pr-5 pl-4 fa-solid fa-calendar-days" data-toggle="tooltip" data-bs-placement="top" title="Class Days"> ${diffDays}</span>
+                            <span class="pr-5 fa-solid fa-file-pen" data-toggle="tooltip" data-bs-placement="top" title="No. of Assignments"></span>
+                            <span class="pr-5 fa-solid fa-user" data-toggle="tooltip" data-bs-placement="top" title="No. of Students"> ${students}</span>
                             <!--different role, different view-->
-                            <a href="/course/detail/${id}" class="btn btn-secondary" data-toggle="tooltip" data-bs-placement="top" title="Check it out">Course Detail</a>
+                            <a href="/course/detail/${id}" class="btn btn-secondary" data-toggle="tooltip" data-bs-placement="top" title="Check it out" style="border:0;background-color: ${titleColor}; color: ${color};">Course Detail</a>
                         </div>   
                     </div>           
                 </div>
             </template>
         </div>
-    </div>
-</div>
+</style>
 
 <script>
 $(document).ready(() => {
@@ -59,6 +58,7 @@ $(document).ready(() => {
                     startDate: moment(course.startDate).format('DD/MM/YYYY'),
                     endDate: moment(course.endDate).format('DD/MM/YYYY'),
                     color: course.color, //color course
+                    titleColor: course.titleColor, //titleColor
                 }, {
                     insert: false
                 });

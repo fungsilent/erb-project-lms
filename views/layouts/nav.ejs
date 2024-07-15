@@ -61,6 +61,14 @@
             font-size: 12px;
             color: #797979;
         }
+        .nav-item .siteTitle{
+            font-size: 14px;
+        }
+
+        .systemName{
+            font-size: 18px;
+        }
+
     </style>
     <script>
         $(document).ready(() => {
@@ -114,9 +122,27 @@
 <body>
     <div id="menu" class="bg-dark">
         <nav class="main text-white">
+            <a href="/dashboard" class="logo text-white text-decoration-none ">
+                <!-- <i class="fa-solid fa-graduation-cap mr-3"></i> -->
+                <img src="images/lms_favicon.png" class="ifa-solid fa-graduation-cap mr-3" style="width:30px;">
+                <h5 class="m-0 systemName">Learning Management System</h5>
+            </a>
+            <hr class="text-white">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <template id="navItem">
+                    <li class="nav-item">
+                        <a href="${path}" class="nav-link text-white ${active}">
+                            <i class="mr-2 ${icon}"></i>
+                          <span class="siteTitle"> ${text} </span>
+                        </a>
+                    </li>
+                </template>
+            </ul>
+        </nav>
+        <!-- <nav class="main text-white bg-dark">
             <a href="/dashboard" class="logo text-white text-decoration-none">
-                <i class="fa-solid fa-graduation-cap mr-3"></i>
-                <h5 class="m-0">LMS</h5>
+            <span class="d-flex justify-content-center align-items-center"> <i class="fa-solid fa-graduation-cap mr-3"></i>
+                <h5 class="m-0">LMS</h5></span>
             </a>
             <hr class="text-white">
             <ul class="nav nav-pills flex-column mb-auto">
@@ -129,7 +155,7 @@
                     </li>
                 </template>
             </ul>
-        </nav>
+        </nav> -->
     </div>
     <div id="page">
         <header>
