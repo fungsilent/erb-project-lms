@@ -1,5 +1,8 @@
 ## Run
 
+initialize database data
+<br>`npm run resetdb`
+
 Start
 <br>`npm run start`
 

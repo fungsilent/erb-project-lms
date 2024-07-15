@@ -4,7 +4,7 @@ import path from 'path'
 import config from '#root/config'
 import utils from '#root/routes/utils'
 import connectDatabase from '#root/db/connect'
-import initDatabase from '#root/db/initialize'
+import validateDatabase from '#root/db/validation'
 import setMiddleware from '#root/routes/middleware'
 
 
@@ -64,7 +64,7 @@ const setRouter = async () => {
  */
 const startServer = async () => {
     await connectDatabase()
-    await initDatabase()
+    await validateDatabase()
     setConfig()
     setMiddleware(app, utils)
     await setRouter()

@@ -6,13 +6,15 @@
   "scripts": {
     "dev": "nodemon --import=specifier-resolution-node/register app.js",
     "start": "node --import=specifier-resolution-node/register app.js",
-    "format": "npx prettier --plugin=prettier-plugin-ejs . --write"
+    "format": "npx prettier --plugin=prettier-plugin-ejs . --write",
+    "resetdb": "node --import=specifier-resolution-node/register ./db/reset"
   },
   "imports": {
     "#root/*": "./*"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "bson": "^6.8.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "ejs": "^3.1.10",
