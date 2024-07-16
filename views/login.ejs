@@ -3,7 +3,7 @@
         display: flex;
         /* background: #343a40; */
         background: linear-gradient(rgba(34, 73, 111, 0.7),rgba(84, 140, 196, 0.5), rgba(192, 227, 255, 0.9)),
-                    url("images/login_background.png") fixed no-repeat center / contain;
+                    url("/images/login_background.repeat.png") fixed repeat center / contain;
         width: 100%;
         min-height: 100vh;
         flex-direction: column;
@@ -25,7 +25,7 @@
     }
     .login {
         width: 55vh;
-        height: 50vh;
+        min-height: 50vh;
         color: white;
     }
 
@@ -123,13 +123,13 @@
 <div class="card mb-3" style="max-width:1000px;" >
     <!-- <div class="row g-0">
       <div class="col-md-6  card-graphic">
-        <img src="images/item.png" class="img-fluid rounded-start" style="width:400px;">
+        <img src="/images/item.png" class="img-fluid rounded-start" style="width:400px;">
       </div>
       <div class="col-md-3"> -->
         <div class="card-body login">
             <div class="loginhead d-flex">
         <div class="logo text-white p-2 w-100 justify-content-center mb-5">
-            <img src="images/lms_favicon.png" class="ifa-solid fa-graduation-cap mr-3" style="width:30px;">
+            <img src="/images/lms_favicon.png" class="ifa-solid fa-graduation-cap mr-3" style="width:30px;">
         <!-- <i class="fa-solid fa-graduation-cap mr-3"></i> -->
          <h5 class="m-0">Learning Management System</h5>
         </div>
@@ -153,7 +153,7 @@
         <!-- <h4 class="title mt-4 mb-4">LOGIN</h4> -->
 
 
-            <form id="loginForm" class="mt-4">
+            <form id="loginForm">
 
                 <div class="d-flex">
                 <i class="fa-solid fa-envelope flex-shrink-1 mt-3"></i>
@@ -176,7 +176,7 @@
             </div>
             <button type="submit" class="btn btn-primary d-block" style="padding: 10px 40px;border-radius: 30px; margin-left: auto;">Login</button>
                
-                <p class="error"></p>
+                <p class="error m-0"></p>
             </form>
             
 

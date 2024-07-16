@@ -64,6 +64,10 @@
         .nav-item .siteTitle{
             font-size: 14px;
         }
+        .nav-link:not(.active):hover {
+            background-color: #616161;
+            transition: all .25s;
+        }
 
         .systemName{
             font-size: 18px;
@@ -78,7 +82,7 @@
                 { text: 'Announcement', path: '/announcement', access: ['admin'], icon: 'fa-solid fa-bullhorn' },
                 { text: 'Course', path: '/course', access: ['admin', 'teacher', 'student'], icon: 'fa-solid fa-book' },
                 { text: 'Calendar', path: '/calendar', access: ['admin', 'teacher', 'student'], icon: 'fa-solid fa-calendar-days' },
-                    { text: 'Attendance', path: '/attendance', access: ['admin', 'teacher'], icon: 'fa-solid fa-calendar-check' },
+                { text: 'Attendance', path: '/attendance', access: ['admin', 'teacher'], icon: 'fa-solid fa-calendar-check' },
             ]
             axios.get('/api/user/info').then(({ data: response }) => {
                 console.log('response', response)
@@ -124,8 +128,8 @@
         <nav class="main text-white">
             <a href="/dashboard" class="logo text-white text-decoration-none ">
                 <!-- <i class="fa-solid fa-graduation-cap mr-3"></i> -->
-                <img src="images/lms_favicon.png" class="ifa-solid fa-graduation-cap mr-3" style="width:30px;">
-                <h5 class="m-0 systemName">Learning Management System</h5>
+                <img src="/images/lms_favicon.png" class="ifa-solid fa-graduation-cap mr-3" style="width:30px;">
+                <h5 class="m-0 systemName">LMS</h5>
             </a>
             <hr class="text-white">
             <ul class="nav nav-pills flex-column mb-auto">

@@ -21,8 +21,19 @@
 
 <script>
     $(document).ready(() => {
+        const setGridHeight = () => {
+            const grid = $('.grid')
+            const offset = grid.offset()
+            grid.css('height', window.innerHeight - offset.top - 24)
+        }
+
+        $(window).on('resize', () => {
+            setGridHeight()
+        })
+
         $(document).on('userInfoEvent', (event, user) => {
             $.cloneTemplate('#title', { name: user.name })
+            setGridHeight()
         })
     })
 </script>
