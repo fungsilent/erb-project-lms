@@ -1,8 +1,8 @@
 import multer from 'multer';
 import fs from 'fs';
 import moment from 'moment';
+import { teacherPermission } from '#root/routes/middleware/permission'
 import Assignment from '#root/db/models/Assignment';
-import Course from '#root/db/models/Course';
 import mongoose from 'mongoose';
 
 // file upload
@@ -23,35 +23,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 export default (app, utils) => {
-    // list_assignment
-    app.get('/api/assignments', async (req, res) => {
-        let query = {};
-        try {
-            if (req.user.role === 'teacher') {
-                const courses = await Course.find({ teacher: req.user._id }).select('_id');
-                const courseIds = courses.map(course => course._id);
-                query = { courseId: { $in: courseIds } };
-            } else if (req.user.role === 'student') {
-                const courses = await Course.find({ students: req.user._id }).select('_id');
-                const courseIds = courses.map(course => course._id);
-                query = { courseId: { $in: courseIds } };
-            }
-
-            const assignments = await Assignment.find(query).populate({
-                path: 'courseId',
-                populate: {
-                    path: 'teacher',
-                    model: 'User'
-                }
-            });
-            utils.sendSuccess(res, assignments);
-        } catch (err) {
-            utils.sendError(res, 'Assignments not found');
-        }
-    });
-
     // Upload assignment
-    app.post('/api/assignments/upload', upload.array('assignments'), async (req, res) => {
+    app.post('/api/assignments/upload', teacherPermission(), upload.array('assignments'), async (req, res) => {
         try {
             const { course, name, dueDate, totalMarks, passingMarks } = req.body;
             const files = req.files;
@@ -79,7 +52,7 @@ export default (app, utils) => {
     });
 
     // update assignment (PUT)
-    app.put('/api/assignments/:id', upload.single('assignments'), async (req, res) => {
+    app.put('/api/assignments/:id', teacherPermission(), upload.single('assignments'), async (req, res) => {
         try {
             const { name, dueDate, totalMarks, passingMarks } = req.body;
             let fileUrl;
@@ -115,7 +88,7 @@ export default (app, utils) => {
     });
 
     //mark_assignment
-    app.get('/api/assignments/:id', async (req, res) => {
+    app.get('/api/assignments/:id', teacherPermission(), async (req, res) => {
         try {
             const assignment = await Assignment.findById(req.params.id).populate({
                 path: 'courseId',
@@ -141,7 +114,7 @@ export default (app, utils) => {
     });
 
     // mark_assignment (POST)
-    app.post('/api/assignments/:id/mark', async (req, res) => {
+    app.post('/api/assignments/:id/mark', teacherPermission(), async (req, res) => {
         try {
             const { marks } = req.body;
             const assignmentId = req.params.id;
@@ -172,7 +145,7 @@ export default (app, utils) => {
     });
 
     // delete assignment (DELETE)
-    app.delete('/api/assignments/:id', async (req, res) => {
+    app.delete('/api/assignments/:id', teacherPermission(), async (req, res) => {
         try {
             const deletedAssignment = await Assignment.findByIdAndDelete(req.params.id);
             if (!deletedAssignment) {

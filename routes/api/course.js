@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import _ from 'lodash'
+import { adminPermission, teacherPermission } from '#root/routes/middleware/permission'
 import Course from '#root/db/models/Course';
 import User from '#root/db/models/User';
 import Assignment from '#root/db/models/Assignment';
@@ -26,7 +27,7 @@ export default (app, utils) => {
     });
 
     // get course option data (GET)
-    app.get('/api/course/option', async (req, res) => {
+    app.get('/api/course/option', teacherPermission(), async (req, res) => {
         try {
             const teachers = await User.find({
                 role: { $in: ['teacher'] },
@@ -40,7 +41,7 @@ export default (app, utils) => {
     });
 
     // get course detail (GET)
-    app.get('/api/course/:id', async (req, res) => {
+    app.get('/api/course/:id', teacherPermission(), async (req, res) => {
         try {
             const course = await Course.findById(req.params.id).populate('teacher students').lean();
             if (!course) {
@@ -54,7 +55,7 @@ export default (app, utils) => {
     });
 
     // Add course (POST)
-    app.post('/api/course/add', async (req, res) => {
+    app.post('/api/course/add', adminPermission(), async (req, res) => {
         const {
             name,
             description,
@@ -96,7 +97,7 @@ export default (app, utils) => {
     });
 
     // Update course (PUT)
-    app.put('/api/course/:id', async (req, res) => {
+    app.put('/api/course/:id', teacherPermission(), async (req, res) => {
         const {
             name,
             description,
@@ -144,7 +145,7 @@ export default (app, utils) => {
     });
 
     // Delete course (DELETE)
-    app.delete('/api/course/:id', async (req, res) => {
+    app.delete('/api/course/:id', adminPermission(), async (req, res) => {
         try {
             const deletedCourse = await Course.findByIdAndDelete(req.params.id);
             if (!deletedCourse) {
@@ -158,7 +159,7 @@ export default (app, utils) => {
     });
 
     // course details (GET)
-    app.get('/api/course/details/:id', async (req, res) => {
+    app.get('/api/course/details/:id', teacherPermission(), async (req, res) => {
         try {
             const courseId = req.params.id;
     

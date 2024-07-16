@@ -1,4 +1,5 @@
 import moment from 'moment'
+import { adminPermission } from '#root/routes/middleware/permission'
 import Announcement from '#root/db/models/Announcement'
 
 export default (app, utils) => {
@@ -44,7 +45,7 @@ export default (app, utils) => {
     })
 
     // create announcement (POST)
-    app.post('/api/announcement/add', async (req, res) => {
+    app.post('/api/announcement/add', adminPermission(), async (req, res) => {
         const { content, to } = req.body
         try {
             const announcement = new Announcement({
@@ -63,7 +64,7 @@ export default (app, utils) => {
     })
 
     // delete announcement (POST)
-    app.delete('/api/announcement/:id', async (req, res) => {
+    app.delete('/api/announcement/:id', adminPermission(), async (req, res) => {
         const deleteId = req.params.id
         try {
             const { deletedCount } = await Announcement.deleteOne({_id:deleteId});
@@ -78,7 +79,7 @@ export default (app, utils) => {
     })
 
     // edit announcement (POST)
-    app.put('/api/announcement/:id', async (req, res) => {
+    app.put('/api/announcement/:id', adminPermission(), async (req, res) => {
         const { content, to } = req.body
         const announcementId = req.params.id
         try {

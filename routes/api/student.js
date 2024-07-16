@@ -2,10 +2,10 @@ import multer from 'multer';
 import fs from 'fs';
 import moment from 'moment'; // Ensure moment.js is imported
 import _ from 'lodash'
+import { studentPermission } from '#root/routes/middleware/permission'
 import Course from '#root/db/models/Course';
 import Assignment from '#root/db/models/Assignment';
 import Attendance from '#root/db/models/Attendance';
-import { name } from 'ejs';
 
 // Set up multer for file uploads
 const storage = multer.diskStorage({
@@ -27,7 +27,7 @@ const upload = multer({ storage });
 
 export default (app, utils) => {    
     // Course Details (Student)
-    app.get('/api/course/student/:courseId', async (req, res) => {
+    app.get('/api/course/student/:courseId', studentPermission(), async (req, res) => {
         try {
             const courseId = req.params.courseId
             const studentId = req.user._id // Assuming req.user contains the logged-in user's info
@@ -78,7 +78,7 @@ export default (app, utils) => {
     });
 
     // Submit Assignment (Student)
-    app.post('/api/course/student/upload', upload.single('assignment'), async (req, res) => {
+    app.post('/api/course/student/upload', studentPermission(), upload.single('assignment'), async (req, res) => {
         try {
             const { assignmentId } = req.body;
             const studentId = req.user._id;

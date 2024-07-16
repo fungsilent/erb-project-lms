@@ -1,3 +1,4 @@
+import { adminPermission } from '#root/routes/middleware/permission'
 import User from '#root/db/models/User'
 
 export default (app, utils) => {
@@ -10,7 +11,7 @@ export default (app, utils) => {
     })
 
     // Register (POST)
-    app.post('/api/user/add', async (req, res) => {
+    app.post('/api/user/add', adminPermission(), async (req, res) => {
         const { name, email, password, role } = req.body
         try {
             const user = await User.findOne({ email })
@@ -37,7 +38,7 @@ export default (app, utils) => {
     })
 
     // Delete user (DELETE)
-    app.delete('/api/user/:id', async (req, res) => {
+    app.delete('/api/user/:id', adminPermission(), async (req, res) => {
         try {
             const user = await User.findOne({ _id: req.params.id })
             if (!user) throw new Error('Not match.')

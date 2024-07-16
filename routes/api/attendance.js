@@ -1,10 +1,11 @@
+import { teacherPermission } from '#root/routes/middleware/permission'
 import Attendance from '#root/db/models/Attendance';
 import Course from '#root/db/models/Course';
 import moment from 'moment';
 
 export default (app, utils) => {
     // get Course attendance info (GET)
-    app.get('/api/attendance/:courseId', async (req, res) => {
+    app.get('/api/attendance/:courseId', teacherPermission(), async (req, res) => {
         try {
             const course = await Course.findById(req.params.courseId).populate('students').lean()
             const courseDays = utils.getCourseDays(course)
@@ -18,7 +19,7 @@ export default (app, utils) => {
     })
 
     // get all attendance record (GET)
-    app.get('/api/attendance/:courseId/mark', async (req, res) => {
+    app.get('/api/attendance/:courseId/mark', teacherPermission(), async (req, res) => {
         try {
             const { date } = req.query
             const records = await Attendance.find({
@@ -33,7 +34,7 @@ export default (app, utils) => {
     })
 
     // create/update attendance record (POST)
-    app.post('/api/attendance/:courseId/mark', async (req, res) => {
+    app.post('/api/attendance/:courseId/mark', teacherPermission(), async (req, res) => {
         try {
             const { courseId } = req.params
             const { date, records } = req.body
