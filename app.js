@@ -14,6 +14,7 @@ import apiRouter from '#root/routes/api/route'
 
 // config
 const dirname = import.meta.dirname // same as __dirname
+global.appRoot = dirname
 process.env.jwtKey = config.jwtKey
 process.env.passwordSalt = config.passwordSalt
 

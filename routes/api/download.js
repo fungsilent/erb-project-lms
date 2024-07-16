@@ -17,7 +17,7 @@ export default (app, utils) => {
             const fileName = path.basename(fileUrl);
 
             // Create a tmp path to save the file
-            const tmpFilePath = path.join(path.dirname(new URL(import.meta.url).pathname), '../../tmp', fileName);
+            const tmpFilePath = path.join(appRoot, 'uploads/tmp', fileName)
 
             console.log('fileName', fileName) //dubug line
             console.log('tmpFilePath', tmpFilePath) //dubug line
