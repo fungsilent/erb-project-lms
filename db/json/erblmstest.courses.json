@@ -52,7 +52,8 @@
     }
   ],
   "color": "#e1e2f6",
-  "__v": 0
+  "__v": 0,
+  "titleColor": "#6c757d"
 },
 {
   "_id": {
@@ -129,7 +130,8 @@
     }
   ],
   "color": "#e4f7f1",
-  "__v": 0
+  "__v": 0,
+  "titleColor": "#6c757d"
 },
 {
   "_id": {
@@ -170,7 +172,8 @@
     }
   ],
   "color": "#f7f2e4",
-  "__v": 0
+  "__v": 0,
+  "titleColor": "#6c757d"
 },
 {
   "_id": {
@@ -207,7 +210,8 @@
   "maxStudents": 10,
   "excludeDates": [],
   "color": "#f7e9e4",
-  "__v": 0
+  "__v": 0,
+  "titleColor": "#6c757d"
 },
 {
   "_id": {
@@ -219,9 +223,6 @@
     "$oid": "668e0684db355e9ef3430498"
   },
   "students": [
-    {
-      "$oid": "668e09c0db355e9ef34305ec"
-    },
     {
       "$oid": "668e09eadb355e9ef34305f4"
     },
@@ -244,5 +245,6 @@
   "maxStudents": 10,
   "excludeDates": [],
   "color": "#fdd5b4",
-  "__v": 0
+  "__v": 0,
+  "titleColor": "#6c757d"
 }]

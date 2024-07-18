@@ -170,7 +170,7 @@
                     ...assignment,
                     assignmentFileUrl: assignment.fileUrl,
                     marks: assignment.marks === -1 ? 'N/A' : assignment.marks,
-                    dueDate: moment(assignment.dueDate).utc().format('DD-MM-YYYY'),
+                    dueDate: moment(assignment.dueDate).local().format('DD-MM-YYYY'),
                     id: assignment._id,
                     stdId: assignment.studentId
                 }, {
@@ -187,7 +187,7 @@
             attendance.list.forEach(record => {
                 $.cloneTemplate('#attendanceItem', {
                     ...record,
-                    date: moment(record.date).utc().format('DD-MM-YYYY'),
+                    date: moment(record.date).local().format('DD-MM-YYYY'),
                 })
             })
         }
