@@ -48,9 +48,9 @@
     "$oid": "668e38e00d7a38c7af40127d"
   },
   "date": {
-    "$date": "2024-07-10T07:33:12.599Z"
+    "$date": "2024-07-15T14:05:34.443Z"
   },
-  "content": "<span style=\"color: #87CEEB\">Welcome to LMS!</span>",
+  "content": "Welcome to LMS!",
   "to": {
     "all": true,
     "teacher": true,

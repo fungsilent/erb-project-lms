@@ -6,17 +6,9 @@
     margin-top: 10px;
 }
 
-/* .fc-daygrid-day-events{
-    padding: 5px;
- } */
-
- /* .fc .fc-daygrid-day-frame{
-    min-height: 180px;
- } */
-
 .fc-daygrid-day-number{
     font-size: large;
- 
+
  }
 
  .fc-daygrid-day-number:hover{
@@ -41,9 +33,6 @@
 <script>
     $(document).ready(() => {
         const calendar = new FullCalendar.Calendar($('#calendar').get(0), {
-            height: 580,
-            contentHeight: 500,
-            aspectRatio: 1,
             initialView: 'dayGridMonth',
             initialDate: new Date(),
             headerToolbar: {
