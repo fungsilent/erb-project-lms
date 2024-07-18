@@ -21,8 +21,8 @@ process.env.passwordSalt = config.passwordSalt
 const app = express()
 
 /*
- * config
- */
+** config
+*/
 const setConfig = () => {
     // view engine setup
     app.set('views', path.join(dirname, 'views'))
@@ -35,10 +35,14 @@ const setConfig = () => {
 }
 
 /*
- * router
- */
+** router
+*/
 const setRouter = async () => {
+    // Serve static folder (for uploaded files)
+    app.use('/uploads', express.static('uploads'))
+
     app.use(express.static(path.join(dirname, 'public')))
+
     apiRouter(app, utils)
     viewRouter(app, utils) // must be the last
 
@@ -61,8 +65,8 @@ const setRouter = async () => {
 }
 
 /*
- * start server
- */
+** Start server
+*/
 const startServer = async () => {
     await connectDatabase()
     await validateDatabase()

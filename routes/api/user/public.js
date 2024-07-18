@@ -4,7 +4,12 @@ import moment from 'moment'
 import User from '#root/db/models/User'
 
 export default (app, utils) => {
-    // Login (POST)
+    /*
+    ** User login
+    ** Method   POST
+    ** Access   non-user
+    ** Page     - /
+    */
     app.post('/api/user/login', async (req, res) => {
         const { email, password } = req.body
         try {

@@ -4,7 +4,12 @@ import Course from '#root/db/models/Course';
 import moment from 'moment';
 
 export default (app, utils) => {
-    // get Course attendance info (GET)
+    /*
+    ** Fetch course attendance info
+    ** Method   GET
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /dashboard
+    */
     app.get('/api/attendance/:courseId', teacherPermission(), async (req, res) => {
         try {
             const course = await Course.findById(req.params.courseId).populate('students').lean()
@@ -18,7 +23,12 @@ export default (app, utils) => {
         }
     })
 
-    // get all attendance record (GET)
+    /*
+    ** Fetch detail of attendance
+    ** Method   GET
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /course/assignments/mark/:assignmentsId
+    */
     app.get('/api/attendance/:courseId/mark', teacherPermission(), async (req, res) => {
         try {
             const { date } = req.query
@@ -33,7 +43,12 @@ export default (app, utils) => {
         }
     })
 
-    // create/update attendance record (POST)
+    /*
+    ** Create/Update attendance
+    ** Method   POST
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /course/assignments/mark/:assignmentsId
+    */
     app.post('/api/attendance/:courseId/mark', teacherPermission(), async (req, res) => {
         try {
             const { courseId } = req.params

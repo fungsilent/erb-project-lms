@@ -41,7 +41,7 @@
                             <td>${dueDate}</td>
                             <td><a href="${assignmentFileUrl}" target="_blank">View Assignment</a></td>
                             <td>
-                                <a href="/download/${id}/${studentId}" target="_blank" class="student-file hide">${studentFileName}</a>
+                                <a href="/api/download/assignment/${id}?token=${token}" target="_blank" class="student-file hide">${studentFileName}</a>
                                 <span class="no-student-file hide">N/A</span>
                             </td>
                             <td>
@@ -136,7 +136,7 @@
                 formData.append('assignment', file);
                 formData.append('assignmentId', assignmentId);
 
-                axios.post('/api/course/student/upload', formData).then(({ data: response }) => {
+                axios.post('/api/course/student/assignment/upload', formData).then(({ data: response }) => {
                     if (!response.success) {
                         return alert(`Error uploading assignment: ${response.message}`);
                     }
@@ -172,7 +172,7 @@
                     marks: assignment.marks === -1 ? 'N/A' : assignment.marks,
                     dueDate: moment(assignment.dueDate).local().format('DD-MM-YYYY'),
                     id: assignment._id,
-                    stdId: assignment.studentId
+                    token: localStorage.getItem('token'),
                 }, {
                     show: [
                         assignment.studentFileUrl ? 'student-file' : 'no-student-file',

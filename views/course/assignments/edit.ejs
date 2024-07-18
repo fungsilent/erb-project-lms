@@ -46,11 +46,11 @@
 
 <script>
     $(document).ready(() => {
-        const { id } = $.getUrlParameter('/course/assignments/edit/:id');
+        const { assignmentId } = $.getUrlParameter('/course/assignments/edit/:assignmentId');
 
         $('.due-date').flatpickr({ dateFormat: 'Y-m-d' })
 
-        axios.get(`/api/assignments/${id}`).then(({ data: response }) => {
+        axios.get(`/api/assignments/${assignmentId}`).then(({ data: response }) => {
             console.log('response', response)
             if (!response.success) {
                 return (`An error occurred: ${response.message}`)
@@ -84,7 +84,7 @@
 
             const formData = new FormData(event.target);
 
-            axios.put(`/api/assignments/${id}`, formData).then(({ data: response }) => {
+            axios.put(`/api/assignments/${assignmentId}`, formData).then(({ data: response }) => {
                 console.log('response update assignment', response)
                 if (!response.success) {
                     return (`An error occurred: ${response.message}`)

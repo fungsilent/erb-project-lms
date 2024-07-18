@@ -2,15 +2,26 @@ import { adminPermission } from '#root/routes/middleware/permission'
 import User from '#root/db/models/User'
 
 export default (app, utils) => {
-    // Get user info (GET)
+    /*
+    ** Fetch info of user
+    ** Method   GET
+    ** Access   superAdmin, admin, teacher, student
+    ** Page     - All logged in page
+    */
     app.get('/api/user/info', async (req, res) => {
         const user = req.user.toObject()
         delete user.password
+        // superAdmin is a system admin only used on backend
         if (user.role === 'superAdmin') user.role = 'admin'
         utils.sendSuccess(res, user)
     })
 
-    // Register (POST)
+    /*
+    ** Create user
+    ** Method   POST
+    ** Access   superAdmin, admin
+    ** Page     - /user/add
+    */
     app.post('/api/user/add', adminPermission(), async (req, res) => {
         const { name, email, password, role } = req.body
         try {
@@ -26,8 +37,13 @@ export default (app, utils) => {
         }
     })
 
-    // User list (GET)
-    app.get('/api/user', async (req, res) => {
+    /*
+    ** Fetch list of user
+    ** Method   POST
+    ** Access   superAdmin, admin
+    ** Page     - /user
+    */
+    app.get('/api/user', adminPermission(), async (req, res) => {
         try {
             const users = await User.find({})
             utils.sendSuccess(res, users)
@@ -37,7 +53,12 @@ export default (app, utils) => {
         }
     })
 
-    // Delete user (DELETE)
+    /*
+    ** Delete user
+    ** Method   DELETE
+    ** Access   superAdmin, admin
+    ** Page     - /user
+    */
     app.delete('/api/user/:id', adminPermission(), async (req, res) => {
         try {
             const user = await User.findOne({ _id: req.params.id })

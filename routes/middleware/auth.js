@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
+import _ from 'lodash'
 import utils from '#root/routes/utils'
 import User from '#root/db/models/User'
 
@@ -7,10 +8,11 @@ const getToken = req => {
     try {
         return req.headers.authorization.split(' ')[1]
     } catch (err) {
-        return ''
+        return req.query.token || ''
     }
 }
 
+// JWT authorization
 export const auth = async (req, res, next) => {
     const token = getToken(req)
     req.auth = false
@@ -29,7 +31,7 @@ export const auth = async (req, res, next) => {
             req.auth = true
             req.user = user
         } catch (err) {
-            // no need handle
+            // reject non-authorization in another middleware (requiredApiAuth)
         }
     }
     next()

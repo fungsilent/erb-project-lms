@@ -1,7 +1,10 @@
 import multer from 'multer';
-import fs from 'fs';
+// import fs from 'fs';
+import fs from 'fs-extra';
 import moment from 'moment'; // Ensure moment.js is imported
 import _ from 'lodash'
+import axios from 'axios';
+import path from 'path';
 import { studentPermission } from '#root/routes/middleware/permission'
 import Course from '#root/db/models/Course';
 import Assignment from '#root/db/models/Assignment';
@@ -26,7 +29,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 export default (app, utils) => {    
-    // Course Details (Student)
+    /*
+    ** Fetch detail of student's course by id
+    ** Method   GET
+    ** Access   superAdmin, admin, student
+    ** Page     - /course/student/:courseId
+    */
     app.get('/api/course/student/:courseId', studentPermission(), async (req, res) => {
         try {
             const courseId = req.params.courseId
@@ -77,8 +85,13 @@ export default (app, utils) => {
         }
     });
 
-    // Submit Assignment (Student)
-    app.post('/api/course/student/upload', studentPermission(), upload.single('assignment'), async (req, res) => {
+    /*
+    ** Submit student assignment file
+    ** Method   GET
+    ** Access   superAdmin, admin, student
+    ** Page     - /course/student/:courseId
+    */
+    app.post('/api/course/student/assignment/upload', studentPermission(), upload.single('assignment'), async (req, res) => {
         try {
             const { assignmentId } = req.body;
             const studentId = req.user._id;
@@ -111,6 +124,70 @@ export default (app, utils) => {
         } catch (err) {
             console.error('Error uploading assignment:', err);
             utils.sendError('Error uploading assignment')
+        }
+    });
+
+    /*
+    ** Download student own uploaded attendance file
+    ** Method   GET
+    ** Access   superAdmin, admin, student
+    ** Page     - /course/student/:courseId
+    */
+    app.get('/api/download/assignment/:assignmentId', studentPermission(), async (req, res) => {
+        try {
+            const studentId = req.user._id
+            const { assignmentId } = req.params;
+            const assignment = await Assignment.findById(assignmentId);
+            const studentResult = assignment.results.find(result => result.studentId.equals(studentId));
+            const fileUrl = studentResult.studentFileUrl;
+            const originalFileName = studentResult.originalFileName;
+
+            // Get the file name from fileURL
+            const fileName = path.basename(fileUrl);
+
+            // Create a tmp path to save the file
+            const tmpFilePath = path.join(appRoot, 'uploads/tmp', fileName)
+
+            console.log('fileName', fileName) //dubug line
+            console.log('tmpFilePath', tmpFilePath) //dubug line
+
+            // Ensure the tmp directory exists
+            await fs.ensureDir(path.dirname(tmpFilePath));
+
+            // Download file from  fileURL
+            const response = await axios({
+                url: fileUrl,
+                method: 'GET',
+                responseType: 'stream'
+            });
+
+            // Stream the file to tmp location
+            const writer = fs.createWriteStream(tmpFilePath);
+            response.data.pipe(writer);
+
+            writer.on('finish', () => {
+                // Download file with original name
+                res.download(tmpFilePath, originalFileName, (err) => {
+                    if (err) {
+                        console.error('Error during file download:', err);
+                        return res.status(500).send('Server Error');
+                    }
+
+                    // Delete tmp file
+                    fs.remove(tmpFilePath, (err) => {
+                        if (err) console.error('Error removing temp file:', err);
+                    });
+                });
+            });
+
+            writer.on('error', (err) => {
+                console.error('Error writing file:', err);
+                res.status(500).send('Server Error');
+            });
+
+        } catch (error) {
+            console.error('Server Error:', error);
+            res.status(500).send('Server Error');
         }
     });
 };

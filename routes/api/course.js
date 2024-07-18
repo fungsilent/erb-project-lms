@@ -7,7 +7,14 @@ import Assignment from '#root/db/models/Assignment';
 import Attendance from '#root/db/models/Attendance';
 
 export default (app, utils) => {
-    // Get course list (GET)
+    /*
+    ** Fetch list of course
+    ** Method   GET
+    ** Access   superAdmin, admin, teacher, student
+    ** Page     - /dashboard
+    **          - /course
+    **          - /attendance
+    */
     app.get('/api/course', async (req, res) => {
         let query = {};
         try {
@@ -26,7 +33,13 @@ export default (app, utils) => {
         }
     });
 
-    // get course option data (GET)
+    /*
+    ** Fetch options of course (teachers list / students list)
+    ** Method   GET
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /course/add
+    **          - /course/edit/:courseId
+    */
     app.get('/api/course/option', teacherPermission(), async (req, res) => {
         let query = {};
         try {
@@ -48,7 +61,13 @@ export default (app, utils) => {
         }
     });
 
-    // get course detail (GET)
+    /*
+    ** Fetch simple info of course
+    ** Method   GET
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /course/edit/:courseId
+    **          - /assignments/add/:courseId
+    */
     app.get('/api/course/:id', teacherPermission(), async (req, res) => {
         try {
             const course = await Course.findById(req.params.id).populate('teacher students').lean();
@@ -62,7 +81,12 @@ export default (app, utils) => {
         }
     });
 
-    // Add course (POST)
+    /*
+    ** Create course
+    ** Method   POST
+    ** Access   superAdmin, admin
+    ** Page     - /course/add
+    */
     app.post('/api/course/add', adminPermission(), async (req, res) => {
         const {
             name,
@@ -104,7 +128,12 @@ export default (app, utils) => {
         }
     });
 
-    // Update course (PUT)
+    /*
+    ** Update course
+    ** Method   PUT
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /course/edit/:courseId
+    */
     app.put('/api/course/:id', teacherPermission(), async (req, res) => {
         const {
             name,
@@ -152,7 +181,13 @@ export default (app, utils) => {
         }
     });
 
-    // Delete course (DELETE)
+    /*
+    ** Delete course
+    ** Method   DELETE
+    ** Access   superAdmin, admin
+    ** Page     - /course
+    **          - /course/edit/:courseId
+    */
     app.delete('/api/course/:id', adminPermission(), async (req, res) => {
         try {
             const deletedCourse = await Course.findByIdAndDelete(req.params.id);
@@ -166,7 +201,12 @@ export default (app, utils) => {
         }
     });
 
-    // course details (GET)
+    /*
+    ** Fetch fully detail of course
+    ** Method   GET
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /course/detail/:courseId
+    */
     app.get('/api/course/details/:id', teacherPermission(), async (req, res) => {
         try {
             const courseId = req.params.id;

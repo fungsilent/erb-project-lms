@@ -3,7 +3,13 @@ import { adminPermission } from '#root/routes/middleware/permission'
 import Announcement from '#root/db/models/Announcement'
 
 export default (app, utils) => {
-    // get announcement list (GET)
+    /*
+    ** Fetch list of announcement
+    ** Method   GET
+    ** Access   superAdmin, admin, teacher, student
+    ** Page     - /dashboard
+    **          - /announcement
+    */
     app.get('/api/announcement', async (req, res) => {
         try {
             let option = {}
@@ -30,8 +36,13 @@ export default (app, utils) => {
         }
     })
     
-    // get announcement detail (GET)
-    app.get('/api/announcement/:id', async (req, res) => {
+    /*
+    ** Fetch detail of announcement by id
+    ** Method   GET
+    ** Access   superAdmin, admin
+    ** Page     - /announcement/add
+    */
+    app.get('/api/announcement/:id', adminPermission(), async (req, res) => {
         try {
             const announcement = await Announcement.findById(req.params.id)
             if (!announcement) {
@@ -44,7 +55,12 @@ export default (app, utils) => {
         }
     })
 
-    // create announcement (POST)
+    /*
+    ** Create announcement
+    ** Method   POST
+    ** Access   superAdmin, admin
+    ** Page     - /announcement/add
+    */
     app.post('/api/announcement/add', adminPermission(), async (req, res) => {
         const { content, to } = req.body
         try {
@@ -63,7 +79,13 @@ export default (app, utils) => {
         }
     })
 
-    // delete announcement (POST)
+    /*
+    ** Delete announcement by id
+    ** Method   DELETE
+    ** Access   superAdmin, admin
+    ** Page     - /announcement
+    **          - /announcement/edit/:announcementId
+    */
     app.delete('/api/announcement/:id', adminPermission(), async (req, res) => {
         const deleteId = req.params.id
         try {
@@ -78,7 +100,12 @@ export default (app, utils) => {
         }
     })
 
-    // edit announcement (POST)
+    /*
+    ** Edit announcement by id
+    ** Method   PUT
+    ** Access   superAdmin, admin
+    ** Page     - /announcement/edit/:announcementId
+    */
     app.put('/api/announcement/:id', adminPermission(), async (req, res) => {
         const { content, to } = req.body
         const announcementId = req.params.id
@@ -93,7 +120,6 @@ export default (app, utils) => {
                     teacher: false,
                     [to]: true,
                 },
-                // await announcement.updateOne ({_id:announcementId}, announcement);
                 await announcement.save()
             }
             utils.sendSuccess(res)

@@ -23,7 +23,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 export default (app, utils) => {
-    // Upload assignment
+    /*
+    ** Upload assignment with file
+    ** Method   POST
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /course/assignments/add/:courseId
+    */
     app.post('/api/assignments/upload', teacherPermission(), upload.array('assignments'), async (req, res) => {
         try {
             const { course, name, dueDate, totalMarks, passingMarks } = req.body;
@@ -51,7 +56,12 @@ export default (app, utils) => {
         }
     });
 
-    // update assignment (PUT)
+    /*
+    ** Edit assignment by id
+    ** Method   PUT
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /course/assignments/edit/:assignmentId
+    */
     app.put('/api/assignments/:id', teacherPermission(), upload.single('assignments'), async (req, res) => {
         try {
             const { name, dueDate, totalMarks, passingMarks } = req.body;
@@ -87,7 +97,13 @@ export default (app, utils) => {
         }
     });
 
-    //mark_assignment
+    /*
+    ** Fetch assignment by id
+    ** Method   GET
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /course/assignments/edit/:assignmentId
+    **          - /course/assignments/mark/:assignmentId
+    */
     app.get('/api/assignments/:id', teacherPermission(), async (req, res) => {
         try {
             const assignment = await Assignment.findById(req.params.id).populate({
@@ -113,8 +129,13 @@ export default (app, utils) => {
         }
     });
 
-    // mark_assignment (POST)
-    app.post('/api/assignments/:id/mark', teacherPermission(), async (req, res) => {
+    /*
+    ** Update student assignment mark
+    ** Method   PUT
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /course/assignments/mark/:assignmentId
+    */
+    app.put('/api/assignments/:id/mark', teacherPermission(), async (req, res) => {
         try {
             const { marks } = req.body;
             const assignmentId = req.params.id;
@@ -144,7 +165,12 @@ export default (app, utils) => {
         }
     });
 
-    // delete assignment (DELETE)
+    /*
+    ** Delete assignment
+    ** Method   DELETE
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /course/detail/:courseId
+    */
     app.delete('/api/assignments/:id', teacherPermission(), async (req, res) => {
         try {
             const deletedAssignment = await Assignment.findByIdAndDelete(req.params.id);
@@ -158,7 +184,12 @@ export default (app, utils) => {
         }
     });
 
-    // number of assignment (dashboard)
+    /*
+    ** Fetch count of assignment for dashboard
+    ** Method   DELETE
+    ** Access   superAdmin, admin, teacher
+    ** Page     - /dashboard
+    */
     app.get('/api/assignment/count/:id', async (req, res) => {
         try {
             const courseId = new mongoose.Types.ObjectId(req.params.id);

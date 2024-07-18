@@ -1,6 +1,12 @@
 import Course from '#root/db/models/Course'
 
 export default (app, utils) => {
+    /*
+    ** Fetch all course schedule
+    ** Method   GET
+    ** Access   superAdmin, admin, teacher, student
+    ** Page     - /calendar
+    */
     app.get('/api/calendar/events', async (req, res) => {
         let query = {};
         try {
