@@ -28,10 +28,18 @@ export default (app, utils) => {
 
     // get course option data (GET)
     app.get('/api/course/option', teacherPermission(), async (req, res) => {
+        let query = {};
         try {
-            const teachers = await User.find({
-                role: { $in: ['teacher'] },
-            });
+            switch (req.user.role) {
+                case 'teacher':
+                    query = req.user._id;
+                    break;
+                case 'admin':
+                case 'superAdmin':
+                    query = { role: { $in: ['teacher'] } };
+                    break;
+            }
+            const teachers = await User.find(query);
             const students = await User.find({ role: 'student' });
             utils.sendSuccess(res, { teachers, students });
         } catch (err) {
